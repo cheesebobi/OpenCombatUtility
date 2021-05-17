@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "sps",
+    "pep",
+    "sps"
+  ],
+  "key":
+  {
+    "s":
+    {
+      "item": "minecraft:string"
+    },
+    "p":
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    "e":
+    {
+      "item": "minecraft:ender_eye"
+    }
+  },
+  "result":
+  {
+    "item": "opencu:item",
+    "count": 1,
+    "data": 0
+  }
+}

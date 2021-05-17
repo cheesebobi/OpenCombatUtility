@@ -1,12 +1,11 @@
 package com.LubieKakao1212.opencu.block.tileentity.renderer;
 
-import com.LubieKakao1212.opencu.OpenCUMod;
-import com.LubieKakao1212.opencu.block.CUBlocks;
 import com.LubieKakao1212.opencu.block.tileentity.TileEntityRepulsor;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 
@@ -34,33 +33,19 @@ public class RendererRepulsor extends TileEntitySpecialRenderer<TileEntityRepuls
             animProgress = 0;
         }
 
-        renderModel(te, animProgress);
+        renderCore(animProgress);
 
         GlStateManager.popMatrix();
         GlStateManager.popAttrib();
     }
 
-    private void renderModel(TileEntityRepulsor te, float progress) {
-        //GlStateManager.pushMatrix();
+    private void renderCore(float progress) {
         RenderHelper.disableStandardItemLighting();
 
             this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferBuilder = tessellator.getBuffer();
-            BlockRendererDispatcher dispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
-
-            //IBlockState stateGlow = CUBlocks.repulsor.getDefaultState().withProperty(BlockRepulsor.PART_NUMBER, 0);
-            IBlockState stateFrame = CUBlocks.repulsor.getDefaultState();//.withProperty(BlockRepulsor.PART_NUMBER, 1);
-
-            //IBakedModel modelGlow = dispatcher.getModelForState(stateGlow);
-            IBakedModel modelFrame = dispatcher.getModelForState(stateFrame);
-
-            //GlStateManager.color(0f, 1f, 1f, 0.5f);
-            //bufferBuilder.color(0f, 1f, 1f, 0.5f);
-            //dispatcher.getBlockModelRenderer().renderModel(te.getWorld(), modelGlow, stateGlow, te.getPos(), bufferBuilder, true);
-
-
 
             GlStateManager.pushMatrix();
                 //GlStateManager.scale(2,2,2);
@@ -70,17 +55,7 @@ public class RendererRepulsor extends TileEntitySpecialRenderer<TileEntityRepuls
                 TESRUtil.drawCube(tessellator, bufferBuilder, Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/sea_lantern"), Color.lerp(offlineColor, onlineColor, progress));
             GlStateManager.popMatrix();
 
-
-            /*GlStateManager.translate(0.5f, 0.5f, 0.5f);
-            GlStateManager.scale(0.5f, 0.5f, 0.5f);
-            bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-            GlStateManager.translate(-te.getPos().getX(), -te.getPos().getY(), -te.getPos().getZ());
-
-            dispatcher.getBlockModelRenderer().renderModel(te.getWorld(), modelFrame, stateFrame, te.getPos(), bufferBuilder, true);
-            tessellator.draw();*/
-
         RenderHelper.enableStandardItemLighting();
-        //GlStateManager.popMatrix();
     }
 
 }

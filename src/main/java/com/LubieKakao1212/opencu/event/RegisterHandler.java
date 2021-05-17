@@ -3,6 +3,8 @@ package com.LubieKakao1212.opencu.event;
 import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.block.CUBlocks;
 import com.LubieKakao1212.opencu.block.tileentity.TileEntityRepulsor;
+import com.LubieKakao1212.opencu.item.CUItem;
+import com.LubieKakao1212.opencu.item.CUItems;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -29,12 +31,14 @@ public class RegisterHandler {
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         CUBlocks.registerBlocksItems(event);
+        CUItems.register(event);
     }
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent event) {
         CUBlocks.registerModels();
+        CUItems.registerModels();
     }
 
 }

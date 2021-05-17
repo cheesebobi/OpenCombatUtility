@@ -1,7 +1,6 @@
 package com.LubieKakao1212.opencu.block.tileentity;
 
 import com.LubieKakao1212.opencu.config.OpenCUConfig;
-import com.LubieKakao1212.opencu.energy.ReciveOnlyEnergyStorageWrapper;
 import com.LubieKakao1212.opencu.pulse.RepulsorPulse;
 import li.cil.oc.api.API;
 import li.cil.oc.api.machine.Arguments;
@@ -17,8 +16,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.EnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,24 +23,19 @@ import java.util.ArrayList;
 
 public class TileEntityRepulsor extends TileEntity implements Environment, ITickable {
 
-    private final Component node;
+    private final ComponentConnector node;
     private RepulsorPulse pulse;
     private final ArrayList<String> filter = new ArrayList<>();
-    public EnergyStorage energyBuffer;
-    public ReciveOnlyEnergyStorageWrapper energyWrapper;
 
     public int pulseTicksLeft;
     public static final int pulseTicks = 10;
 
     public TileEntityRepulsor() {
         pulse = new RepulsorPulse(0, 0);
-        node = API.network.newNode(this, Visibility.Network).withComponent("repulsor").create();
+        node = API.network.newNode(this, Visibility.Network).withComponent("repulsor").withConnector().create();
         int maxEnergyStored = MathHelper.floor(OpenCUConfig.repulsorDistanceCost
                 + OpenCUConfig.repulsorVolumeCost
                 + OpenCUConfig.repulsorForceCost);
-
-        energyBuffer = new EnergyStorage(maxEnergyStored, OpenCUConfig.repulsorMaxTransferRate, maxEnergyStored);
-        energyWrapper = new ReciveOnlyEnergyStorageWrapper(energyBuffer);
     }
 
     @Override
@@ -79,13 +71,11 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
 
     @Override
     public void onConnect(Node node) {
-        //node.connect(this.node);
         markDirty();
     }
 
     @Override
     public void onDisconnect(Node node) {
-        //node.disconnect(this.node);
         markDirty();
     }
 
@@ -153,14 +143,13 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
         pulse.lock(this.world, x1 + pos.getX() + 0.5, y1 + pos.getY() + 0.5, z1 + pos.getZ() + 0.5);
         pulse.filter(filter);
         double radiusRatio = pulse.getRadius() * pulse.getRadius() * pulse.getRadius() / (OpenCUConfig.repulsorMaxRadius * OpenCUConfig.repulsorMaxRadius * OpenCUConfig.repulsorMaxRadius);
-        double forceRatio = pulse.getForce() / OpenCUConfig.repulsorMaxForce;
+        double forceRatio = pulse.getBaseForce() / OpenCUConfig.repulsorMaxForce;
         double distanceRatio = Math.sqrt(distanceSqr) / OpenCUConfig.repulsorDistanceCost;
         int energyUsage = MathHelper.floor(distanceRatio * OpenCUConfig.repulsorDistanceCost + radiusRatio * OpenCUConfig.repulsorVolumeCost + (Math.pow(2, Math.abs(forceRatio))-1.0) * OpenCUConfig.repulsorForceCost);
-        if(energyBuffer.getEnergyStored() < energyUsage)
+        if(!node.tryChangeBuffer(-energyUsage))//if(energyBuffer.getEnergyStored() < energyUsage)
         {
             return new Object[]{ false, "Not enough energy stored!!!", energyUsage };
         }
-        energyBuffer.extractEnergy(energyUsage, false);
         pulse.execute();
         context.pause(0.05);
         pulseTicksLeft = pulseTicks;
@@ -177,10 +166,6 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
         NBTTagCompound nodeTag = new NBTTagCompound();
         node.save(nodeTag);
         compound.setTag("node", nodeTag);
-
-        NBTTagCompound energyTag = new NBTTagCompound();
-        energyTag.setInteger("current", energyBuffer.getEnergyStored());
-        compound.setTag("energy", energyTag);
         return super.writeToNBT(compound);
     }
 
@@ -192,45 +177,16 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
         if(nodeTag != null && node != null) {
             node.load(nodeTag);
         }
-        NBTTagCompound energyTag = compound.getCompoundTag("energy");
-        if(energyTag != null) {
-            int maxEnergyStored = MathHelper.floor(OpenCUConfig.repulsorDistanceCost
-                    + OpenCUConfig.repulsorVolumeCost
-                    + OpenCUConfig.repulsorForceCost);
-
-            energyBuffer = new EnergyStorage(maxEnergyStored, OpenCUConfig.repulsorMaxTransferRate, maxEnergyStored, energyTag.getInteger("current"));
-            energyWrapper = new ReciveOnlyEnergyStorageWrapper(energyBuffer);
-        }
     }
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-        if (capability == CapabilityEnergy.ENERGY)
-        {
-            return true;
-        }
-/*        if(capability == Capabilities.EnvironmentCapability)
-        {
-            return true;
-        }*/
         return super.hasCapability(capability, facing);
     }
 
     @Override
     @Nullable
     public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-        if (capability == CapabilityEnergy.ENERGY)
-        {
-            if(facing == null)
-            {
-                return (T)energyBuffer;
-            }
-            return (T)energyWrapper;
-        }
-/*        if(capability == Capabilities.EnvironmentCapability)
-        {
-            return (T)this;
-        }*/
         return super.getCapability(capability, facing);
     }
 

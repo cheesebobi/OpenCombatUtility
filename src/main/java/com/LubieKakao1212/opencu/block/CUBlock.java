@@ -1,9 +1,6 @@
 package com.LubieKakao1212.opencu.block;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
-import com.LubieKakao1212.opencu.block.tileentity.TileEntityRepulsor;
-import com.LubieKakao1212.opencu.config.OpenCUConfig;
-import com.LubieKakao1212.opencu.event.RegisterHandler;
 import com.LubieKakao1212.opencu.pulse.RepulsorPulse;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -15,21 +12,18 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-
-public class BlockBase extends Block {
+public class CUBlock extends Block {
 
     protected String name;
 
-    public BlockBase(Material material, String name) {
+    public CUBlock(Material material, String name) {
         super(material);
 
         this.name = name;
 
-        setUnlocalizedName(name);
+        setUnlocalizedName(OpenCUMod.MODID + "." + name);
         setRegistryName(name);
         CUBlocks.addBlock(this);
     }
@@ -43,7 +37,7 @@ public class BlockBase extends Block {
     }
 
     @Override
-    public BlockBase setCreativeTab(CreativeTabs tab) {
+    public CUBlock setCreativeTab(CreativeTabs tab) {
         super.setCreativeTab(tab);
         return this;
     }

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CUBlocks {
 
-    private static final List<BlockBase> blocks = new ArrayList<>();
+    private static final List<CUBlock> blocks = new ArrayList<>();
 
     public static BlockRepulsor repulsor;
 
@@ -23,13 +23,13 @@ public class CUBlocks {
     }
 
 
-    public static void addBlock(BlockBase base) {
+    public static void addBlock(CUBlock base) {
         blocks.add(base);
     }
 
 
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(blocks.toArray(new BlockBase[0]));
+        event.getRegistry().registerAll(blocks.toArray(new CUBlock[0]));
     }
 
     public static void registerBlocksItems(RegistryEvent.Register<Item> event) {
@@ -40,7 +40,7 @@ public class CUBlocks {
 
     @SideOnly(Side.CLIENT)
     public static void registerModels() {
-        for(BlockBase b : blocks)
+        for(CUBlock b : blocks)
         {
             b.registerItemModel();
         }

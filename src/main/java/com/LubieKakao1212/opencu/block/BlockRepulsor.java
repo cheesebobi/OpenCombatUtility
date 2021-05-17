@@ -1,17 +1,12 @@
 package com.LubieKakao1212.opencu.block;
 
-import codechicken.lib.block.property.PropertyInteger;
 import com.LubieKakao1212.opencu.block.tileentity.TileEntityRepulsor;
 import com.LubieKakao1212.opencu.block.tileentity.renderer.RendererRepulsor;
-import com.LubieKakao1212.opencu.event.RegisterHandler;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -25,9 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
-public class BlockRepulsor extends BlockBase implements ITileEntityProvider {
-
-    //public static PropertyInteger PART_NUMBER = new PropertyInteger("part", 2);
+public class BlockRepulsor extends CUBlock implements ITileEntityProvider {
 
     public BlockRepulsor(Material material, String name) {
         super(material, name);
@@ -43,7 +36,6 @@ public class BlockRepulsor extends BlockBase implements ITileEntityProvider {
     @Override
     public void registerItemModel() {
         super.registerItemModel();
-        //RegisterHandler.registerItemRenderer(createItemBlock(), 0, name);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRepulsor.class, new RendererRepulsor());
     }
 
@@ -61,23 +53,6 @@ public class BlockRepulsor extends BlockBase implements ITileEntityProvider {
         return true;
     }
 
-
-
-    /*@Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, new IProperty[] { PART_NUMBER });
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(PART_NUMBER);
-    }
-*/
-    /*@Override
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(PART_NUMBER, meta);
-    }*/
-
     @Override
     public boolean isOpaqueCube(IBlockState state) {
         return false;
@@ -92,8 +67,4 @@ public class BlockRepulsor extends BlockBase implements ITileEntityProvider {
     public EnumBlockRenderType getRenderType(IBlockState state) {
         return EnumBlockRenderType.MODEL;
     }
-    /*@Override
-    public BlockRenderLayer getBlockLayer() {
-        return BlockRenderLayer.TRANSLUCENT;
-    }*/
 }

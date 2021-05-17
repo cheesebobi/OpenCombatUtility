@@ -1,1 +1,2 @@
-tile.repulsor.name=Repulsor
+tile.opencu.repulsor.name=Repulsor
+item.opencu.vector_mesh.name=Vector Mesh

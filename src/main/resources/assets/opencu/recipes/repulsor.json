@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "cvc",
+    "vhv",
+    "cvc"
+  ],
+  "key":
+  {
+    "c":
+    {
+      "item": "opencomputers:chameliumblock",
+      "data": 32767
+    },
+    "v":
+    {
+      "item": "opencu:item",
+      "data": 0
+    },
+    "h":
+    {
+      "item": "opencomputers:material",
+      "data": 9
+    }
+  },
+  "result":
+  {
+    "item": "opencu:repulsor",
+    "count": 1
+  }
+}

@@ -10,7 +10,7 @@
       "model": "opencu:repulsor_frame.obj"
     },
     "inventory": {
-      "model": "opencu:repulsor.obj"
+      "model": "opencu:item/repulsor"
     }
   }
 }

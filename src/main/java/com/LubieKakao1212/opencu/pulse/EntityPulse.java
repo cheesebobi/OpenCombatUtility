@@ -1,32 +1,30 @@
 package com.LubieKakao1212.opencu.pulse;
 
-import com.LubieKakao1212.opencu.OpenCUMod;
-import com.LubieKakao1212.opencu.config.OpenCUConfig;
+import com.LubieKakao1212.opencu.network.NetworkHandler;
+import com.LubieKakao1212.opencu.network.packet.EntityAddVelocityPacket;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public abstract class EntityPulse {
 
     protected double radius;
-    protected double force;
+    protected double baseForce;
     protected double posX, posY, posZ;
     protected World world;
     protected List<Entity> entityList;
 
     private boolean whitelist;
 
-    public EntityPulse(double radius, double force) {
+    public EntityPulse(double radius, double baseForce) {
         this.radius = radius;
-        this.force = force;
+        this.baseForce = baseForce;
         this.entityList = new ArrayList<>();
         this.whitelist = false;
     }
@@ -55,10 +53,6 @@ public abstract class EntityPulse {
         entityList = entityList.stream().filter( e -> { return whitelist ? list.contains(e.getName()) : !list.contains(e.getName()); }).collect(Collectors.toList());
     }
 
-    /*public void filter(List<UUID> list) {
-        entityList = entityList.stream().filter( e -> { return whitelist ? list.contains(e.getUniqueID()) : !list.contains(e.getUniqueID()); }).collect(Collectors.toList());
-    }*/
-
     protected void filter() {
         entityList = entityList.stream().filter(entity -> {
             double relX = entity.posX - posX;
@@ -83,7 +77,24 @@ public abstract class EntityPulse {
         return entityList.size();
     }
 
-    public double getForce() {
-        return force;
+    public double getBaseForce() {
+        return baseForce;
     }
+
+    protected static void addVelocity(Entity e, double vX, double vY, double vZ) {
+        if(e instanceof EntityPlayerMP)
+        {
+            NetworkHandler.sendTo((EntityPlayerMP)e, new EntityAddVelocityPacket(vX, vY, vZ));
+            if(e.motionY > 0){
+                e.fallDistance = 0;
+            }
+        }else {
+            e.addVelocity(vX, vY, vZ);
+            if(e instanceof EntityLivingBase && e.motionY > 0)
+            {
+                e.fallDistance = 0;
+            }
+        }
+    }
+
 }
