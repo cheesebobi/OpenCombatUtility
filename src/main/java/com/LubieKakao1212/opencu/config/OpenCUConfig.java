@@ -24,7 +24,4 @@ public class OpenCUConfig {
     @Config.RangeDouble(min = 0)
     public static double repulsorForceCost = 10000;
 
-    @Config.RangeDouble(min = 0)
-    public static int repulsorMaxTransferRate = 1000;
-
 }

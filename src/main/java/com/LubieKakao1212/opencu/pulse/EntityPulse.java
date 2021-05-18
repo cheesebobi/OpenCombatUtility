@@ -1,10 +1,12 @@
 package com.LubieKakao1212.opencu.pulse;
 
+import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
 import com.LubieKakao1212.opencu.network.packet.EntityAddVelocityPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
@@ -22,9 +24,7 @@ public abstract class EntityPulse {
 
     private boolean whitelist;
 
-    public EntityPulse(double radius, double baseForce) {
-        this.radius = radius;
-        this.baseForce = baseForce;
+    public EntityPulse() {
         this.entityList = new ArrayList<>();
         this.whitelist = false;
     }
@@ -66,7 +66,18 @@ public abstract class EntityPulse {
     public abstract void execute();
 
     public void setWhitelist(boolean whitelist) {
+        OpenCUMod.logger.warn(this.whitelist);
         this.whitelist = whitelist;
+    }
+
+    public void setVector(double x, double y, double z) { }
+
+    public void setRadius(double radius) {
+        this.radius = radius;
+    }
+
+    public void setBaseForce(double baseForce) {
+        this.baseForce = baseForce;
     }
 
     public double getRadius() {
@@ -79,6 +90,19 @@ public abstract class EntityPulse {
 
     public double getBaseForce() {
         return baseForce;
+    }
+
+    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+        tag.setDouble("radius", radius);
+        tag.setDouble("force", baseForce);
+        tag.setBoolean("whitelist", whitelist);
+        return tag;
+    }
+
+    public void readFromNBT(NBTTagCompound tag) {
+        radius = tag.getDouble("radius");
+        baseForce = tag.getDouble("force");
+        whitelist = tag.getBoolean("whitelist");
     }
 
     protected static void addVelocity(Entity e, double vX, double vY, double vZ) {

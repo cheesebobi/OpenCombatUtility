@@ -1,7 +1,9 @@
 package com.LubieKakao1212.opencu.block.tileentity;
 
 import com.LubieKakao1212.opencu.config.OpenCUConfig;
+import com.LubieKakao1212.opencu.pulse.EntityPulse;
 import com.LubieKakao1212.opencu.pulse.RepulsorPulse;
+import com.LubieKakao1212.opencu.pulse.VectorPulse;
 import li.cil.oc.api.API;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -20,18 +22,22 @@ import net.minecraftforge.common.capabilities.Capability;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.function.Supplier;
 
 public class TileEntityRepulsor extends TileEntity implements Environment, ITickable {
 
+    private static final Supplier<EntityPulse>[] pulseFactories = new Supplier[] { RepulsorPulse::new, VectorPulse::new };
+
     private final ComponentConnector node;
-    private RepulsorPulse pulse;
+    private EntityPulse pulse;
     private final ArrayList<String> filter = new ArrayList<>();
+    private int pulseType;
 
     public int pulseTicksLeft;
     public static final int pulseTicks = 10;
 
     public TileEntityRepulsor() {
-        pulse = new RepulsorPulse(0, 0);
+        setPulse(0);
         node = API.network.newNode(this, Visibility.Network).withComponent("repulsor").withConnector().create();
         int maxEnergyStored = MathHelper.floor(OpenCUConfig.repulsorDistanceCost
                 + OpenCUConfig.repulsorVolumeCost
@@ -85,19 +91,51 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
     }
 
     @SuppressWarnings("unused")
-    @Callback(doc = "function(radius:number, force:number): true or false, string")
-    public Object[] prime(Context context, Arguments args) {
+    @Callback(doc = "function(radius:number): true or false, string")
+    public Object[] recalibrate(Context context, Arguments args) {
+        int id = args.checkInteger(0);
+        if(id < 0) {
+            return new Object[] { false, "id cannot be negative" };
+        }
+        if(id > pulseFactories.length) {
+            return new Object[] { false, "id to large" };
+        }
+
+        setPulse(id);
+        return new Object[] { true };
+    }
+
+    @SuppressWarnings("unused")
+    @Callback(doc = "function(radius:number): true or false, string")
+    public Object[] setRadius(Context context, Arguments args) {
         double radius = args.checkDouble(0);
-        double force = args.checkDouble(1);
         if(radius > OpenCUConfig.repulsorMaxRadius)
         {
             return new Object[]{ false, "Radius to large" };
         }
+        pulse.setRadius(radius);
+        return new Object[] { true };
+    }
+
+    @SuppressWarnings("unused")
+    @Callback(doc = "function(force:number): true or false, string")
+    public Object[] setForce(Context context, Arguments args) {
+        double force = args.checkDouble(0);
         if(force > 1.0)
         {
             return new Object[]{ false, "Force to large" };
         }
-        pulse = new RepulsorPulse(radius, force*OpenCUConfig.repulsorMaxForce);
+        pulse.setBaseForce(force);
+        return new Object[]{ true };
+    }
+
+    @SuppressWarnings("unused")
+    @Callback(doc = "function(x:number, y:number, z:number): nil")
+    public Object[] setVector(Context context, Arguments args) {
+        double x = args.checkInteger(0);
+        double y = args.checkInteger(1);
+        double z = args.checkInteger(2);
+        pulse.setVector(x, y, z);
         return new Object[0];
     }
 
@@ -118,7 +156,7 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
     @SuppressWarnings("unused")
     @Callback(doc = "function(whitelist:boolean): nil")
     public Object[] removeFromFilter(Context context, Arguments args) {
-        filter.add(args.checkString(0));
+        filter.remove(args.checkString(0));
         return new Object[0];
     }
 
@@ -129,7 +167,7 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
         return filter.toArray();
     }
 
-    @Callback(doc = "function(x:number, y:number, z:number): true or false, string")
+    @Callback(doc = "function(x:number, y:number, z:number): true or false, string", limit = 1)
     public Object[] pulse(Context context, Arguments args) {
         double x1 = args.checkDouble(0);
         double y1 = args.checkDouble(1);
@@ -151,14 +189,14 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
             return new Object[]{ false, "Not enough energy stored!!!", energyUsage };
         }
         pulse.execute();
-        context.pause(0.05);
+        //context.pause(0.1);
         pulseTicksLeft = pulseTicks;
 
         markDirty();
 
         IBlockState state = world.getBlockState(getPos());
         world.notifyBlockUpdate(getPos(), state, state, 2);
-        return new Object[0];
+        return new Object[] { true };
     }
 
     @Override
@@ -166,6 +204,9 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
         NBTTagCompound nodeTag = new NBTTagCompound();
         node.save(nodeTag);
         compound.setTag("node", nodeTag);
+        NBTTagCompound pulseTag = new NBTTagCompound();
+        pulseTag.setInteger("type", pulseType);
+        compound.setTag("pulse", pulse.writeToNBT(pulseTag));
         return super.writeToNBT(compound);
     }
 
@@ -176,6 +217,11 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
         NBTTagCompound nodeTag = compound.getCompoundTag("node");
         if(nodeTag != null && node != null) {
             node.load(nodeTag);
+        }
+        NBTTagCompound pulseTag = compound.getCompoundTag("pulse");
+        if(pulseTag != null) {
+            setPulse(pulseTag.getInteger("type"));
+            pulse.readFromNBT(pulseTag);
         }
     }
 
@@ -202,5 +248,10 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         pulseTicksLeft = pkt.getNbtCompound().getInteger("anim");
+    }
+
+    public void setPulse(int type) {
+        pulse = pulseFactories[type].get();
+        this.pulseType = type;
     }
 }

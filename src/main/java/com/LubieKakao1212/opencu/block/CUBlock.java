@@ -41,14 +41,4 @@ public class CUBlock extends Block {
         super.setCreativeTab(tab);
         return this;
     }
-
-    @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if(!worldIn.isRemote) {
-            RepulsorPulse pulse = new RepulsorPulse(32, 10);
-            pulse.lock(worldIn, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5);
-            pulse.execute();
-        }
-        return true;
-    }
 }

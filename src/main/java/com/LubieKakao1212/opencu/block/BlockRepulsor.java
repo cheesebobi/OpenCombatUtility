@@ -43,7 +43,6 @@ public class BlockRepulsor extends CUBlock implements ITileEntityProvider {
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if(!worldIn.isRemote) {
             TileEntityRepulsor te = (TileEntityRepulsor) worldIn.getTileEntity(pos);
-            playerIn.sendMessage(new TextComponentString("" + te.energyBuffer.getEnergyStored()));
         }
         return true;
     }

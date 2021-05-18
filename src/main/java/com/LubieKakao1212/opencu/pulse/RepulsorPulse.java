@@ -4,8 +4,8 @@ import net.minecraft.entity.Entity;
 
 public class RepulsorPulse extends EntityPulse {
 
-    public RepulsorPulse(double radius, double force) {
-        super(radius, force);
+    public RepulsorPulse() {
+        super();
     }
 
     @Override
