@@ -18,7 +18,6 @@ public class CUBlocks {
 
     static
     {
-        //new BlockBase(Material.ANVIL,"test");
         repulsor = new BlockRepulsor(Material.IRON, "repulsor");
     }
 

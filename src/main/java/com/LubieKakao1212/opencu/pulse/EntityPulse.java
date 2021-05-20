@@ -36,12 +36,6 @@ public abstract class EntityPulse {
         posZ = z;
 
         entityList = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(0,0,0,0,0,0).offset(x,y,z).grow(radius));
-        //entityList = world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(0,0,0,0,0,0).offset(x,y,z).grow(radius));
-        /*entityList.stream().forEach(e -> {
-            if(e instanceof EntityPlayer) {
-                OpenCUMod.logger.warn(e.getName());
-            }
-        });*/
     }
 
     public void resetLock()
