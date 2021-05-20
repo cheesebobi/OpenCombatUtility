@@ -1,2 +1,4 @@
 tile.opencu.repulsor.name=Repulsor
 item.opencu.vector_mesh.name=Vector Mesh
+
+itemGroup.ocu=Open Combat Utility

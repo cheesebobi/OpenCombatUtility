@@ -181,7 +181,7 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
         pulse.lock(this.world, x1 + pos.getX() + 0.5, y1 + pos.getY() + 0.5, z1 + pos.getZ() + 0.5);
         pulse.filter(filter);
         double radiusRatio = pulse.getRadius() * pulse.getRadius() * pulse.getRadius() / (OpenCUConfig.repulsorMaxRadius * OpenCUConfig.repulsorMaxRadius * OpenCUConfig.repulsorMaxRadius);
-        double forceRatio = pulse.getBaseForce() / OpenCUConfig.repulsorMaxForce;
+        double forceRatio = pulse.getBaseForce() / OpenCUConfig.repulsorForceScale;
         double distanceRatio = Math.sqrt(distanceSqr) / OpenCUConfig.repulsorDistanceCost;
         int energyUsage = MathHelper.floor(distanceRatio * OpenCUConfig.repulsorDistanceCost + radiusRatio * OpenCUConfig.repulsorVolumeCost + (Math.pow(2, Math.abs(forceRatio))-1.0) * OpenCUConfig.repulsorForceCost);
         if(!node.tryChangeBuffer(-energyUsage))//if(energyBuffer.getEnergyStored() < energyUsage)

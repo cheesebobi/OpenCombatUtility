@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.block;
 
+import com.LubieKakao1212.opencu.CUCreativeTabs;
 import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.pulse.RepulsorPulse;
 import net.minecraft.block.Block;
@@ -25,6 +26,7 @@ public class CUBlock extends Block {
 
         setUnlocalizedName(OpenCUMod.MODID + "." + name);
         setRegistryName(name);
+        setCreativeTab(CUCreativeTabs.tabCUMain);
         CUBlocks.addBlock(this);
     }
 

@@ -13,14 +13,17 @@ public class OpenCUConfig {
     public static double repulsorMaxRadius = 16;
 
     @Config.RangeDouble(min = 0)
-    public static double repulsorMaxForce = 0.5;
+    public static double repulsorForceScale = 0.5;
 
+    @Config.Comment("How much energy will be used per pulse from volume at maximum range")
     @Config.RangeDouble(min = 0)
     public static double repulsorVolumeCost = 10000;
 
+    @Config.Comment("How much energy will be used per pulse from offset distance at maximum offset")
     @Config.RangeDouble(min = 0)
     public static double repulsorDistanceCost = 100;
 
+    @Config.Comment("How much energy will be used per pulse from force at maximum force")
     @Config.RangeDouble(min = 0)
     public static double repulsorForceCost = 10000;
 
