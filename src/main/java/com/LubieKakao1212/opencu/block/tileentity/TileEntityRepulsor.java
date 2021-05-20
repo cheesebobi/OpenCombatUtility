@@ -91,7 +91,7 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
     }
 
     @SuppressWarnings("unused")
-    @Callback(doc = "function(radius:number): true or false, string")
+    @Callback(doc = "function(mode:number): true or false, string")
     public Object[] recalibrate(Context context, Arguments args) {
         int id = args.checkInteger(0);
         if(id < 0) {
@@ -130,34 +130,34 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
     }
 
     @SuppressWarnings("unused")
-    @Callback(doc = "function(x:number, y:number, z:number): nil")
+    @Callback(doc = "function(x:number, y:number, z:number): true")
     public Object[] setVector(Context context, Arguments args) {
         double x = args.checkInteger(0);
         double y = args.checkInteger(1);
         double z = args.checkInteger(2);
         pulse.setVector(x, y, z);
-        return new Object[0];
+        return new Object[] { true };
     }
 
     @SuppressWarnings("unused")
-    @Callback(doc = "function(whitelist:boolean): nil")
+    @Callback(doc = "function(whitelist:boolean): true")
     public Object[] setWhitelist(Context context, Arguments args) {
         pulse.setWhitelist(args.checkBoolean(0));
-        return new Object[0];
+        return new Object[] { true };
     }
 
     @SuppressWarnings("unused")
-    @Callback(doc = "function(whitelist:boolean): nil")
+    @Callback(doc = "function(name:string): true")
     public Object[] addToFilter(Context context, Arguments args) {
         filter.add(args.checkString(0));
-        return new Object[0];
+        return new Object[] { true };
     }
 
     @SuppressWarnings("unused")
-    @Callback(doc = "function(whitelist:boolean): nil")
+    @Callback(doc = "function(name:string): true")
     public Object[] removeFromFilter(Context context, Arguments args) {
         filter.remove(args.checkString(0));
-        return new Object[0];
+        return new Object[] { true };
     }
 
     @SuppressWarnings("unused")
