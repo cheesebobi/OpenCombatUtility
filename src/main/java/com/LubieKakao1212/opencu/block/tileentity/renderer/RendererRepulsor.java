@@ -6,56 +6,36 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.client.model.animation.FastTESR;
 
-public class RendererRepulsor extends TileEntitySpecialRenderer<TileEntityRepulsor> {
+public class RendererRepulsor extends FastTESR<TileEntityRepulsor> {
+
+    private static final AxisAlignedBB coreBounds = new AxisAlignedBB(0,0,0,0,0,0).grow(0.825 / 2).offset(0.5, 0.5, 0.5);
+    private static TextureAtlasSprite lanternSprite = null;
 
     public RendererRepulsor() {
-
     }
 
     public static final Color offlineColor = new Color(0.25f, 0.5f,0.5f, 1f);
     public static final Color onlineColor = new Color(0f, 1f,1f, 1f);
 
     @Override
-    public void render(TileEntityRepulsor te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-        GlStateManager.pushAttrib();
-        GlStateManager.pushMatrix();
-
-        GlStateManager.translate(x, y, z);
-        GlStateManager.disableRescaleNormal();
-
+    public void renderTileEntityFast(TileEntityRepulsor te, double x, double y, double z, float partialTicks, int destroyStage, float partial, BufferBuilder buffer) {
         float animProgress = (te.pulseTicksLeft - partialTicks) / TileEntityRepulsor.pulseTicks;
 
         if(animProgress < 0)
         {
             animProgress = 0;
         }
+        if(lanternSprite == null)
+        {
+            lanternSprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/sea_lantern");
+        }
 
-        renderCore(animProgress);
-
-        GlStateManager.popMatrix();
-        GlStateManager.popAttrib();
+        FastTESRUtil.drawCube(buffer, coreBounds.offset(x, y, z), lanternSprite, Color.lerp(offlineColor, onlineColor, animProgress));
     }
-
-    private void renderCore(float progress) {
-        RenderHelper.disableStandardItemLighting();
-
-            this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferBuilder = tessellator.getBuffer();
-
-            GlStateManager.pushMatrix();
-                //GlStateManager.scale(2,2,2);
-                GlStateManager.translate(0.0625f,0.0625f,0.0625f);
-                GlStateManager.scale(0.875f,0.875f,0.875f);
-                GlStateManager.enableAlpha();
-                TESRUtil.drawCube(tessellator, bufferBuilder, Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/sea_lantern"), Color.lerp(offlineColor, onlineColor, progress));
-            GlStateManager.popMatrix();
-
-        RenderHelper.enableStandardItemLighting();
-    }
-
 }

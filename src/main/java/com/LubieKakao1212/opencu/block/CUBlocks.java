@@ -21,11 +21,9 @@ public class CUBlocks {
         repulsor = new BlockRepulsor(Material.IRON, "repulsor");
     }
 
-
     public static void addBlock(CUBlock base) {
         blocks.add(base);
     }
-
 
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(blocks.toArray(new CUBlock[0]));

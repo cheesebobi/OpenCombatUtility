@@ -28,7 +28,6 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
-        //Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(new RepulsorColors(), CUBlocks.repulsor);
     }
 
     @Override

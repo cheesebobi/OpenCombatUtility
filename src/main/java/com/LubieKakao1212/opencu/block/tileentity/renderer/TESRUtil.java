@@ -71,7 +71,6 @@ public class TESRUtil {
             //bb.normal(0, 0, 1);
             bb.lightmap(BRIGHTNESS, BRIGHTNESS);
             bb.endVertex();
-
             tes.draw();
         }else
         {

@@ -254,4 +254,9 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
         pulse = pulseFactories[type].get();
         this.pulseType = type;
     }
+
+    @Override
+    public boolean hasFastRenderer() {
+        return true;
+    }
 }
