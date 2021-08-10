@@ -15,10 +15,12 @@ public class CUBlocks {
     private static final List<CUBlock> blocks = new ArrayList<>();
 
     public static BlockRepulsor repulsor;
+    public static BlockAngryDispenser angryDispenser;
 
     static
     {
         repulsor = new BlockRepulsor(Material.IRON, "repulsor");
+        angryDispenser = new BlockAngryDispenser(Material.IRON, "angry_dispenser");
     }
 
     public static void addBlock(CUBlock base) {

@@ -2,6 +2,7 @@ package com.LubieKakao1212.opencu.event;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.block.CUBlocks;
+import com.LubieKakao1212.opencu.block.tileentity.TileEntityAngryDispenser;
 import com.LubieKakao1212.opencu.block.tileentity.TileEntityRepulsor;
 import com.LubieKakao1212.opencu.item.CUItem;
 import com.LubieKakao1212.opencu.item.CUItems;
@@ -26,6 +27,7 @@ public class RegisterHandler {
         CUBlocks.registerBlocks(event);
 
         GameRegistry.registerTileEntity(TileEntityRepulsor.class, new ResourceLocation(OpenCUMod.MODID, "repulsor"));
+        GameRegistry.registerTileEntity(TileEntityAngryDispenser.class, new ResourceLocation(OpenCUMod.MODID, "angry_dispenser"));
     }
 
     @SubscribeEvent
