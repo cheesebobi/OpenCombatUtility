@@ -3,6 +3,7 @@ package com.LubieKakao1212.opencu.block;
 import com.LubieKakao1212.opencu.block.tileentity.TileEntityRepulsor;
 import com.LubieKakao1212.opencu.block.tileentity.renderer.RendererRepulsor;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,6 +25,10 @@ public class BlockRepulsor extends CUBlock implements ITileEntityProvider {
 
     public BlockRepulsor(Material material, String name) {
         super(material, name);
+        this.setHardness(1f);
+        this.setHarvestLevel("pickaxe", 2);
+        this.setSoundType(SoundType.METAL);
+        this.setResistance(3.5f);
     }
 
     @Nullable
