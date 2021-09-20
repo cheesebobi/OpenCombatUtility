@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public interface FastTESRUtil {
+public class FastTESRUtil {
 
     public static final int BRIGHTNESS = 13 << 4;
 
@@ -61,8 +61,8 @@ public interface FastTESRUtil {
         drawQuad(new double[]{
                 bounds.maxX, bounds.minY, bounds.minZ,
                 bounds.maxX, bounds.minY, bounds.maxZ,
-                bounds.maxX, bounds.minY, bounds.maxZ,
-                bounds.maxX, bounds.minY, bounds.minZ
+                bounds.minX, bounds.minY, bounds.maxZ,
+                bounds.minX, bounds.minY, bounds.minZ
         }, bb, sprite, tint);
     }
 
