@@ -20,6 +20,9 @@ public class OpenCUMod
     @SidedProxy(clientSide = "com.LubieKakao1212.opencu.proxy.ClientProxy", serverSide = "com.LubieKakao1212.opencu.proxy.ServerProxy")
     public static CommonProxy proxy;
 
+    @Mod.Instance(MODID)
+    public static OpenCUMod instance;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {

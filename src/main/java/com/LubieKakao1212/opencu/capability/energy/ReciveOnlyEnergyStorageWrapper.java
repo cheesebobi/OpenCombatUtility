@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.energy;
+package com.LubieKakao1212.opencu.capability.energy;
 
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;

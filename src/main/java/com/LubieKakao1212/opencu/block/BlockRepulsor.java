@@ -21,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
-public class BlockRepulsor extends CUBlock implements ITileEntityProvider {
+public class BlockRepulsor extends CUBlock {
 
     public BlockRepulsor(Material material, String name) {
         super(material, name);

@@ -1,6 +1,8 @@
 package com.LubieKakao1212.opencu.proxy;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
+import com.LubieKakao1212.opencu.gui.OCUGuiHandler;
+import com.LubieKakao1212.opencu.gui.OCUGuis;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -10,11 +12,12 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 public class CommonProxy {
 
     public void init(FMLPreInitializationEvent event) {
-
+        NetworkRegistry.INSTANCE.registerGuiHandler(OpenCUMod.instance, new OCUGuiHandler());
     }
 
     public void init(FMLInitializationEvent event) {

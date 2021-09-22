@@ -49,3 +49,9 @@ function looop(a, c)
         dis.dispense()
     end
 end
+
+function shoot(c)
+    for i=1,c,1 do
+        dis.dispense()
+    end
+end

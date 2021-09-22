@@ -2,16 +2,13 @@ package com.LubieKakao1212.opencu.event;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.block.CUBlocks;
-import com.LubieKakao1212.opencu.block.tileentity.TileEntityAngryDispenser;
+import com.LubieKakao1212.opencu.block.tileentity.TileEntityOmniDispenser;
 import com.LubieKakao1212.opencu.block.tileentity.TileEntityRepulsor;
-import com.LubieKakao1212.opencu.item.CUItem;
 import com.LubieKakao1212.opencu.item.CUItems;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -27,7 +24,7 @@ public class RegisterHandler {
         CUBlocks.registerBlocks(event);
 
         GameRegistry.registerTileEntity(TileEntityRepulsor.class, new ResourceLocation(OpenCUMod.MODID, "repulsor"));
-        GameRegistry.registerTileEntity(TileEntityAngryDispenser.class, new ResourceLocation(OpenCUMod.MODID, "angry_dispenser"));
+        GameRegistry.registerTileEntity(TileEntityOmniDispenser.class, new ResourceLocation(OpenCUMod.MODID, "angry_dispenser"));
     }
 
     @SubscribeEvent

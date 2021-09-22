@@ -7,9 +7,12 @@ import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.*;
+import li.cil.oc.common.tileentity.traits.ComponentInventory;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntitySpectralArrow;
 import net.minecraft.entity.projectile.EntityTippedArrow;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.PotionTypes;
 import net.minecraft.item.ItemStack;
@@ -18,13 +21,19 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class TileEntityAngryDispenser extends TileEntity implements Environment, ITickable {
+public class TileEntityOmniDispenser extends TileEntity implements Environment, ITickable, EnvironmentHost {
 
     private final ConcurrentLinkedQueue<DispenseAction> actionQueue = new ConcurrentLinkedQueue<>();
     private final ComponentConnector node;
@@ -33,13 +42,32 @@ public class TileEntityAngryDispenser extends TileEntity implements Environment,
 
     private PotionType debugPotion;
 
-    public TileEntityAngryDispenser() {
+    public TileEntityOmniDispenser() {
         setAim(0,0);
 
-        inventory = new ItemStackHandler(1) {
+        inventory = new ItemStackHandler(10) {
             @Override
             protected void onContentsChanged(int slot) {
 
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                if(slot == 0)
+                {
+                    return ItemStack.areItemsEqual(stack, new ItemStack(Blocks.DISPENSER));
+                }
+                return true;
+            }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                if(slot == 0)
+                {
+                    return 1;
+                }else {
+                    return 64;
+                }
             }
         };
 
@@ -93,15 +121,14 @@ public class TileEntityAngryDispenser extends TileEntity implements Environment,
     }
 
     @SuppressWarnings("unused")
-    @Callback(doc = "function(): true or false, string", direct = true)
+    @Callback(doc = "function(): true or false, string", direct = true, limit = 3)
     public Object[] dispense(Context context, Arguments args) {
         actionQueue.add(lastAction);
-        context.consumeCallBudget(1 / 3);
         return new Object[] { };
     }
 
     @SuppressWarnings("unused")
-    @Callback(doc = "function(yaw:number, pitch:number)", direct = true)
+    @Callback(doc = "function(yaw:number, pitch:number)", direct = true, limit = 1)
     public Object[] aim(Context context, Arguments args) {
         double yaw = args.checkDouble(0);
         double pitch = args.checkDouble(1);
@@ -186,6 +213,52 @@ public class TileEntityAngryDispenser extends TileEntity implements Environment,
         world.spawnEntity(arrow);
     }
 
+    @Override
+    public World world() {
+        return world;
+    }
+
+    @Override
+    public double xPosition() {
+        return this.pos.getX()+0.5;
+    }
+
+    @Override
+    public double yPosition() {
+        return this.pos.getY()+0.5;
+    }
+
+    @Override
+    public double zPosition() {
+        return this.pos.getZ()+0.5;
+    }
+
+    @Override
+    public void markChanged() {
+        this.markDirty();
+    }
+
+    public boolean isUsableBy(EntityPlayer player) {
+        return player.getDistanceSq(pos) <= 64D && world.getTileEntity(pos) == this;
+    }
+
+    @Nullable
+    @Override
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return (T)inventory;
+        }
+        return super.getCapability(capability, facing);
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+        if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
+        }
+        return super.hasCapability(capability, facing);
+    }
+
     private class DispenseAction {
         private double yaw; //-pi - pi
         private double pitch; //-pi/2 - pi/2;
@@ -196,5 +269,4 @@ public class TileEntityAngryDispenser extends TileEntity implements Environment,
         private double yOff;
         private double zOff;
     }
-
 }
