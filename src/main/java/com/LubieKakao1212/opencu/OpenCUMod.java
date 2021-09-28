@@ -24,8 +24,7 @@ public class OpenCUMod
     public static OpenCUMod instance;
 
     @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
-    {
+    public void preInit(FMLPreInitializationEvent event) {
         proxy.init(event);
         logger = event.getModLog();
     }

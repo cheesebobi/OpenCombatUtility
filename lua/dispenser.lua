@@ -1,4 +1,4 @@
-dis = component.omnipenser
+dis = component.omnidispenser
 function circle(count, p)
     p = p or 0
     local pi2 = math.pi * 2

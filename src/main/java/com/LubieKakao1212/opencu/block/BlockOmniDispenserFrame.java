@@ -34,7 +34,6 @@ public class BlockOmniDispenserFrame extends CUBlock {
     @Override
     public void registerItemModel() {
         super.registerItemModel();
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRepulsor.class, new RendererRepulsor());
     }
 
     @Override

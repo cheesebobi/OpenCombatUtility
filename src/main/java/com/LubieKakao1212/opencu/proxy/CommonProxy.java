@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.proxy;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
+import com.LubieKakao1212.opencu.capability.dispenser.DispenserRegistry;
 import com.LubieKakao1212.opencu.gui.OCUGuiHandler;
 import com.LubieKakao1212.opencu.gui.OCUGuis;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
@@ -22,6 +23,7 @@ public class CommonProxy {
 
     public void init(FMLInitializationEvent event) {
         NetworkHandler.init();
+        DispenserRegistry.DISPENSER.init();
     }
 
     public void init(FMLPostInitializationEvent event) {

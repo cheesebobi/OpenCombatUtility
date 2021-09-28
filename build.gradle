@@ -7,6 +7,11 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
+
+plugins {
+    id "com.github.johnrengelman.shadow" version "1.2.3"
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
@@ -49,10 +54,17 @@ repositories {
 	maven { 
 		url = "http://maven.cil.li/" 
 	}
+    maven {
+        url "https://jitpack.io"
+    }
 }
 
 dependencies {
-	compile "li.cil.oc:OpenComputers:MC1.12.2-1.7.5.+"
+    //compile 'com.github.kotlin-graphics:glm:0.9.9.0-build-08'
+    compile("io.github.java-graphics:glm:1.0.1") {
+        exclude group: "io.github.java-graphics", module: "openvr"
+    }
+    compile "li.cil.oc:OpenComputers:MC1.12.2-1.7.5.+"
 	compile "cofh:RedstoneFlux:1.12-2.1.0.+:universal"
     compile "cofh:CoFHCore:1.12.2-4.6.0.+:universal"
     compile "cofh:CoFHWorld:1.12.2-1.3.0.+:universal"
@@ -61,6 +73,13 @@ dependencies {
 
     compile "codechicken:CodeChickenLib:1.12.2-3.1.7.+:universal"
 	compile "mezz.jei:jei_1.12.2:4.8.0.+"
+}
+
+shadowJar {
+    classifier = ""
+    dependencies {
+        include(dependency("io.github.java-graphics:glm:1.0.1"))
+    }
 }
 
 processResources {
@@ -81,3 +100,17 @@ processResources {
         exclude 'mcmod.info'
     }
 }
+
+tasks.build.dependsOn shadowJar
+artifacts {
+    archives shadowJar
+}
+
+reobf {
+    shadowJar {
+        mappingType = "SEARGE"
+    }
+}
+tasks.reobfShadowJar.mustRunAfter shadowJar
+
+tasks.build.dependsOn reobfShadowJar
