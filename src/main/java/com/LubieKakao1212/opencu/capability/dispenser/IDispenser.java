@@ -35,8 +35,6 @@ public interface IDispenser {
     String trySetForce(double force);
 
 
-    float getBaseEnergyRequired();
-
     //Math angle per tick
     float getAlignmentSpeed();
 

@@ -18,6 +18,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,9 +40,6 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
     public TileEntityRepulsor() {
         setPulse(0);
         node = API.network.newNode(this, Visibility.Network).withComponent("repulsor").withConnector().create();
-        int maxEnergyStored = MathHelper.floor(OpenCUConfig.repulsorDistanceCost
-                + OpenCUConfig.repulsorVolumeCost
-                + OpenCUConfig.repulsorForceCost);
     }
 
     @Override
@@ -109,7 +107,7 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
     @Callback(doc = "function(radius:number): true or false, string")
     public Object[] setRadius(Context context, Arguments args) {
         double radius = args.checkDouble(0);
-        if(radius > OpenCUConfig.repulsorMaxRadius)
+        if(radius > OpenCUConfig.repulsor.repulsorMaxRadius)
         {
             return new Object[]{ false, "Radius to large" };
         }
@@ -167,6 +165,7 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
         return filter.toArray();
     }
 
+    @SuppressWarnings("unused")
     @Callback(doc = "function(x:number, y:number, z:number): true or false, string", limit = 1)
     public Object[] pulse(Context context, Arguments args) {
         double x1 = args.checkDouble(0);
@@ -174,16 +173,16 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
         double z1 = args.checkDouble(2);
         double distanceSqr = x1*x1 + y1*y1 + z1*z1;
 
-        if(distanceSqr > OpenCUConfig.repulsorMaxOffset * OpenCUConfig.repulsorMaxOffset)
+        if(distanceSqr > OpenCUConfig.repulsor.repulsorMaxOffset * OpenCUConfig.repulsor.repulsorMaxOffset)
         {
             return new Object[]{ false, "Offset to large" };
         }
         pulse.lock(this.world, x1 + pos.getX() + 0.5, y1 + pos.getY() + 0.5, z1 + pos.getZ() + 0.5);
         pulse.filter(filter);
-        double radiusRatio = pulse.getRadius() * pulse.getRadius() * pulse.getRadius() / (OpenCUConfig.repulsorMaxRadius * OpenCUConfig.repulsorMaxRadius * OpenCUConfig.repulsorMaxRadius);
-        double forceRatio = pulse.getBaseForce() / OpenCUConfig.repulsorForceScale;
-        double distanceRatio = Math.sqrt(distanceSqr) / OpenCUConfig.repulsorDistanceCost;
-        int energyUsage = MathHelper.floor(distanceRatio * OpenCUConfig.repulsorDistanceCost + radiusRatio * OpenCUConfig.repulsorVolumeCost + (Math.pow(2, Math.abs(forceRatio))-1.0) * OpenCUConfig.repulsorForceCost);
+        double radiusRatio = pulse.getRadius() * pulse.getRadius() * pulse.getRadius() / (OpenCUConfig.repulsor.repulsorMaxRadius * OpenCUConfig.repulsor.repulsorMaxRadius * OpenCUConfig.repulsor.repulsorMaxRadius);
+        double forceRatio = pulse.getBaseForce() / OpenCUConfig.repulsor.repulsorForceScale;
+        double distanceRatio = Math.sqrt(distanceSqr) / OpenCUConfig.repulsor.repulsorDistanceCost;
+        int energyUsage = MathHelper.floor(distanceRatio * OpenCUConfig.repulsor.repulsorDistanceCost + radiusRatio * OpenCUConfig.repulsor.repulsorVolumeCost + (Math.pow(2, Math.abs(forceRatio))-1.0) * OpenCUConfig.repulsor.repulsorForceCost);
         if(!node.tryChangeBuffer(-energyUsage))//if(energyBuffer.getEnergyStored() < energyUsage)
         {
             return new Object[]{ false, "Not enough energy stored!!!", energyUsage };
@@ -214,12 +213,13 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
 
-        NBTTagCompound nodeTag = compound.getCompoundTag("node");
-        if(nodeTag != null && node != null) {
+        if(compound.hasKey("node", Constants.NBT.TAG_COMPOUND)) {
+            NBTTagCompound nodeTag = compound.getCompoundTag("node");
             node.load(nodeTag);
         }
-        NBTTagCompound pulseTag = compound.getCompoundTag("pulse");
-        if(pulseTag != null) {
+
+        if(compound.hasKey("pulse", Constants.NBT.TAG_COMPOUND)) {
+            NBTTagCompound pulseTag = compound.getCompoundTag("pulse");
             setPulse(pulseTag.getInteger("type"));
             pulse.readFromNBT(pulseTag);
         }
@@ -241,8 +241,7 @@ public class TileEntityRepulsor extends TileEntity implements Environment, ITick
     public SPacketUpdateTileEntity getUpdatePacket() {
         NBTTagCompound data = new NBTTagCompound();
         data.setInteger("anim", pulseTicksLeft);
-        SPacketUpdateTileEntity packet = new SPacketUpdateTileEntity(pos, 0, data);
-        return packet;
+        return new SPacketUpdateTileEntity(pos, 0, data);
     }
 
     @Override

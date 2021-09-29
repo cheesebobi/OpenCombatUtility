@@ -7,24 +7,18 @@ import java.util.HashSet;
 
 public class DispenseEntry {
 
-    private int tier;
     private Entity entity;
     private double mass;
     private double spreadMultiplier;
     private double energyMultiplier;
     private ItemStack leftover;
 
-    public DispenseEntry(int tier, Entity entity, ItemStack leftover, double mass, double spreadMultiplier, double energyMultiplier) {
-        this.tier = tier;
+    public DispenseEntry(Entity entity, ItemStack leftover, double mass, double spreadMultiplier, double energyMultiplier) {
         this.entity = entity;
         this.mass = mass;
         this.spreadMultiplier = spreadMultiplier;
         this.energyMultiplier = energyMultiplier;
         this.leftover = leftover;
-    }
-
-    public int getTier() {
-        return tier;
     }
 
     public Entity getEntity() {

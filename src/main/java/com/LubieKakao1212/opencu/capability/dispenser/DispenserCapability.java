@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.capability.dispenser;
 
+import com.LubieKakao1212.opencu.capability.dispenser.vanilla.VanillaDispenser;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;

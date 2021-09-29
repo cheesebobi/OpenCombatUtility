@@ -2,6 +2,7 @@ package com.LubieKakao1212.opencu.capability.provider;
 
 import com.LubieKakao1212.opencu.capability.dispenser.DispenserCapability;
 import com.LubieKakao1212.opencu.capability.dispenser.vanilla.VanillaDispenser;
+import com.LubieKakao1212.opencu.capability.dispenser.vanilla.VanillaDropper;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -9,14 +10,13 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class VanillaDispenserProvider implements ICapabilityProvider {
+public class VanillaDropperProvider implements ICapabilityProvider {
 
-    private VanillaDispenser dispenser;
+    private VanillaDropper dispenser;
 
-    public VanillaDispenserProvider() {
-        this.dispenser = new VanillaDispenser();
+    public VanillaDropperProvider() {
+        this.dispenser = new VanillaDropper();
     }
-
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
@@ -31,4 +31,5 @@ public class VanillaDispenserProvider implements ICapabilityProvider {
         }
         return null;
     }
+
 }

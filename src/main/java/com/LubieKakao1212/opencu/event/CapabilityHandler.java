@@ -2,6 +2,7 @@ package com.LubieKakao1212.opencu.event;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.capability.provider.VanillaDispenserProvider;
+import com.LubieKakao1212.opencu.capability.provider.VanillaDropperProvider;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -23,6 +24,11 @@ public class CapabilityHandler {
         if(dispenser != null) {
             if(ItemStack.areItemsEqual(stack, CapabilityHandler.dispenser)) {
                 event.addCapability(new ResourceLocation(OpenCUMod.MODID, "dispenser"), new VanillaDispenserProvider());
+            }
+        }
+        if(dropper != null) {
+            if(ItemStack.areItemsEqual(stack, CapabilityHandler.dropper)) {
+                event.addCapability(new ResourceLocation(OpenCUMod.MODID, "dispenser"), new VanillaDropperProvider());
             }
         }
     }

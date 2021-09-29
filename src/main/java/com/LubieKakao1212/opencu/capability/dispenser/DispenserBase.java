@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.capability.dispenser;
 
+import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import com.LubieKakao1212.opencu.lib.math.AimUtil;
 import com.LubieKakao1212.opencu.lib.math.MathUtil;
 import glm.quat.Quat;
@@ -10,21 +11,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class VanillaDispenser implements IDispenser {
-
-    public static final double spread = 4 * MathUtil.degToRad;
-    public static final double defaultForce = 1f;
+public abstract class DispenserBase implements IDispenser {
 
     @Override
-    public DispenseResult Shoot(Connector context, World world, ItemStack shotItem, BlockPos pos, Quat aim) {
-        DispenseEntry entry = DispenserRegistry.DISPENSER.getDispenseResult(shotItem, world);
+    public DispenseResult Shoot(Connector connector, World world, ItemStack shotItem, BlockPos pos, Quat aim) {
+        DispenseEntry entry = getMappings().getDispenseResult(shotItem, world);
         Entity entity = entry.getEntity();
 
-        Vec3 forward = AimUtil.calculateForwardWithSpread(aim, (float)(spread * entry.getSpreadMultiplier()));
+        Vec3 forward = AimUtil.calculateForwardWithSpread(aim, (float)(getSpread() * entry.getSpreadMultiplier()));
 
         entity.setPosition(pos.getX() + 0.5 + forward.x, pos.getY() + 0.5 + forward.y, pos.getZ() + 0.5 + forward.z);
 
-        double velocity = defaultForce / entry.getMass();
+        double velocity = getForce() / entry.getMass();
 
         entity.motionX = forward.x * velocity;
         entity.motionY = forward.y * velocity;
@@ -45,14 +43,19 @@ public class VanillaDispenser implements IDispenser {
         return "Current dispenser does not support variable force.";
     }
 
-    @Override
     public float getBaseEnergyRequired() {
         return 0;
     }
 
     @Override
     public float getAlignmentSpeed() {
-        return MathUtil.degToRad * 1;
+        return (float) OpenCUConfig.omniDispenser.general.rotationSpeed[0] * MathUtil.degToRad / 20.f;
     }
+
+    public abstract double getSpread();
+
+    public abstract double getForce();
+
+    protected abstract DispenserMappings getMappings();
 
 }
