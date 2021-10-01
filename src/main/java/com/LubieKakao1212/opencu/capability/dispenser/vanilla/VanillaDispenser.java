@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 
 public class VanillaDispenser extends DispenserBase {
 
-    public static final double spread = 4 * MathUtil.degToRad;
+    public static final double spread = 5 * MathUtil.degToRad;
     public static final double defaultForce = 1f;
 
     @Override

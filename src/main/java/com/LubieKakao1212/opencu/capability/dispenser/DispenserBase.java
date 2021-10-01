@@ -20,7 +20,7 @@ public abstract class DispenserBase implements IDispenser {
 
         Vec3 forward = AimUtil.calculateForwardWithSpread(aim, (float)(getSpread() * entry.getSpreadMultiplier()));
 
-        entity.setPosition(pos.getX() + 0.5 + forward.x, pos.getY() + 0.5 + forward.y, pos.getZ() + 0.5 + forward.z);
+        entity.setLocationAndAngles(pos.getX() + 0.5 + forward.x, pos.getY() + 0.5 + forward.y, pos.getZ() + 0.5 + forward.z, 0.f,0.f);
 
         double velocity = getForce() / entry.getMass();
 
@@ -28,9 +28,15 @@ public abstract class DispenserBase implements IDispenser {
         entity.motionY = forward.y * velocity;
         entity.motionZ = forward.z * velocity;
 
+        entry.getPostShootAction().Execute(forward, velocity);
+
         world.spawnEntity(entity);
 
-        return new DispenseResult(entry.getEnergyMultiplier(), entry.getLeftover());
+        entry.getPostSpawnAction().Execute(forward, velocity);
+
+        //TODO Handle energy
+
+        return new DispenseResult(entry.getLeftover());
     }
 
     @Override

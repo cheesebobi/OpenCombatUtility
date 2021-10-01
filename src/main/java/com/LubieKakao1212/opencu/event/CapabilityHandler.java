@@ -17,6 +17,7 @@ public class CapabilityHandler {
     public static final ItemStack dispenser = new ItemStack(Blocks.DISPENSER);
     public static final ItemStack dropper = new ItemStack(Blocks.DROPPER);
 
+
     @SubscribeEvent
     public static void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
         ItemStack stack = event.getObject();
@@ -31,6 +32,6 @@ public class CapabilityHandler {
                 event.addCapability(new ResourceLocation(OpenCUMod.MODID, "dispenser"), new VanillaDropperProvider());
             }
         }
-    }
+    }   
 
 }

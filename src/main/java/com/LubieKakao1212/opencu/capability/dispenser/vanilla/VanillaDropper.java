@@ -6,7 +6,6 @@ import com.LubieKakao1212.opencu.capability.dispenser.DispenserRegistry;
 
 public class VanillaDropper extends DispenserBase {
 
-
     @Override
     public double getSpread() {
         return VanillaDispenser.spread;
@@ -19,6 +18,6 @@ public class VanillaDropper extends DispenserBase {
 
     @Override
     protected DispenserMappings getMappings() {
-        return DispenserRegistry.VANILLA_DISPENSER;
+        return DispenserRegistry.VANILLA_DROPPER;
     }
 }
