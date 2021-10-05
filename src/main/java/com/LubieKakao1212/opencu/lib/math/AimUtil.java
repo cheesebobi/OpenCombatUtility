@@ -21,7 +21,7 @@ public class AimUtil {
         Vec3 forward = calculateForward(aim);
         Vec3 side = perpendicular(forward);
 
-        Quat rotSide = Quat.angleAxis_(random.nextFloat() * spread * MathUtil.radToDeg / 2f, side);
+        Quat rotSide = Quat.angleAxis_(random.nextFloat() * spread / 2f, side);
 
         Quat rotRound = Quat.angleAxis_((float)(random.nextDouble() * 360), forward);
         return rotRound.mul(rotSide).mul(forward);

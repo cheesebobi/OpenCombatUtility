@@ -1,7 +1,10 @@
 package com.LubieKakao1212.opencu.network;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
+import com.LubieKakao1212.opencu.lib.util.counting.CounterList;
+import com.LubieKakao1212.opencu.lib.util.counting.ICounter;
 import com.LubieKakao1212.opencu.network.packet.EntityAddVelocityPacket;
+import com.LubieKakao1212.opencu.network.packet.dispenser.RequestDispenserUpdatePacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserAimPacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserPacket;
 import com.LubieKakao1212.opencu.network.packet.projectile.UpdateFireballPacket;
@@ -26,7 +29,8 @@ public class NetworkHandler {
 
     private static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(OpenCUMod.MODID);
 
-    public static List<DelayedMessage> messages = new ArrayList<>();
+    //public static List<DelayedMessage> messages = new ArrayList<>();
+    public static final CounterList<DelayedMessage> messages = new CounterList<DelayedMessage>();
 
     public static void init() {
         int id = 0;
@@ -34,10 +38,7 @@ public class NetworkHandler {
         INSTANCE.registerMessage(UpdateDispenserPacket.Handler.class, UpdateDispenserPacket.class, id++, Side.CLIENT);
         INSTANCE.registerMessage(UpdateDispenserAimPacket.Handler.class, UpdateDispenserAimPacket.class, id++, Side.CLIENT);
         INSTANCE.registerMessage(UpdateFireballPacket.Handler.class, UpdateFireballPacket.class, id++, Side.CLIENT);
-    }
-
-    public static void sendTo(EntityPlayerMP player, IMessage message) {
-        INSTANCE.sendTo(message, player);
+        INSTANCE.registerMessage(RequestDispenserUpdatePacket.Handler.class, RequestDispenserUpdatePacket.class, id++, Side.SERVER);
     }
 
     public static void sendToALl(IMessage message) {
@@ -52,6 +53,14 @@ public class NetworkHandler {
         INSTANCE.sendToAllTracking(message, entity);
     }
 
+    public static void sendTo(EntityPlayerMP player, IMessage message) {
+        INSTANCE.sendTo(message, player);
+    }
+
+    public static void sendToServer(IMessage message) {
+        INSTANCE.sendToServer(message);
+    }
+
     public static void enqueueEntityUpdate(IMessage message, Entity target, int delay) {
         messages.add(new EntityMessage(message, delay, target));
     }
@@ -59,10 +68,10 @@ public class NetworkHandler {
     @SubscribeEvent
     @SuppressWarnings("unused")
     public static void serverTick(TickEvent.ServerTickEvent event) {
-        messages.removeIf(DelayedMessage::tick);
+        messages.tick();
     }
 
-    private static abstract class DelayedMessage {
+    private static abstract class DelayedMessage implements ICounter {
 
         protected IMessage message;
         private int delay;
@@ -72,7 +81,8 @@ public class NetworkHandler {
             this.delay = delay;
         }
 
-        public boolean tick() {
+        @Override
+        public boolean decrement() {
             if(delay-- <= 0) {
                 send();
                 return true;
@@ -80,8 +90,12 @@ public class NetworkHandler {
             return false;
         }
 
-        protected abstract void send();
+        @Override
+        public int count() {
+            return delay;
+        }
 
+        protected abstract void send();
     }
 
     private static class EntityMessage extends DelayedMessage {

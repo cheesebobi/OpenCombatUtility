@@ -8,6 +8,7 @@ public class DispenserRegistry {
     public static final DispenserMappings VANILLA_DISPENSER = new VanillaDispenserMappings();
     public static final DispenserMappings VANILLA_DROPPER = new VanillaDropperMappings();
 
-
+    public static final DispenserMappings TIER2_DISPENSER = new VanillaDispenserMappings();
+    public static final DispenserMappings TIER3_DISPENSER = new VanillaDispenserMappings();
 
 }

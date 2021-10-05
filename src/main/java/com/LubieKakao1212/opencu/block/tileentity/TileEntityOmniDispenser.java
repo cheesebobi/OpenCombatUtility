@@ -8,6 +8,7 @@ import com.LubieKakao1212.opencu.lib.math.MathUtil;
 import com.LubieKakao1212.opencu.lib.util.GlmMath;
 import com.LubieKakao1212.opencu.lib.util.GlmNBT;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
+import com.LubieKakao1212.opencu.network.packet.dispenser.RequestDispenserUpdatePacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserAimPacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserPacket;
 import glm.Glm;
@@ -20,6 +21,7 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.*;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -42,18 +44,25 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TileEntityOmniDispenser extends TileEntity implements Environment, ITickable {
 
+    public static final double aimIdenticalityEpsilon = MathUtil.degToRad * 0.1;
+
     private final ConcurrentLinkedQueue<DispenseAction> actionQueue = new ConcurrentLinkedQueue<>();
     private final ComponentConnector node;
     private final ItemStackHandler inventory;
     private DispenseAction currentAction;
     private Quat targetAim;
 
+    private IDispenser currentDispenser;
+
+    private long initialiseDelay = 3;
+
+    @SideOnly(Side.CLIENT)
+    private boolean isInitialised = false;
     @SideOnly(Side.CLIENT)
     private ItemStack currentDispenserItem = null;
     @SideOnly(Side.CLIENT)
     private DispenseAction lastAction = null;
 
-    private IDispenser currentDispenser;
 
     public TileEntityOmniDispenser() {
         currentAction = new DispenseAction(new Quat());
@@ -93,7 +102,12 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
     private void updateDispenser() {
         ItemStack dispenserStack = inventory.getStackInSlot(0);
         currentDispenser = dispenserStack.getCapability(DispenserCapability.DISPENSER_CAPABILITY, null);
-        NetworkHandler.sendToAllTracking(new UpdateDispenserPacket(pos, dispenserStack), pos, world.provider.getDimension());
+        if(world != null) {
+            NetworkHandler.sendToAllTracking(new UpdateDispenserPacket(pos, dispenserStack), pos, world.provider.getDimension());
+        }else
+        {
+            //TODO Mark for update
+        }
     }
 
     @Override
@@ -129,22 +143,33 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
     @Override
     public void update() {
         if (!world.isRemote) {
+            if(this.initialiseDelay-- == 0){
+                updateDispenser();
+                NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, currentAction.aim), pos, world.provider.getDimension());
+            }
             if (node != null && node.network() == null) {
                 API.network.joinOrCreateNetwork(this);
             }
             if(currentDispenser != null) {
-                currentAction.aim = GlmMath.step(currentAction.aim, targetAim, currentDispenser.getAlignmentSpeed());
+                currentAction.aim = GlmMath.step(currentAction.aim, targetAim, currentDispenser.getAlignmentSpeed() * MathUtil.degToRad);
+                NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, currentAction.aim), pos, world.provider.getDimension());
             }
-            NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, currentAction.aim), pos, world.provider.getDimension());
             while(actionQueue.size() > 0)
             {
                 shoot(actionQueue.poll());
+            }
+        }else
+        {
+            if(!this.isInitialised) {
+                this.isInitialised = true;
+                this.setCurrentAction(targetAim);
+                NetworkHandler.sendToServer(new RequestDispenserUpdatePacket(this.pos));
             }
         }
     }
 
     @SuppressWarnings("unused")
-    @Callback(doc = "function(): true or false, string", direct = true, limit = 3)
+    @Callback(doc = "function(): true or false, string", direct = true, limit = 1)
     public Object[] dispense(Context context, Arguments args) {
         actionQueue.add(currentAction);
         return new Object[] { };
@@ -160,8 +185,46 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
         return new Object[0];
     }
 
+    @SuppressWarnings("unused")
+    @Callback(doc = "function(): bool", direct = true)
+    public Object[] isAligned(Context context, Arguments args) {
+        return new Object[]{GlmMath.angle(targetAim, currentAction.aim) < aimIdenticalityEpsilon};
+    }
+
+    @SuppressWarnings("unused")
+    @Callback(doc = "function(): bool", direct = true)
+    public Object[] aimingStatus(Context context, Arguments args) {
+        return new Object[]{ GlmMath.angle(targetAim, currentAction.aim) };
+    }
+
+    @SuppressWarnings("unused")
+    @Callback(doc = "function(force:number): true or false, string", direct = true)
+    public Object[] setForce(Context context, Arguments args) {
+        String message = currentDispenser.trySetForce(args.checkDouble(0));
+
+        if(message != null) {
+            return new Object[] { false, message };
+        }
+        else {
+            return new Object[] { true };
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @Callback(doc = "function(spread:number): true or false, string", direct = true)
+    public Object[] setSpread(Context context, Arguments args) {
+        String message = currentDispenser.trySetSpread(args.checkDouble(0));
+
+        if(message != null) {
+            return new Object[] { false, message };
+        }
+        else {
+            return new Object[] { true };
+        }
+    }
+
     public void setAim(Quat aim) {
-        targetAim = aim;
+        targetAim = aim.normalize();
     }
 
     public void shoot(DispenseAction action) {
@@ -214,6 +277,9 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
         }
     }
 
+    private double calculateEnergyMultiplier() {
+        return 0;
+    }
 
     public boolean isUsableBy(EntityPlayer player) {
         return player.getDistanceSq(pos) <= 64D && world.getTileEntity(pos) == this;
@@ -230,6 +296,8 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
         compound.setTag("inventory", inventory.serializeNBT());
 
         compound.setTag("aim", GlmNBT.writeQuat(currentAction.aim));
+
+        compound.setTag("dispenser", currentDispenser != null ? currentDispenser.serializeNBT() : new NBTTagCompound());
 
         return super.writeToNBT(compound);
     }
@@ -251,7 +319,11 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
         }
 
         if(compound.hasKey("aim", Constants.NBT.TAG_LIST)) {
-            setAim(GlmNBT.readQuat(compound.getTagList("aim", Constants.NBT.TAG_ANY_NUMERIC)));
+            setAim(GlmNBT.readQuat(compound.getTagList("aim", Constants.NBT.TAG_FLOAT)));
+        }
+
+        if(currentDispenser != null && compound.hasKey("dispenser", Constants.NBT.TAG_COMPOUND)) {
+            currentDispenser.deserializeNBT(compound.getCompoundTag("dispenser"));
         }
     }
 
@@ -270,6 +342,11 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
             return true;
         }
         return super.hasCapability(capability, facing);
+    }
+
+    public void SendDispenserUpdateTo(EntityPlayerMP player) {
+        NetworkHandler.sendTo(player, new UpdateDispenserPacket(pos, inventory.getStackInSlot(0)));
+        NetworkHandler.sendTo(player, new UpdateDispenserAimPacket(pos, currentAction.aim));
     }
 
     @SideOnly(Side.CLIENT)
@@ -311,4 +388,5 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
         }
 
     }
+
 }

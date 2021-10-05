@@ -34,12 +34,27 @@ public class OpenCUConfig {
     }
 
     public static class OmniDispenser {
-        public DispenserGeneral general = new DispenserGeneral();
+        public Dispenser vanilla = new Dispenser(90., 5., 0.5);
 
-        public static class DispenserGeneral {
+        public Dispenser tier2 = new Dispenser(180., 360., 0.75);
+
+        public Dispenser tier3 = new Dispenser(3600., 360., 1.);
+
+        public static class Dispenser {
             @Config.SlidingOption()
             @Config.RangeDouble(min = 0., max = 3600.)
-            public double[] rotationSpeed = new double[] { 90. };
+            public double rotationSpeed;
+
+            @Config.RangeDouble(min = 0., max = 360.)
+            public double spread;
+
+            public double force;
+
+            public Dispenser(double rotationSpeed, double spread, double force) {
+                this.rotationSpeed = rotationSpeed;
+                this.spread = spread;
+                this.force = force;
+            }
         }
     }
 }

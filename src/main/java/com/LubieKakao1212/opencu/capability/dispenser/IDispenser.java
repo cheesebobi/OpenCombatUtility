@@ -4,19 +4,15 @@ import glm.quat.Quat;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Connector;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.INBTSerializable;
 
-public interface IDispenser {
+public interface IDispenser extends INBTSerializable<NBTTagCompound> {
 
     /**
-     *
-     * @param context
-     * @param world
      * @param shotItem always singe item
-     * @param pos
-     * @param pitch
-     * @param yaw
      * @return energy usage multiplier
      */
     DispenseResult Shoot(Connector connector, World world, ItemStack shotItem, BlockPos pos, Quat aim);
@@ -35,7 +31,6 @@ public interface IDispenser {
     String trySetForce(double force);
 
 
-    //Math angle per tick
+    //Rad angle per tick
     float getAlignmentSpeed();
-
 }

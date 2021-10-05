@@ -22,6 +22,9 @@ public class CommonProxy {
     public void init(FMLInitializationEvent event) {
         NetworkHandler.init();
         DispenserRegistry.VANILLA_DISPENSER.init();
+        DispenserRegistry.VANILLA_DROPPER.init();
+        DispenserRegistry.TIER2_DISPENSER.init();
+        DispenserRegistry.TIER3_DISPENSER.init();
     }
 
     public void init(FMLPostInitializationEvent event) {

@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.capability.dispenser;
 
-import com.LubieKakao1212.opencu.capability.dispenser.vanilla.VanillaDispenser;
+import com.LubieKakao1212.opencu.config.OpenCUConfig;
+import com.LubieKakao1212.opencu.lib.math.MathUtil;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -15,7 +16,10 @@ public class DispenserCapability {
     public static Capability<IDispenser> DISPENSER_CAPABILITY;
 
     public static void Init() {
-        CapabilityManager.INSTANCE.register(IDispenser.class, new Storage(), () -> { return new VanillaDispenser(); });
+        CapabilityManager.INSTANCE.register(IDispenser.class, new Storage(), () -> { return new DispenserConstant(DispenserRegistry.VANILLA_DISPENSER,
+                (float) OpenCUConfig.omniDispenser.vanilla.rotationSpeed * MathUtil.degToRad / 20.f,
+                OpenCUConfig.omniDispenser.vanilla.spread,
+                OpenCUConfig.omniDispenser.vanilla.force ); });
     }
 
     public static class Storage implements Capability.IStorage<IDispenser> {

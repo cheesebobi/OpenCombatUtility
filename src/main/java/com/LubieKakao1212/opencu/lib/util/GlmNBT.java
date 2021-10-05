@@ -14,15 +14,15 @@ public class GlmNBT {
     }
 
     public static Quat readQuat(NBTTagCompound nbt, String key) {
-        return readQuat(nbt.getTagList(key, Constants.NBT.TAG_ANY_NUMERIC));
+        return readQuat(nbt.getTagList(key, Constants.NBT.TAG_FLOAT));
     }
 
     public static NBTTagList writeQuat(Quat value) {
         NBTTagList nbt = new NBTTagList();
+        nbt.appendTag(new NBTTagFloat(value.w));
         nbt.appendTag(new NBTTagFloat(value.x));
         nbt.appendTag(new NBTTagFloat(value.y));
         nbt.appendTag(new NBTTagFloat(value.z));
-        nbt.appendTag(new NBTTagFloat(value.w));
         return nbt;
     }
 

@@ -1,12 +1,13 @@
 package com.LubieKakao1212.opencu.lib.util;
 
+import glm.Glm;
 import glm.quat.Quat;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.MathHelper;
 
 public class GlmMath {
 
     public static Quat slerp(Quat a, Quat b , float t) {
-        //Quat angle = a.conjugate_().mul(b);
         float cosAngle = a.dot(b);
         boolean flag = false;
 
@@ -29,10 +30,22 @@ public class GlmMath {
         double v1 = Math.sin((1. - t) * halfAngle);
         double v2 = Math.sin(t * halfAngle);
 
-        return a.mul_(v1).add(b.mul_(v2)).normalize();//a.mul(t).add(b.mul(1f - t));
+        return a.mul_(v1).add(b.mul_(v2)).normalize();
+    }
+
+    public static double angle(Quat a, Quat b) {
+        float aMag = a.dot(a);
+        float bMag = b.dot(b);
+        double dot = a.dot(b);
+        dot = MathHelper.clamp(dot, -1, 1);
+        double acos = Math.acos(dot);
+        return acos * 2.;
     }
 
     public static Quat step(Quat a, Quat b, float maxStep) {
+        float aMag = a.dot(a);
+        float bMag = b.dot(b);
+
         float cosAngle = a.dot(b);
         double angle = 2. * Math.acos(cosAngle);
 
