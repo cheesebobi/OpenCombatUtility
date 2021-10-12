@@ -34,8 +34,6 @@ public class GlmMath {
     }
 
     public static double angle(Quat a, Quat b) {
-        float aMag = a.dot(a);
-        float bMag = b.dot(b);
         double dot = a.dot(b);
         dot = MathHelper.clamp(dot, -1, 1);
         double acos = Math.acos(dot);
@@ -43,9 +41,6 @@ public class GlmMath {
     }
 
     public static Quat step(Quat a, Quat b, float maxStep) {
-        float aMag = a.dot(a);
-        float bMag = b.dot(b);
-
         float cosAngle = a.dot(b);
         double angle = 2. * Math.acos(cosAngle);
 

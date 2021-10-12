@@ -4,6 +4,7 @@ import com.LubieKakao1212.opencu.capability.dispenser.DispenseEntry;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenserMappings;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
 import com.LubieKakao1212.opencu.network.packet.projectile.UpdateFireballPacket;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityExpBottle;
 import net.minecraft.entity.item.EntityFireworkRocket;
@@ -19,6 +20,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 
 public class VanillaDispenserMappings extends DispenserMappings {
@@ -30,11 +32,11 @@ public class VanillaDispenserMappings extends DispenserMappings {
             arrow.shootingEntity = null;
             arrow.pickupStatus = EntityArrow.PickupStatus.ALLOWED;
 
-            return new DispenseEntry(arrow, ItemStack.EMPTY, 1., 1., 1.);
+            return arrow;
         };
-        register(Items.ARROW, (stack, world) -> {
-            DispenseEntry result = arrowMapping.Get(stack, world);
-            EntityTippedArrow arrow = (EntityTippedArrow)result.getEntity();
+        register(Items.ARROW, new DispenseEntry((stack, world) -> {
+            Entity result = arrowMapping.get(stack, world);
+            EntityTippedArrow arrow = (EntityTippedArrow)result;
 
             //Is this necessary?
             //Prevents normal arrows from spawning particles after restart
@@ -42,57 +44,60 @@ public class VanillaDispenserMappings extends DispenserMappings {
             arrow.writeEntityToNBT(tag);
             tag.setInteger("Color", -1);
             arrow.readEntityFromNBT(tag);
-            return result;
-        });
-        register(Items.TIPPED_ARROW, arrowMapping);
-        register(Items.SPECTRAL_ARROW, arrowMapping);
+            return arrow;
+        }, ItemStack.EMPTY, 1., 1., 1.));
+        register(Items.TIPPED_ARROW, new DispenseEntry(arrowMapping, ItemStack.EMPTY, 1.,1., 1.));
+        register(Items.SPECTRAL_ARROW, new DispenseEntry(arrowMapping, ItemStack.EMPTY, 1., 1.,1.));
 
-        register(Item.getItemFromBlock(Blocks.TNT), (stack, world) -> {
+        register(Item.getItemFromBlock(Blocks.TNT), new DispenseEntry((stack, world) -> {
             EntityTNTPrimed tnt = new EntityTNTPrimed(world);
-            return new DispenseEntry(tnt, ItemStack.EMPTY, 3., 0.5, 1.);
-        });
+            return tnt;
+        }, ItemStack.EMPTY, 3., 0.5, 1.));
 
-        register(Items.FIRE_CHARGE, (stack, world) -> {
-            EntitySmallFireball fireball = new EntitySmallFireball(world, 0, 0, 0, 1, 0, 0);
-            fireball.shootingEntity = null;
-            fireball.accelerationX = 0;
-            fireball.accelerationY = 0;
-            fireball.accelerationZ = 0;
-            return new DispenseEntry(fireball, ItemStack.EMPTY, 3., 2, 1., (forward, velocity) -> {
+        register(Items.FIRE_CHARGE, new DispenseEntry((stack, world) -> {
+                EntitySmallFireball fireball = new EntitySmallFireball(world, 0, 0, 0, 1, 0, 0);
+                fireball.shootingEntity = null;
+                fireball.accelerationX = 0;
+                fireball.accelerationY = 0;
+                fireball.accelerationZ = 0;
+                return fireball;
+            },
+            ItemStack.EMPTY, 3., 2, 1., (entity, forward, velocity) -> {
+                EntitySmallFireball fireball = (EntitySmallFireball) entity;
+                velocity = Math.min(velocity, 0.1d);
                 fireball.motionX = 0;
                 fireball.motionY = 0;
                 fireball.motionZ = 0;
                 fireball.accelerationX = forward.x * velocity * 0.1D;
                 fireball.accelerationY = forward.y * velocity * 0.1D;
                 fireball.accelerationZ = forward.z * velocity * 0.1D;
-                //NetworkHandler.sendToAllTracking();
-            }, (forward, velocity) -> {
+            },
+            (entity, forward, velocity) -> {
+                EntitySmallFireball fireball = (EntitySmallFireball) entity;
                 NetworkHandler.enqueueEntityUpdate(new UpdateFireballPacket(fireball.getEntityId(), fireball.accelerationX, fireball.accelerationY, fireball.accelerationZ), fireball, 1);
-            });
-        });
+            }));
 
-        EntityMapping potionMapping = (stack, world) -> {
+        DispenseEntry potionMapping = new DispenseEntry((stack, world) -> {
             EntityPotion potion = new EntityPotion(world, 0, 0, 0, stack);
-            return new DispenseEntry(potion, ItemStack.EMPTY, 3., 1.5, 1.);
-        };
+            return potion;
+        }, ItemStack.EMPTY, 3., 1.5, 1.);
 
         register(Items.SPLASH_POTION, potionMapping);
         register(Items.LINGERING_POTION, potionMapping);
 
-        register(Items.EXPERIENCE_BOTTLE, (stack, world) -> {
+        register(Items.EXPERIENCE_BOTTLE, new DispenseEntry((stack, world) -> {
             EntityExpBottle bottle = new EntityExpBottle(world);
-            return new DispenseEntry(bottle, ItemStack.EMPTY, 3., 1.5, 1.);
-        });
+            return bottle;
+        }, ItemStack.EMPTY, 3., 1.5, 1.));
 
-        register(Items.FIREWORKS, (stack, world) -> {
+        register(Items.FIREWORKS, new DispenseEntry((stack, world) -> {
             EntityFireworkRocket firework = new EntityFireworkRocket(world, 0, 0, 0, stack);
-
-            return new DispenseEntry(firework, ItemStack.EMPTY, 50., 1., 1.);
-        });
+            return firework;
+        },ItemStack.EMPTY, 50., 1., 1.));
     }
 
     @Override
-    protected EntityMapping getDefaultMapping() {
-        return super.getDefaultMapping();
+    protected DispenseEntry getDefaultEntry() {
+        return super.getDefaultEntry();
     }
 }

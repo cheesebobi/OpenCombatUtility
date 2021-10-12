@@ -15,7 +15,7 @@ public interface IDispenser extends INBTSerializable<NBTTagCompound> {
      * @param shotItem always singe item
      * @return energy usage multiplier
      */
-    DispenseResult Shoot(Connector connector, World world, ItemStack shotItem, BlockPos pos, Quat aim);
+    DispenseResult Shoot(Connector connector, World world, ItemStack shotItem, BlockPos pos, Quat aim, double energyMultiplierFromFrequency);
 
     /**
      * @param spread spread value that would be set

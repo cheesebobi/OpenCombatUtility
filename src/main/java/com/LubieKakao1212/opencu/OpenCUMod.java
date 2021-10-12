@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
 
+//TODO Add config gui
 @Mod(modid = OpenCUMod.MODID, name = OpenCUMod.NAME, version = OpenCUMod.VERSION)
 public class OpenCUMod
 {

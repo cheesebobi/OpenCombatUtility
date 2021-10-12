@@ -16,36 +16,41 @@ public abstract class DispenserBase implements IDispenser {
 
     private DispenserMappings mappings;
     private float alignmentSpeed;
+    private double energyConsumption;
 
-    public DispenserBase(DispenserMappings mappings, float alignmentSpeed) {
+    public DispenserBase(DispenserMappings mappings, float alignmentSpeed, double energyConsumption) {
         this.mappings = mappings;
         this.alignmentSpeed = alignmentSpeed;
+        this.energyConsumption = energyConsumption;
     }
 
     @Override
-    public DispenseResult Shoot(Connector connector, World world, ItemStack shotItem, BlockPos pos, Quat aim) {
-        DispenseEntry entry = getMappings().getDispenseResult(shotItem, world);
-        Entity entity = entry.getEntity();
+    public DispenseResult Shoot(Connector connector, World world, ItemStack shotItem, BlockPos pos, Quat aim, double energyMultiplierFromFrequency) {
+        DispenseEntry entry = getMappings().getDispenseResult(shotItem);
+        if(connector.tryChangeBuffer(-entry.getEnergyMultiplier() * energyMultiplierFromFrequency * energyConsumption)) {
+            Entity entity = entry.getEntity(shotItem, world);
 
-        Vec3 forward = AimUtil.calculateForwardWithSpread(aim, (float)(getSpread() * entry.getSpreadMultiplier()));
+            Vec3 forward = AimUtil.calculateForwardWithSpread(aim, (float)(getSpread() * entry.getSpreadMultiplier()));
 
-        entity.setLocationAndAngles(pos.getX() + 0.5 + forward.x, pos.getY() + 0.5 + forward.y, pos.getZ() + 0.5 + forward.z, 0.f,0.f);
+            entity.setLocationAndAngles(pos.getX() + 0.5 + forward.x, pos.getY() + 0.5 + forward.y, pos.getZ() + 0.5 + forward.z, 0.f,0.f);
 
-        double velocity = getForce() / entry.getMass();
+            double velocity = getForce() / entry.getMass();
 
-        entity.motionX = forward.x * velocity;
-        entity.motionY = forward.y * velocity;
-        entity.motionZ = forward.z * velocity;
+            entity.motionX = forward.x * velocity;
+            entity.motionY = forward.y * velocity;
+            entity.motionZ = forward.z * velocity;
 
-        entry.getPostShootAction().Execute(forward, velocity);
+            entry.getPostShootAction().Execute(entity, forward, velocity);
 
-        world.spawnEntity(entity);
+            world.spawnEntity(entity);
 
-        entry.getPostSpawnAction().Execute(forward, velocity);
+            entry.getPostSpawnAction().Execute(entity, forward, velocity);
 
-        //TODO Handle energy
-
-        return new DispenseResult(entry.getLeftover());
+            return new DispenseResult(entry.getLeftover());
+        }else
+        {
+            return new DispenseResult(shotItem);
+        }
     }
 
     @Override

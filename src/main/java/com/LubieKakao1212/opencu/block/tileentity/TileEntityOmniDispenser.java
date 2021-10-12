@@ -3,17 +3,18 @@ package com.LubieKakao1212.opencu.block.tileentity;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenseResult;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenserCapability;
 import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import com.LubieKakao1212.opencu.lib.math.AimUtil;
 import com.LubieKakao1212.opencu.lib.math.MathUtil;
 import com.LubieKakao1212.opencu.lib.util.GlmMath;
 import com.LubieKakao1212.opencu.lib.util.GlmNBT;
+import com.LubieKakao1212.opencu.lib.util.counting.CounterList;
+import com.LubieKakao1212.opencu.lib.util.counting.IntCounter;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
 import com.LubieKakao1212.opencu.network.packet.dispenser.RequestDispenserUpdatePacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserAimPacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserPacket;
-import glm.Glm;
 import glm.quat.Quat;
-import glm.vec._2.Vec2;
 import li.cil.oc.api.API;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -24,13 +25,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -47,6 +45,7 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
     public static final double aimIdenticalityEpsilon = MathUtil.degToRad * 0.1;
 
     private final ConcurrentLinkedQueue<DispenseAction> actionQueue = new ConcurrentLinkedQueue<>();
+    private final CounterList<IntCounter> lastShots = new CounterList<>();
     private final ComponentConnector node;
     private final ItemStackHandler inventory;
     private DispenseAction currentAction;
@@ -62,7 +61,6 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
     private ItemStack currentDispenserItem = null;
     @SideOnly(Side.CLIENT)
     private DispenseAction lastAction = null;
-
 
     public TileEntityOmniDispenser() {
         currentAction = new DispenseAction(new Quat());
@@ -154,10 +152,13 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
                 currentAction.aim = GlmMath.step(currentAction.aim, targetAim, currentDispenser.getAlignmentSpeed() * MathUtil.degToRad);
                 NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, currentAction.aim), pos, world.provider.getDimension());
             }
+            boolean frequent = false;
             while(actionQueue.size() > 0)
             {
-                shoot(actionQueue.poll());
+                shoot(actionQueue.poll(), frequent ? OpenCUConfig.omniDispenser.frequentShootingEnergyMultiplier : 1f);
+                frequent = true;
             }
+            lastShots.tick();
         }else
         {
             if(!this.isInitialised) {
@@ -169,14 +170,14 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
     }
 
     @SuppressWarnings("unused")
-    @Callback(doc = "function(): true or false, string", direct = true, limit = 1)
+    @Callback(doc = "function(): true or false, string", direct = true)
     public Object[] dispense(Context context, Arguments args) {
         actionQueue.add(currentAction);
         return new Object[] { };
     }
 
     @SuppressWarnings("unused")
-    @Callback(doc = "function(yaw:number, pitch:number)", direct = false, limit = 1)
+    @Callback(doc = "function(yaw:number, pitch:number)", direct = true)
     public Object[] aim(Context context, Arguments args) {
         double yaw = args.checkDouble(0);
         double pitch = args.checkDouble(1);
@@ -227,13 +228,14 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
         targetAim = aim.normalize();
     }
 
-    public void shoot(DispenseAction action) {
+    public void shoot(DispenseAction action, double energyMultiplier) {
         if(currentDispenser != null) {
             Tuple<ItemStack, Integer> ammo = findAmmo();
             if(ammo != null) {
-                DispenseResult result = currentDispenser.Shoot(node, world, ammo.getFirst(), pos, action.aim);
+                DispenseResult result = currentDispenser.Shoot(node, world, ammo.getFirst(), pos, action.aim, energyMultiplier);
                 useAmmo(ammo.getSecond(), result.getLeftover());
             }
+            lastShots.add(new IntCounter(OpenCUConfig.omniDispenser.energyAlt.relevantTicks));
         }
     }
 
@@ -277,8 +279,24 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
         }
     }
 
-    private double calculateEnergyMultiplier() {
-        return 0;
+    private double calculateEnergyMultiplierFromFrequency() {
+        int x1 = OpenCUConfig.omniDispenser.energyAlt.cutoff;
+        int x = lastShots.size();
+
+        if(x <= x1) {
+            double a = OpenCUConfig.omniDispenser.energyAlt.linearSteepness;
+            double b = OpenCUConfig.omniDispenser.energyAlt.base;
+
+            return x * a + b;
+        }else
+        {
+            double a = OpenCUConfig.omniDispenser.energyAlt.nonLinearSteepness;
+
+            double b = OpenCUConfig.omniDispenser.energyAlt.getB2();
+            double c = OpenCUConfig.omniDispenser.energyAlt.getC();
+
+            return x * (b + x * a) + c;
+        }
     }
 
     public boolean isUsableBy(EntityPlayer player) {

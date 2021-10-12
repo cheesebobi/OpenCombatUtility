@@ -20,28 +20,32 @@ public class CUItems {
             DispenserRegistry.VANILLA_DISPENSER,
             (float) OpenCUConfig.omniDispenser.vanilla.rotationSpeed / 20.f,
             OpenCUConfig.omniDispenser.vanilla.spread,
-            OpenCUConfig.omniDispenser.vanilla.force
+            OpenCUConfig.omniDispenser.vanilla.force,
+            OpenCUConfig.omniDispenser.vanilla.base_energy
     ));
 
     public static final CUMultiItem.CapabilityInitializer VANILLA_DROPPER = tag -> new DispenserProvider(new DispenserConstant(
             DispenserRegistry.VANILLA_DROPPER,
             (float) OpenCUConfig.omniDispenser.vanilla.rotationSpeed / 20.f,
             OpenCUConfig.omniDispenser.vanilla.spread,
-            OpenCUConfig.omniDispenser.vanilla.force
+            OpenCUConfig.omniDispenser.vanilla.force,
+            OpenCUConfig.omniDispenser.vanilla.base_energy
     ));
 
     public static final CUMultiItem.CapabilityInitializer TIER2_DISPENSER = tag -> new DispenserProvider(new DispenserConfigurable(
             DispenserRegistry.TIER2_DISPENSER,
             (float) OpenCUConfig.omniDispenser.tier2.rotationSpeed / 20.f,
             OpenCUConfig.omniDispenser.tier2.spread,
-            OpenCUConfig.omniDispenser.tier2.force
+            OpenCUConfig.omniDispenser.tier2.force,
+            OpenCUConfig.omniDispenser.tier2.base_energy
     ));
 
     public static final CUMultiItem.CapabilityInitializer TIER3_DISPENSER = tag -> new DispenserProvider(new DispenserConfigurable(
             DispenserRegistry.TIER3_DISPENSER,
             (float) OpenCUConfig.omniDispenser.tier3.rotationSpeed / 20.f,
             OpenCUConfig.omniDispenser.tier3.spread,
-            OpenCUConfig.omniDispenser.tier3.force
+            OpenCUConfig.omniDispenser.tier3.force,
+            OpenCUConfig.omniDispenser.tier3.base_energy
     ));
 
     public static List<CUItem> items = new ArrayList<>();

@@ -8,8 +8,8 @@ public class DispenserConstant extends DispenserBase {
     private double constantSpread;
     private double constantForce;
 
-    public DispenserConstant(DispenserMappings mappings, float alignmentSpeed, double constantSpread, double constantForce) {
-        super(mappings, alignmentSpeed);
+    public DispenserConstant(DispenserMappings mappings, float alignmentSpeed, double constantSpread, double constantForce, double baseEnergy) {
+        super(mappings, alignmentSpeed, baseEnergy);
         this.constantForce = constantForce;
         this.constantSpread = constantSpread;
     }

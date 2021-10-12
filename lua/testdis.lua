@@ -1,12 +1,12 @@
 cmp = require("component")
 dis = cmp.omnidispenser
 
-_, res = dis.setForce(1.1)
+_, res = dis.setForce(0.75)
 if res then
     print(res)
 end
 
-_, res = dis.setForce(2.)
+_, res = dis.setForce(1.)
 if res then
     print(res)
 end

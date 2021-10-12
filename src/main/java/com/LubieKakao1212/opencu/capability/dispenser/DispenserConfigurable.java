@@ -12,8 +12,8 @@ public class DispenserConfigurable extends DispenserBase {
 
     private double spread = 0;
 
-    public DispenserConfigurable(DispenserMappings mappings, float alignmentSpeed, double maxSpread, double maxForce) {
-        super(mappings, alignmentSpeed);
+    public DispenserConfigurable(DispenserMappings mappings, float alignmentSpeed, double maxSpread, double maxForce, double baseEnergy) {
+        super(mappings, alignmentSpeed, baseEnergy);
         this.maxForce = maxForce;
         this.maxSpread = maxSpread;
     }

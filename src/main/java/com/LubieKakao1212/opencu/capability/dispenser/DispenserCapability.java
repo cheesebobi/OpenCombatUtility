@@ -19,7 +19,9 @@ public class DispenserCapability {
         CapabilityManager.INSTANCE.register(IDispenser.class, new Storage(), () -> { return new DispenserConstant(DispenserRegistry.VANILLA_DISPENSER,
                 (float) OpenCUConfig.omniDispenser.vanilla.rotationSpeed * MathUtil.degToRad / 20.f,
                 OpenCUConfig.omniDispenser.vanilla.spread,
-                OpenCUConfig.omniDispenser.vanilla.force ); });
+                OpenCUConfig.omniDispenser.vanilla.force,
+                OpenCUConfig.omniDispenser.vanilla.base_energy
+                ); });
     }
 
     public static class Storage implements Capability.IStorage<IDispenser> {

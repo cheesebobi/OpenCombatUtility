@@ -2,10 +2,12 @@ package com.LubieKakao1212.opencu.capability.dispenser;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 public class DispenseEntry {
 
-    private Entity entity;
+    //private Entity entity;
+    private DispenserMappings.EntityMapping entity;
     private double mass;
     private double spreadMultiplier;
     private double energyMultiplier;
@@ -13,7 +15,7 @@ public class DispenseEntry {
     private DispenserMappings.PostShootAction postShootAction;
     private DispenserMappings.PostSpawnAction postSpawnAction;
 
-    public DispenseEntry(Entity entity, ItemStack leftover, double mass, double spreadMultiplier, double energyMultiplier, DispenserMappings.PostShootAction postShootAction, DispenserMappings.PostSpawnAction postSpawnAction) {
+    public DispenseEntry(DispenserMappings.EntityMapping entity, ItemStack leftover, double mass, double spreadMultiplier, double energyMultiplier, DispenserMappings.PostShootAction postShootAction, DispenserMappings.PostSpawnAction postSpawnAction) {
         this.entity = entity;
         this.mass = mass;
         this.spreadMultiplier = spreadMultiplier;
@@ -23,16 +25,16 @@ public class DispenseEntry {
         this.postSpawnAction = postSpawnAction;
     }
 
-    public DispenseEntry(Entity entity, ItemStack leftover, double mass, double spreadMultiplier, double energyMultiplier, DispenserMappings.PostShootAction postShootAction) {
+    public DispenseEntry(DispenserMappings.EntityMapping entity, ItemStack leftover, double mass, double spreadMultiplier, double energyMultiplier, DispenserMappings.PostShootAction postShootAction) {
         this(entity, leftover, mass, spreadMultiplier, energyMultiplier, DispenserMappings.DEFAULT_SHOOT_ACTION, DispenserMappings.DEFAULT_SPAWN_ACTION);
     }
 
-    public DispenseEntry(Entity entity, ItemStack leftover, double mass, double spreadMultiplier, double energyMultiplier) {
+    public DispenseEntry(DispenserMappings.EntityMapping entity, ItemStack leftover, double mass, double spreadMultiplier, double energyMultiplier) {
         this(entity, leftover, mass, spreadMultiplier, energyMultiplier, DispenserMappings.DEFAULT_SHOOT_ACTION);
     }
 
-    public Entity getEntity() {
-        return entity;
+    public Entity getEntity(ItemStack stack, World world) {
+        return entity.get(stack, world);
     }
 
     public double getMass() {
