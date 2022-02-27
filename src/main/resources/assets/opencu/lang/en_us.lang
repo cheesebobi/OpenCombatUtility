@@ -1,4 +1,8 @@
 tile.opencu.repulsor.name=Repulsor
 item.opencu.vector_mesh.name=Vector Mesh
+item.opencu.vector_mesh.desc=aaa\aaa
+item.opencu.dispenser_t2.name=Dispenser (Tier 2)
+item.opencu.dispenser_t3.name=Dispenser (Tier 3)
+
 
 itemGroup.ocu=Open Combat Utility

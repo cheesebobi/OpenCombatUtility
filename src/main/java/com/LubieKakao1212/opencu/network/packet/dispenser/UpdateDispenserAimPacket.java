@@ -1,8 +1,6 @@
 package com.LubieKakao1212.opencu.network.packet.dispenser;
 
 import com.LubieKakao1212.opencu.block.tileentity.TileEntityOmniDispenser;
-import glm.quat.Quat;
-import glm.vec._2.Vec2;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -13,16 +11,17 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import org.joml.Quaterniond;
 
 public class UpdateDispenserAimPacket implements IMessage {
 
 
     private BlockPos position;
-    private Quat aim;
+    private Quaterniond aim;
 
     public UpdateDispenserAimPacket() { }
 
-    public UpdateDispenserAimPacket(BlockPos position, Quat aim) {
+    public UpdateDispenserAimPacket(BlockPos position, Quaterniond aim) {
         this.position = position;
         this.aim = aim;
     }
@@ -34,11 +33,11 @@ public class UpdateDispenserAimPacket implements IMessage {
                 buf.readInt(),
                 buf.readInt()
         );
-        aim = new Quat(
-                buf.readFloat(),
-                buf.readFloat(),
-                buf.readFloat(),
-                buf.readFloat()
+        aim = new Quaterniond(
+                buf.readDouble(),
+                buf.readDouble(),
+                buf.readDouble(),
+                buf.readDouble()
         );
     }
 
@@ -47,17 +46,17 @@ public class UpdateDispenserAimPacket implements IMessage {
         buf.writeInt(position.getX());
         buf.writeInt(position.getY());
         buf.writeInt(position.getZ());
-        buf.writeFloat(aim.w);
-        buf.writeFloat(aim.x);
-        buf.writeFloat(aim.y);
-        buf.writeFloat(aim.z);
+        buf.writeDouble(aim.x());
+        buf.writeDouble(aim.y());
+        buf.writeDouble(aim.z());
+        buf.writeDouble(aim.w());
     }
 
     public BlockPos getPosition() {
         return position;
     }
 
-    public Quat getAim() {
+    public Quaterniond getAim() {
         return aim;
     }
 

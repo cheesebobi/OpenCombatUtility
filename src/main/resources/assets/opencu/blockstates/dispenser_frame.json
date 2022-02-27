@@ -8,8 +8,8 @@
       "model": "opencu:dispenser_frame.obj"
     },
     "inventory": {
-      "model": "opencu:dispenser_small",
-      "submodelasas": "opencu:dispenser_frame.obj"
+      "transform": "forge:default-block",
+      "model": "opencu:dispenser_frame.obj"
     }
   }
 }

@@ -57,13 +57,13 @@ repositories {
     maven {
         url "https://jitpack.io"
     }
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
 }
 
 dependencies {
-    //compile 'com.github.kotlin-graphics:glm:0.9.9.0-build-08'
-    compile("io.github.java-graphics:glm:1.0.1") {
-        exclude group: "io.github.java-graphics", module: "openvr"
-    }
+    compile "org.joml:joml-jdk8:${jomlVersion}"
     compile "li.cil.oc:OpenComputers:MC1.12.2-1.7.5.+"
 	compile "cofh:RedstoneFlux:1.12-2.1.0.+:universal"
     compile "cofh:CoFHCore:1.12.2-4.6.0.+:universal"
@@ -78,7 +78,7 @@ dependencies {
 shadowJar {
     classifier = ""
     dependencies {
-        include(dependency("io.github.java-graphics:glm:1.0.1"))
+        include("org.joml:joml-jdk8:${jomlVersion}")
     }
 }
 

@@ -6,15 +6,13 @@ import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
 import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import com.LubieKakao1212.opencu.lib.math.AimUtil;
 import com.LubieKakao1212.opencu.lib.math.MathUtil;
-import com.LubieKakao1212.opencu.lib.util.GlmMath;
-import com.LubieKakao1212.opencu.lib.util.GlmNBT;
+import com.LubieKakao1212.opencu.lib.util.JomlNBT;
 import com.LubieKakao1212.opencu.lib.util.counting.CounterList;
 import com.LubieKakao1212.opencu.lib.util.counting.IntCounter;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
 import com.LubieKakao1212.opencu.network.packet.dispenser.RequestDispenserUpdatePacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserAimPacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserPacket;
-import glm.quat.Quat;
 import li.cil.oc.api.API;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -35,6 +33,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.joml.Quaterniond;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,7 +48,7 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
     private final ComponentConnector node;
     private final ItemStackHandler inventory;
     private DispenseAction currentAction;
-    private Quat targetAim;
+    private Quaterniond targetAim;
 
     private IDispenser currentDispenser;
 
@@ -63,8 +62,8 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
     private DispenseAction lastAction = null;
 
     public TileEntityOmniDispenser() {
-        currentAction = new DispenseAction(new Quat());
-        targetAim = new Quat();
+        currentAction = new DispenseAction(new Quaterniond());
+        targetAim = new Quaterniond().identity();
 
         inventory = new ItemStackHandler(10) {
             @Override
@@ -149,8 +148,13 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
                 API.network.joinOrCreateNetwork(this);
             }
             if(currentDispenser != null) {
-                currentAction.aim = GlmMath.step(currentAction.aim, targetAim, currentDispenser.getAlignmentSpeed() * MathUtil.degToRad);
-                NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, currentAction.aim), pos, world.provider.getDimension());
+                if(AimUtil.angle(targetAim, currentAction.aim) < aimIdenticalityEpsilon) {
+                    AimUtil.step(currentAction.aim, targetAim, currentDispenser.getAlignmentSpeed() * MathUtil.degToRad);
+                    NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, currentAction.aim), pos, world.provider.getDimension());
+                } else {
+                    currentAction.aim = targetAim;
+                    NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, currentAction.aim), pos, world.provider.getDimension());
+                }
             }
             boolean frequent = false;
             while(actionQueue.size() > 0)
@@ -189,13 +193,13 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
     @SuppressWarnings("unused")
     @Callback(doc = "function(): bool", direct = true)
     public Object[] isAligned(Context context, Arguments args) {
-        return new Object[]{GlmMath.angle(targetAim, currentAction.aim) < aimIdenticalityEpsilon};
+        return new Object[]{ AimUtil.angle(targetAim, currentAction.aim) < aimIdenticalityEpsilon};
     }
 
     @SuppressWarnings("unused")
     @Callback(doc = "function(): bool", direct = true)
     public Object[] aimingStatus(Context context, Arguments args) {
-        return new Object[]{ GlmMath.angle(targetAim, currentAction.aim) };
+        return new Object[]{ AimUtil.angle(targetAim, currentAction.aim) };
     }
 
     @SuppressWarnings("unused")
@@ -224,7 +228,7 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
         }
     }
 
-    public void setAim(Quat aim) {
+    public void setAim(Quaterniond aim) {
         targetAim = aim.normalize();
     }
 
@@ -313,7 +317,7 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
         //Inventory
         compound.setTag("inventory", inventory.serializeNBT());
 
-        compound.setTag("aim", GlmNBT.writeQuat(currentAction.aim));
+        compound.setTag("aim", JomlNBT.writeQuaternion(currentAction.aim));
 
         compound.setTag("dispenser", currentDispenser != null ? currentDispenser.serializeNBT() : new NBTTagCompound());
 
@@ -337,7 +341,7 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
         }
 
         if(compound.hasKey("aim", Constants.NBT.TAG_LIST)) {
-            setAim(GlmNBT.readQuat(compound.getTagList("aim", Constants.NBT.TAG_FLOAT)));
+            setAim(JomlNBT.readQuaternion(compound.getTagList("aim", Constants.NBT.TAG_FLOAT)));
         }
 
         if(currentDispenser != null && compound.hasKey("dispenser", Constants.NBT.TAG_COMPOUND)) {
@@ -383,7 +387,7 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
     }
 
     @SideOnly(Side.CLIENT)
-    public void setCurrentAction(Quat newAction) {
+    public void setCurrentAction(Quaterniond newAction) {
         this.lastAction = currentAction;
         this.currentAction = new DispenseAction(newAction);
     }
@@ -394,17 +398,18 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
     }
 
     public class DispenseAction {
-        private Quat aim;
+        private Quaterniond aim;
+        @SideOnly(Side.SERVER)
+        private boolean lockedOn = true;
 
-        public DispenseAction(Quat aim)
+        public DispenseAction(Quaterniond aim)
         {
             this.aim = aim;
         }
 
-        public Quat aim() {
+        public Quaterniond aim() {
             return aim;
         }
-
     }
 
 }

@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.lib.math;
 
-import glm.vec._3.Vec3;
+import org.joml.Vector3d;
 
 public class MathUtil {
 
@@ -10,11 +10,10 @@ public class MathUtil {
     public static final float pi = (float) Math.PI;
 
     private static final float epsilon = 0.001f;
-    private static final Vec3 epsilonVec3 = new Vec3(epsilon, epsilon, epsilon);
+    private static final Vector3d epsilonVec3 = new Vector3d(epsilon, epsilon, epsilon);
 
-
-    public static boolean equals(Vec3 one, Vec3 two) {
-        Vec3 delta = one.sub_(two).abs();
+    public static boolean equals(Vector3d one, Vector3d two) {
+        Vector3d delta = new Vector3d(one).sub(two).absolute();
 
         return delta.length() < epsilon;
     }

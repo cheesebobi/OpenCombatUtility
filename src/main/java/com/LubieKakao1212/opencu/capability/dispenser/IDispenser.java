@@ -1,13 +1,12 @@
 package com.LubieKakao1212.opencu.capability.dispenser;
 
-import glm.quat.Quat;
-import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Connector;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.INBTSerializable;
+import org.joml.Quaterniond;
 
 public interface IDispenser extends INBTSerializable<NBTTagCompound> {
 
@@ -15,7 +14,7 @@ public interface IDispenser extends INBTSerializable<NBTTagCompound> {
      * @param shotItem always singe item
      * @return energy usage multiplier
      */
-    DispenseResult Shoot(Connector connector, World world, ItemStack shotItem, BlockPos pos, Quat aim, double energyMultiplierFromFrequency);
+    DispenseResult Shoot(Connector connector, World world, ItemStack shotItem, BlockPos pos, Quaterniond aim, double energyMultiplierFromFrequency);
 
     /**
      * @param spread spread value that would be set

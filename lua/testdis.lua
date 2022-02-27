@@ -33,4 +33,5 @@ end
 
 for i=1, 64, 1 do
     dis.dispense()
+    os.sleep(0.05)
 end

@@ -1,6 +1,8 @@
 package com.LubieKakao1212.opencu.item;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
+import com.google.common.collect.Lists;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -58,9 +60,13 @@ public class CUMultiItem extends CUItem {
         variants.add(new Variant(variant, capabilities));
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         int damage = stack.getItemDamage();
+        String key = String.format("item.opencu.{1}.desc", variants.get(damage).id);
+        String[] lines = I18n.format(key).split("\\\\");
+        tooltip.addAll(Lists.newArrayList(lines));
     }
 
     @Nullable

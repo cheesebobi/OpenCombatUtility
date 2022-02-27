@@ -1,7 +1,6 @@
 package com.LubieKakao1212.opencu.capability.dispenser;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
-import glm.vec._3.Vec3;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
@@ -10,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import org.joml.Vector3d;
 
 import java.util.HashMap;
 
@@ -61,12 +61,12 @@ public abstract class DispenserMappings {
 
     @FunctionalInterface
     public interface PostShootAction {
-        void Execute(Entity entity, Vec3 forward, double velocity);
+        void Execute(Entity entity, Vector3d forward, double velocity);
     }
 
     @FunctionalInterface
     public interface PostSpawnAction {
-        void Execute(Entity entity, Vec3 forward, double velocity);
+        void Execute(Entity entity, Vector3d forward, double velocity);
     }
 
 }

@@ -3,14 +3,14 @@ package com.LubieKakao1212.opencu.capability.dispenser;
 import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import com.LubieKakao1212.opencu.lib.math.AimUtil;
 import com.LubieKakao1212.opencu.lib.math.MathUtil;
-import glm.quat.Quat;
-import glm.vec._3.Vec3;
 import li.cil.oc.api.network.Connector;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.joml.Quaterniond;
+import org.joml.Vector3d;
 
 public abstract class DispenserBase implements IDispenser {
 
@@ -25,12 +25,12 @@ public abstract class DispenserBase implements IDispenser {
     }
 
     @Override
-    public DispenseResult Shoot(Connector connector, World world, ItemStack shotItem, BlockPos pos, Quat aim, double energyMultiplierFromFrequency) {
+    public DispenseResult Shoot(Connector connector, World world, ItemStack shotItem, BlockPos pos, Quaterniond aim, double energyMultiplierFromFrequency) {
         DispenseEntry entry = getMappings().getDispenseResult(shotItem);
         if(connector.tryChangeBuffer(-entry.getEnergyMultiplier() * energyMultiplierFromFrequency * energyConsumption)) {
             Entity entity = entry.getEntity(shotItem, world);
 
-            Vec3 forward = AimUtil.calculateForwardWithSpread(aim, (float)(getSpread() * entry.getSpreadMultiplier()));
+            Vector3d forward = AimUtil.calculateForwardWithSpread(aim, (getSpread() * entry.getSpreadMultiplier()));
 
             entity.setLocationAndAngles(pos.getX() + 0.5 + forward.x, pos.getY() + 0.5 + forward.y, pos.getZ() + 0.5 + forward.z, 0.f,0.f);
 
