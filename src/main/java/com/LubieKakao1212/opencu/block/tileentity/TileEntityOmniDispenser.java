@@ -37,6 +37,7 @@ import org.joml.Quaterniond;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Currency;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TileEntityOmniDispenser extends TileEntity implements Environment, ITickable {
@@ -44,7 +45,6 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
     public static final double aimIdenticalityEpsilon = MathUtil.degToRad * 0.1;
 
     private final ConcurrentLinkedQueue<DispenseAction> actionQueue = new ConcurrentLinkedQueue<>();
-    private final CounterList<IntCounter> lastShots = new CounterList<>();
     private final ComponentConnector node;
     private final ItemStackHandler inventory;
     private DispenseAction currentAction;
@@ -148,21 +148,25 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
                 API.network.joinOrCreateNetwork(this);
             }
             if(currentDispenser != null) {
-                if(AimUtil.angle(targetAim, currentAction.aim) < aimIdenticalityEpsilon) {
+                if(AimUtil.angle(targetAim, currentAction.aim) > aimIdenticalityEpsilon) {
                     AimUtil.step(currentAction.aim, targetAim, currentDispenser.getAlignmentSpeed() * MathUtil.degToRad);
                     NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, currentAction.aim), pos, world.provider.getDimension());
                 } else {
                     currentAction.aim = targetAim;
-                    NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, currentAction.aim), pos, world.provider.getDimension());
+                    if(!currentAction.lockedOn)
+                    {
+                        NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, currentAction.aim), pos, world.provider.getDimension());
+                        currentAction.lockedOn = true;
+                    }
                 }
             }
             boolean frequent = false;
             while(actionQueue.size() > 0)
             {
-                shoot(actionQueue.poll(), frequent ? OpenCUConfig.omniDispenser.frequentShootingEnergyMultiplier : 1f);
+                actionQueue.poll();
+                shoot(currentAction, frequent ? OpenCUConfig.omniDispenser.frequentShootingEnergyMultiplier : 1f);
                 frequent = true;
             }
-            lastShots.tick();
         }else
         {
             if(!this.isInitialised) {
@@ -230,6 +234,7 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
 
     public void setAim(Quaterniond aim) {
         targetAim = aim.normalize();
+        currentAction.lockedOn = false;
     }
 
     public void shoot(DispenseAction action, double energyMultiplier) {
@@ -239,7 +244,6 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
                 DispenseResult result = currentDispenser.Shoot(node, world, ammo.getFirst(), pos, action.aim, energyMultiplier);
                 useAmmo(ammo.getSecond(), result.getLeftover());
             }
-            lastShots.add(new IntCounter(OpenCUConfig.omniDispenser.energyAlt.relevantTicks));
         }
     }
 
@@ -283,26 +287,6 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
         }
     }
 
-    private double calculateEnergyMultiplierFromFrequency() {
-        int x1 = OpenCUConfig.omniDispenser.energyAlt.cutoff;
-        int x = lastShots.size();
-
-        if(x <= x1) {
-            double a = OpenCUConfig.omniDispenser.energyAlt.linearSteepness;
-            double b = OpenCUConfig.omniDispenser.energyAlt.base;
-
-            return x * a + b;
-        }else
-        {
-            double a = OpenCUConfig.omniDispenser.energyAlt.nonLinearSteepness;
-
-            double b = OpenCUConfig.omniDispenser.energyAlt.getB2();
-            double c = OpenCUConfig.omniDispenser.energyAlt.getC();
-
-            return x * (b + x * a) + c;
-        }
-    }
-
     public boolean isUsableBy(EntityPlayer player) {
         return player.getDistanceSq(pos) <= 64D && world.getTileEntity(pos) == this;
     }
@@ -341,7 +325,7 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
         }
 
         if(compound.hasKey("aim", Constants.NBT.TAG_LIST)) {
-            setAim(JomlNBT.readQuaternion(compound.getTagList("aim", Constants.NBT.TAG_FLOAT)));
+            setAim(JomlNBT.readQuaternion(compound.getTagList("aim", Constants.NBT.TAG_DOUBLE)));
         }
 
         if(currentDispenser != null && compound.hasKey("dispenser", Constants.NBT.TAG_COMPOUND)) {
@@ -399,8 +383,8 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
 
     public class DispenseAction {
         private Quaterniond aim;
-        @SideOnly(Side.SERVER)
-        private boolean lockedOn = true;
+
+        private boolean lockedOn;
 
         public DispenseAction(Quaterniond aim)
         {

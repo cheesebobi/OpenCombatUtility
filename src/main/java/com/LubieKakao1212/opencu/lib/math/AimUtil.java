@@ -38,12 +38,19 @@ public class AimUtil {
     }
 
     public static Quaterniond aimRad(float pitch, float yaw) {
-        return new Quaterniond().fromAxisAngleRad(right, pitch)
-                .mul(new Quaterniond().fromAxisAngleRad(down, yaw));
+        Quaterniond q = new Quaterniond().fromAxisAngleRad(down, yaw)
+                .mul(new Quaterniond().fromAxisAngleRad(right, pitch));
+
+        Quaterniond q2 = new Quaterniond().fromAxisAngleRad(down, yaw)
+                .premul(new Quaterniond().fromAxisAngleRad(right, pitch));
+        return q;
     }
 
     public static double angle(Quaterniond a, Quaterniond b) {
-        return a.difference(b, new Quaterniond()).angle();
+
+        double angle1 = a.difference(b, new Quaterniond()).angle();
+
+        return angle1;
     }
 
     public static Quaterniond step(Quaterniond from, Quaterniond to, double maxAngle, Quaterniond dst) {

@@ -30,7 +30,7 @@ public class RendererOmniDispenser extends TileEntitySpecialRenderer<TileEntityO
                 GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
                 //GlStateManager.scale(1., 1., 1.);
                 GlStateManager.rotate(180, 0, 1.f, 0);
-                GlStateManager.rotate(new Quaternion((float)partial.x(), (float)partial.y(), (float)partial.z(), (float)partial.w()));
+                GlStateManager.rotate(new Quaternion((float)partial.x(), (float)-partial.y(), (float)partial.z(), (float)-partial.w()));
                 Minecraft.getMinecraft().getRenderItem().renderItem(displayStack, ItemCameraTransforms.TransformType.FIXED);
             GlStateManager.popMatrix();
         }
