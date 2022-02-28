@@ -15,6 +15,10 @@ import java.util.HashMap;
 
 public abstract class DispenserMappings {
 
+    public static final PostShootAction DEFAULT_SHOOT_ACTION = (entity, forward, velocity) -> { };
+
+    public static final PostSpawnAction DEFAULT_SPAWN_ACTION = (entity, forward, velocity) -> { };
+
     public static final DispenseEntry ITEM_ENTRY = new DispenseEntry((stack, world) -> {
         EntityItem item = new EntityItem(world);
         item.setItem(stack);
@@ -30,10 +34,6 @@ public abstract class DispenserMappings {
         EntityFallingBlock sand = new EntityFallingBlock(world, 0, 0, 0, block.getStateFromMeta(stack.getItemDamage()));
         return sand;
     }, ItemStack.EMPTY, 1., 0.1, 1.);
-
-    public static final PostShootAction DEFAULT_SHOOT_ACTION = (entity, forward, velocity) -> { };
-
-    public static final PostSpawnAction DEFAULT_SPAWN_ACTION = (entity, forward, velocity) -> { };
 
     private final HashMap<Item, DispenseEntry> mappings = new HashMap<>();
 

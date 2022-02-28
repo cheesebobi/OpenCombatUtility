@@ -1,0 +1,38 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "cgc",
+    "gvg",
+    "c#c"
+  ],
+  "key":
+  {
+    "c":
+    {
+      "item": "opencomputers:material",
+      "data": 28
+    },
+    "g":
+    {
+      "item": "minecraft:gold_ingot",
+      "data": 32767
+    },
+    "v":
+    {
+      "item": "opencu:item",
+      "data": 0
+    },
+    "#":
+    {
+      "item": "opencomputers:material",
+      "data": 8
+    }
+  },
+  "result":
+  {
+    "item": "opencu:dispenser",
+    "data": 0,
+    "count": 1
+  }
+}

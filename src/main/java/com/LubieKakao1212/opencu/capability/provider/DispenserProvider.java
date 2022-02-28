@@ -13,8 +13,8 @@ public class DispenserProvider implements ICapabilityProvider {
 
     private IDispenser dispenser;
 
-    public DispenserProvider(IDispenser dipenser) {
-        this.dispenser = dipenser;
+    public DispenserProvider(IDispenser dispenser) {
+        this.dispenser = dispenser;
     }
 
     @Override

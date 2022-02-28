@@ -6,16 +6,18 @@ import net.minecraftforge.common.util.Constants;
 public class DispenserConfigurable extends DispenserBase {
 
     private double maxForce;
+    private double minSpread;
     private double maxSpread;
 
     private double force = 0;
 
     private double spread = 0;
 
-    public DispenserConfigurable(DispenserMappings mappings, float alignmentSpeed, double maxSpread, double maxForce, double baseEnergy) {
+    public DispenserConfigurable(DispenserMappings mappings, float alignmentSpeed, double minSpread, double maxSpread, double maxForce, double baseEnergy) {
         super(mappings, alignmentSpeed, baseEnergy);
         this.maxForce = maxForce;
         this.maxSpread = maxSpread;
+        this.minSpread = minSpread;
     }
 
     @Override
@@ -41,11 +43,41 @@ public class DispenserConfigurable extends DispenserBase {
     }
 
     @Override
+    public boolean hasConfigurableForce() {
+        return true;
+    }
+
+    @Override
+    public boolean hasConfigurableSpread() {
+        return true;
+    }
+
+    @Override
+    public double getMaxSpread() {
+        return maxSpread;
+    }
+
+    @Override
+    public double getMinSpread() {
+        return minSpread;
+    }
+
+    @Override
+    public double getMaxForce() {
+        return maxForce;
+    }
+
+    @Override
+    public double getMinForce() {
+        return 0;
+    }
+
+    @Override
     public String trySetSpread(double spread) {
         if(spread > maxSpread) {
             return "Spread to high.";
         }
-        if(spread < 0) {
+        if(spread < minSpread) {
             return "Spread to low.";
         }
         this.spread = spread;

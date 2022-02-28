@@ -13,9 +13,7 @@ public class MathUtil {
     private static final Vector3d epsilonVec3 = new Vector3d(epsilon, epsilon, epsilon);
 
     public static boolean equals(Vector3d one, Vector3d two) {
-        Vector3d delta = new Vector3d(one).sub(two).absolute();
-
-        return delta.length() < epsilon;
+        return one.dot(two) < epsilon;
     }
 
     public static double loop(double a, double min, double max) {

@@ -3,12 +3,9 @@ package com.LubieKakao1212.opencu.block.tileentity;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenseResult;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenserCapability;
 import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
-import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import com.LubieKakao1212.opencu.lib.math.AimUtil;
 import com.LubieKakao1212.opencu.lib.math.MathUtil;
 import com.LubieKakao1212.opencu.lib.util.JomlNBT;
-import com.LubieKakao1212.opencu.lib.util.counting.CounterList;
-import com.LubieKakao1212.opencu.lib.util.counting.IntCounter;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
 import com.LubieKakao1212.opencu.network.packet.dispenser.RequestDispenserUpdatePacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserAimPacket;
@@ -37,7 +34,6 @@ import org.joml.Quaterniond;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Currency;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TileEntityOmniDispenser extends TileEntity implements Environment, ITickable {
@@ -93,7 +89,7 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
             }
         };
 
-        node = API.network.newNode(this, Visibility.Network).withComponent("omnidispenser").withConnector().create();
+        node = API.network.newNode(this, Visibility.Network).withComponent("adv_dispenser").withConnector().create();
     }
 
     private void updateDispenser() {
@@ -160,12 +156,10 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
                     }
                 }
             }
-            boolean frequent = false;
             while(actionQueue.size() > 0)
             {
                 actionQueue.poll();
-                shoot(currentAction, frequent ? OpenCUConfig.omniDispenser.frequentShootingEnergyMultiplier : 1f);
-                frequent = true;
+                shoot(currentAction, 1f);
             }
         }else
         {
@@ -201,7 +195,7 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
     }
 
     @SuppressWarnings("unused")
-    @Callback(doc = "function(): bool", direct = true)
+    @Callback(doc = "function(): number", direct = true)
     public Object[] aimingStatus(Context context, Arguments args) {
         return new Object[]{ AimUtil.smallerAngle(targetAim, currentAction.aim) };
     }
@@ -230,6 +224,18 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
         else {
             return new Object[] { true };
         }
+    }
+
+    @SuppressWarnings("unused")
+    @Callback
+    public Object[] getMinSpread(Context context, Arguments args) {
+        return new Object[] { currentDispenser.getMaxSpread() };
+    }
+
+    @SuppressWarnings("unused")
+    @Callback
+    public Object[] getMaxSpread(Context context, Arguments args) {
+        return new Object[] { currentDispenser.getMaxSpread() };
     }
 
     public void setAim(Quaterniond aim) {

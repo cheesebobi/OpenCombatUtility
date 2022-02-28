@@ -24,4 +24,33 @@ public class DispenserConstant extends DispenserBase {
         return constantForce;
     }
 
+    @Override
+    public boolean hasConfigurableForce() {
+        return false;
+    }
+
+    @Override
+    public boolean hasConfigurableSpread() {
+        return false;
+    }
+
+    @Override
+    public double getMaxSpread() {
+        return constantSpread;
+    }
+
+    @Override
+    public double getMinSpread() {
+        return constantSpread;
+    }
+
+    @Override
+    public double getMaxForce() {
+        return constantForce;
+    }
+
+    @Override
+    public double getMinForce() {
+        return constantForce;
+    }
 }

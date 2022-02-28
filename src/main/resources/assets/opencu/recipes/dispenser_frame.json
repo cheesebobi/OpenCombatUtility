@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "ici",
+    "c c",
+    "ici"
+  ],
+  "key":
+  {
+    "c":
+    {
+      "item": "opencomputers:material",
+      "data": 28
+    },
+    "i":
+    {
+      "item": "minecraft:iron_ingot",
+      "data": 32767
+    }
+  },
+  "result":
+  {
+    "item": "opencu:dispenser_frame",
+    "count": 1
+  }
+}

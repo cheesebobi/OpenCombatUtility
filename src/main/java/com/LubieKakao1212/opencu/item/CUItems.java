@@ -36,6 +36,7 @@ public class CUItems {
             DispenserRegistry.TIER2_DISPENSER,
             (float) OpenCUConfig.omniDispenser.tier2.rotationSpeed / 20.f,
             OpenCUConfig.omniDispenser.tier2.spread,
+            OpenCUConfig.omniDispenser.tier2.spread_max,
             OpenCUConfig.omniDispenser.tier2.force,
             OpenCUConfig.omniDispenser.tier2.base_energy
     ));
@@ -44,6 +45,7 @@ public class CUItems {
             DispenserRegistry.TIER3_DISPENSER,
             (float) OpenCUConfig.omniDispenser.tier3.rotationSpeed / 20.f,
             OpenCUConfig.omniDispenser.tier3.spread,
+            OpenCUConfig.omniDispenser.tier3.spread_max,
             OpenCUConfig.omniDispenser.tier3.force,
             OpenCUConfig.omniDispenser.tier3.base_energy
     ));

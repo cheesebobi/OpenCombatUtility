@@ -32,4 +32,16 @@ public interface IDispenser extends INBTSerializable<NBTTagCompound> {
 
     //Rad angle per tick
     float getAlignmentSpeed();
+
+    boolean hasConfigurableForce();
+
+    boolean hasConfigurableSpread();
+
+    double getMaxSpread();
+
+    double getMinSpread();
+
+    double getMaxForce();
+
+    double getMinForce();
 }

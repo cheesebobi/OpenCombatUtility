@@ -74,9 +74,7 @@ public abstract class DispenserBase implements IDispenser {
 
     public abstract double getSpread();
 
-
     public abstract double getForce();
-
 
     protected DispenserMappings getMappings() {
         return this.mappings;

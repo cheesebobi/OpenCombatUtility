@@ -1,5 +1,5 @@
 cmp = require("component")
-dis = cmp.omnidispenser
+dis = cmp.adv_dispenser
 
 _, res = dis.setForce(0.75)
 if res then

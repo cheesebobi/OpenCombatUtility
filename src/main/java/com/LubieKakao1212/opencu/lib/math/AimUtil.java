@@ -20,9 +20,9 @@ public class AimUtil {
         Vector3d forward = calculateForward(aim);
         Vector3d side = perpendicular(forward);
 
-        Quaterniond rotSide = new Quaterniond().fromAxisAngleRad(side, random.nextFloat() * spread / 2f);
+        Quaterniond rotSide = new Quaterniond().fromAxisAngleRad(side, random.nextDouble() * spread / 2f);
 
-        Quaterniond rotRound = new Quaterniond().fromAxisAngleRad(forward, (random.nextDouble() * Math.PI));
+        Quaterniond rotRound = new Quaterniond().fromAxisAngleRad(forward, (random.nextDouble() * Math.PI * 2));
         return rotRound.mul(rotSide).transform(forward);
     }
 
@@ -31,7 +31,7 @@ public class AimUtil {
     }
 
     public static Vector3d perpendicular(Vector3d vector) {
-        if(MathUtil.equals(vector, forward)) {
+        if(!MathUtil.equals(vector, forward)) {
             return new Vector3d(0, -vector.z, vector.y);
         }
         return new Vector3d(-vector.y, vector.x, 0);
@@ -40,21 +40,21 @@ public class AimUtil {
     public static Quaterniond aimRad(float pitch, float yaw) {
         Quaterniond q = new Quaterniond().fromAxisAngleRad(down, yaw)
                 .mul(new Quaterniond().fromAxisAngleRad(right, pitch));
-
-        Quaterniond q2 = new Quaterniond().fromAxisAngleRad(down, yaw)
-                .premul(new Quaterniond().fromAxisAngleRad(right, pitch));
         return q;
     }
 
     public static double angle(Quaterniond a, Quaterniond b) {
-
         double angle1 = a.difference(b, new Quaterniond()).angle();
 
         return angle1;
     }
 
+    public static double smallerAngle(Quaterniond a, Quaterniond b) {
+        return (Math.PI) - Math.abs(angle(a, b) - Math.PI);
+    }
+
     public static Quaterniond step(Quaterniond from, Quaterniond to, double maxAngle, Quaterniond dst) {
-        double angle = angle(from, to);
+        double angle = smallerAngle(from, to);
 
         double step = maxAngle / angle;
         step = Math.min(Math.max(step, 0.), 1.);

@@ -26,7 +26,7 @@ public class DispenseEntry {
     }
 
     public DispenseEntry(DispenserMappings.EntityMapping entity, ItemStack leftover, double mass, double spreadMultiplier, double energyMultiplier, DispenserMappings.PostShootAction postShootAction) {
-        this(entity, leftover, mass, spreadMultiplier, energyMultiplier, DispenserMappings.DEFAULT_SHOOT_ACTION, DispenserMappings.DEFAULT_SPAWN_ACTION);
+        this(entity, leftover, mass, spreadMultiplier, energyMultiplier, postShootAction, DispenserMappings.DEFAULT_SPAWN_ACTION);
     }
 
     public DispenseEntry(DispenserMappings.EntityMapping entity, ItemStack leftover, double mass, double spreadMultiplier, double energyMultiplier) {
