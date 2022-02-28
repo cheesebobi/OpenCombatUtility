@@ -64,7 +64,7 @@ public class CUMultiItem extends CUItem {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         int damage = stack.getItemDamage();
-        String key = String.format("item.opencu.{1}.desc", variants.get(damage).id);
+        String key = String.format("item.opencu.%s.desc", variants.get(damage).id);
         String[] lines = I18n.format(key).split("\\\\");
         tooltip.addAll(Lists.newArrayList(lines));
     }

@@ -148,7 +148,7 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
                 API.network.joinOrCreateNetwork(this);
             }
             if(currentDispenser != null) {
-                if(AimUtil.angle(targetAim, currentAction.aim) > aimIdenticalityEpsilon) {
+                if(AimUtil.smallerAngle(targetAim, currentAction.aim) > aimIdenticalityEpsilon) {
                     AimUtil.step(currentAction.aim, targetAim, currentDispenser.getAlignmentSpeed() * MathUtil.degToRad);
                     NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, currentAction.aim), pos, world.provider.getDimension());
                 } else {
@@ -197,13 +197,13 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
     @SuppressWarnings("unused")
     @Callback(doc = "function(): bool", direct = true)
     public Object[] isAligned(Context context, Arguments args) {
-        return new Object[]{ AimUtil.angle(targetAim, currentAction.aim) < aimIdenticalityEpsilon};
+        return new Object[]{ AimUtil.smallerAngle(targetAim, currentAction.aim) < aimIdenticalityEpsilon};
     }
 
     @SuppressWarnings("unused")
     @Callback(doc = "function(): bool", direct = true)
     public Object[] aimingStatus(Context context, Arguments args) {
-        return new Object[]{ AimUtil.angle(targetAim, currentAction.aim) };
+        return new Object[]{ AimUtil.smallerAngle(targetAim, currentAction.aim) };
     }
 
     @SuppressWarnings("unused")

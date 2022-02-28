@@ -30,7 +30,7 @@ public abstract class DispenserBase implements IDispenser {
         if(connector.tryChangeBuffer(-entry.getEnergyMultiplier() * energyMultiplierFromFrequency * energyConsumption)) {
             Entity entity = entry.getEntity(shotItem, world);
 
-            Vector3d forward = AimUtil.calculateForwardWithSpread(aim, (getSpread() * entry.getSpreadMultiplier()));
+            Vector3d forward = AimUtil.calculateForwardWithSpread(aim, (getSpread() * entry.getSpreadMultiplier() * MathUtil.degToRad));
 
             entity.setLocationAndAngles(pos.getX() + 0.5 + forward.x, pos.getY() + 0.5 + forward.y, pos.getZ() + 0.5 + forward.z, 0.f,0.f);
 
