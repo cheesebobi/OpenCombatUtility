@@ -1,6 +1,6 @@
 tile.opencu.repulsor.name=Repulsor
 item.opencu.vector_mesh.name=Vector Mesh
-item.opencu.vector_mesh.desc=aaa\aaa
+item.opencu.vector_mesh.desc=
 item.opencu.dispenser_t2.name=§eDispenser (Tier 2)
 item.opencu.dispenser_t2.desc=Configurable Force: {force}\Configurable Spread: {spread}\Alignment Speed: {speed}
 item.opencu.dispenser_t3.name=§bDispenser (Tier 3)

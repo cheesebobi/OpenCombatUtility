@@ -16,7 +16,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 
-version = "1.0"
+version = "1.1.0"
 group = "com.LubieKakao1212.opencu" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "OpenCU"
 
@@ -78,7 +78,7 @@ dependencies {
 shadowJar {
     classifier = ""
     dependencies {
-        include("org.joml:joml-jdk8:${jomlVersion}")
+        include(dependency("org.joml:joml-jdk8:${jomlVersion}"))
     }
 }
 
