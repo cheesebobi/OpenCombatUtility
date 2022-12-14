@@ -4,7 +4,6 @@ import com.LubieKakao1212.opencu.OCUCreativeTabs;
 import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.block.BlockOmniDispenserFrame;
 import com.LubieKakao1212.opencu.block.BlockRepulsor;
-import com.LubieKakao1212.opencu.item.CUItems;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;

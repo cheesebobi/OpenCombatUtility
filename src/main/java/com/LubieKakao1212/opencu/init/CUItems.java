@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.item;
+package com.LubieKakao1212.opencu.init;
 
 import com.LubieKakao1212.opencu.OCUCreativeTabs;
 import com.LubieKakao1212.opencu.OpenCUMod;
