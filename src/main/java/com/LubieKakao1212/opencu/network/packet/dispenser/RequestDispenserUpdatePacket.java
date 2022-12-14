@@ -1,16 +1,25 @@
 package com.LubieKakao1212.opencu.network.packet.dispenser;
 
-import com.LubieKakao1212.opencu.block.tileentity.TileEntityOmniDispenser;
+import com.LubieKakao1212.opencu.block.entity.BlockEntityRepulsor;
+import com.LubieKakao1212.opencu.block.entity.TileEntityOmniDispenser;
+import com.LubieKakao1212.opencu.network.IOCUPacket;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.network.NetworkEvent;
 
-public class RequestDispenserUpdatePacket implements IMessage {
+import java.util.function.Supplier;
+
+public class RequestDispenserUpdatePacket implements IOCUPacket {
 
     private BlockPos position;
 
@@ -20,35 +29,32 @@ public class RequestDispenserUpdatePacket implements IMessage {
         this.position = position;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        position = new BlockPos(
-                buf.readInt(),
-                buf.readInt(),
-                buf.readInt()
-        );
-    }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(position.getX());
         buf.writeInt(position.getY());
         buf.writeInt(position.getZ());
     }
 
-    public static class Handler implements IMessageHandler<RequestDispenserUpdatePacket, IMessage> {
-        public Handler() {}
+    public static RequestDispenserUpdatePacket fromBytes(ByteBuf buf) {
+        return new RequestDispenserUpdatePacket(new BlockPos(
+                buf.readInt(),
+                buf.readInt(),
+                buf.readInt()
+        ));
+    }
 
-        @Override
-        public IMessage onMessage(RequestDispenserUpdatePacket message, MessageContext ctx) {
-            World world = ctx.getServerHandler().player.getServerWorld();
+    public void handle(Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            ServerPlayer sender = ctx.get().getSender();
+            Level level = sender.getLevel();
 
-            TileEntity te = world.getTileEntity(message.position);
+            BlockEntity be = level.getBlockEntity(position);
 
-            if(te instanceof TileEntityOmniDispenser) {
-                ((TileEntityOmniDispenser) te).SendDispenserUpdateTo(ctx.getServerHandler().player);
+            if(be instanceof TileEntityOmniDispenser) {
+                ((TileEntityOmniDispenser) be).SendDispenserUpdateTo(sender);
             }
-            return null;
-        }
+        });
+        ctx.get().setPacketHandled(true);
     }
 }

@@ -1,20 +1,27 @@
 package com.LubieKakao1212.opencu.network.packet.dispenser;
 
-import com.LubieKakao1212.opencu.block.tileentity.TileEntityOmniDispenser;
+import com.LubieKakao1212.opencu.block.entity.TileEntityOmniDispenser;
+import com.LubieKakao1212.opencu.network.IOCUPacket;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.network.NetworkEvent;
 import org.joml.Quaterniond;
 
-public class UpdateDispenserAimPacket implements IMessage {
+import java.util.function.Supplier;
 
+public class UpdateDispenserAimPacket implements IOCUPacket {
 
     private BlockPos position;
     private Quaterniond aim;
@@ -27,22 +34,7 @@ public class UpdateDispenserAimPacket implements IMessage {
     }
 
     @Override
-    public void fromBytes(ByteBuf buf) {
-        position = new BlockPos(
-                buf.readInt(),
-                buf.readInt(),
-                buf.readInt()
-        );
-        aim = new Quaterniond(
-                buf.readDouble(),
-                buf.readDouble(),
-                buf.readDouble(),
-                buf.readDouble()
-        );
-    }
-
-    @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(position.getX());
         buf.writeInt(position.getY());
         buf.writeInt(position.getZ());
@@ -52,27 +44,34 @@ public class UpdateDispenserAimPacket implements IMessage {
         buf.writeDouble(aim.w());
     }
 
-    public BlockPos getPosition() {
-        return position;
+    public static UpdateDispenserAimPacket fromBytes(ByteBuf buf) {
+        return new UpdateDispenserAimPacket(
+                new BlockPos(
+                        buf.readInt(),
+                        buf.readInt(),
+                        buf.readInt()
+                ),
+                new Quaterniond(
+                        buf.readDouble(),
+                        buf.readDouble(),
+                        buf.readDouble(),
+                        buf.readDouble()
+                )
+        );
     }
 
-    public Quaterniond getAim() {
-        return aim;
-    }
 
-    public static class Handler implements IMessageHandler<UpdateDispenserAimPacket, IMessage> {
-        public Handler() {}
+    @Override
+    public void handle(Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            Level world = Minecraft.getInstance().player.level;
 
-        @Override
-        public IMessage onMessage(UpdateDispenserAimPacket message, MessageContext ctx) {
-            World world =  Minecraft.getMinecraft().player.world;
+            BlockEntity te = world.getBlockEntity(position);
 
-            TileEntity te = world.getTileEntity(message.getPosition());
-
-            if(te instanceof TileEntityOmniDispenser) {
-                ((TileEntityOmniDispenser) te).setCurrentAction(message.aim);
+            if (te instanceof TileEntityOmniDispenser) {
+                ((TileEntityOmniDispenser) te).setCurrentAction(aim);
             }
-            return null;
-        }
+        });
+        ctx.get().setPacketHandled(true);
     }
 }

@@ -3,65 +3,100 @@ package com.LubieKakao1212.opencu.network;
 import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.lib.util.counting.CounterList;
 import com.LubieKakao1212.opencu.lib.util.counting.ICounter;
-import com.LubieKakao1212.opencu.network.packet.EntityAddVelocityPacket;
+import com.LubieKakao1212.opencu.network.packet.PlayerAddVelocityPacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.RequestDispenserUpdatePacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserAimPacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserPacket;
 import com.LubieKakao1212.opencu.network.packet.projectile.UpdateFireballPacket;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Queue;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 @Mod.EventBusSubscriber
 public class NetworkHandler {
 
-    private static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(OpenCUMod.MODID);
+    private static String version = "1";
+
+    private static SimpleChannel CHANNEL;
 
     //public static List<DelayedMessage> messages = new ArrayList<>();
     public static final CounterList<DelayedMessage> messages = new CounterList<DelayedMessage>();
 
     public static void init() {
+
+        CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation( OpenCUMod.MODID, "network" ))
+                .networkProtocolVersion(() -> version)
+                .clientAcceptedVersions(version::equals)
+                .serverAcceptedVersions(version::equals)
+                .simpleChannel();
+
         int id = 0;
-        INSTANCE.registerMessage(EntityAddVelocityPacket.Handler.class, EntityAddVelocityPacket.class, id++, Side.CLIENT);
-        INSTANCE.registerMessage(UpdateDispenserPacket.Handler.class, UpdateDispenserPacket.class, id++, Side.CLIENT);
-        INSTANCE.registerMessage(UpdateDispenserAimPacket.Handler.class, UpdateDispenserAimPacket.class, id++, Side.CLIENT);
-        INSTANCE.registerMessage(UpdateFireballPacket.Handler.class, UpdateFireballPacket.class, id++, Side.CLIENT);
-        INSTANCE.registerMessage(RequestDispenserUpdatePacket.Handler.class, RequestDispenserUpdatePacket.class, id++, Side.SERVER);
+        CHANNEL.messageBuilder(PlayerAddVelocityPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(PlayerAddVelocityPacket::toBytes)
+                .decoder(PlayerAddVelocityPacket::fromBytes)
+                .consumer(PlayerAddVelocityPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(UpdateFireballPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(UpdateFireballPacket::toBytes)
+                .decoder(UpdateFireballPacket::fromBytes)
+                .consumer(UpdateFireballPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(RequestDispenserUpdatePacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(RequestDispenserUpdatePacket::toBytes)
+                .decoder(RequestDispenserUpdatePacket::fromBytes)
+                .consumer(RequestDispenserUpdatePacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(UpdateDispenserAimPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(UpdateDispenserAimPacket::toBytes)
+                .decoder(UpdateDispenserAimPacket::fromBytes)
+                .consumer(UpdateDispenserAimPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(UpdateDispenserPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(UpdateDispenserPacket::toBytes)
+                .decoder(UpdateDispenserPacket::fromBytes)
+                .consumer(UpdateDispenserPacket::handle)
+                .add();
     }
 
-    public static void sendToALl(IMessage message) {
-        INSTANCE.sendToAll(message);
+    public static void sendToALl(IOCUPacket message) {
+        CHANNEL.send(PacketDistributor.ALL.noArg(), message);
     }
 
-    public static void sendToAllTracking(IMessage message, BlockPos pos, int dimension) {
-        INSTANCE.sendToAllTracking(message, new NetworkRegistry.TargetPoint(dimension, pos.getX(), pos.getY(), pos.getZ(), -1));
+    public static void sendToAllTracking(IOCUPacket message, Level level, BlockPos pos) {
+        sendToAllTracking(message, level.getChunkAt(pos));
     }
 
-    public static void sendToAllTracking(IMessage message, Entity entity) {
-        INSTANCE.sendToAllTracking(message, entity);
+    public static void sendToAllTracking(IOCUPacket message, LevelChunk chunk) {
+        CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), message);
     }
 
-    public static void sendTo(EntityPlayerMP player, IMessage message) {
-        INSTANCE.sendTo(message, player);
+    public static void sendToAllTracking(IOCUPacket message, Entity entity) {
+        CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
     }
 
-    public static void sendToServer(IMessage message) {
-        INSTANCE.sendToServer(message);
+    public static void sendTo(ServerPlayer player, IOCUPacket message) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), message);
     }
 
-    public static void enqueueEntityUpdate(IMessage message, Entity target, int delay) {
+    public static void sendToServer(IOCUPacket message) {
+        CHANNEL.sendToServer(message);
+    }
+
+    public static void enqueueEntityUpdate(IOCUPacket message, Entity target, int delay) {
         messages.add(new EntityMessage(message, delay, target));
     }
 
@@ -71,12 +106,13 @@ public class NetworkHandler {
         messages.tick();
     }
 
+
     private static abstract class DelayedMessage implements ICounter {
 
-        protected IMessage message;
+        protected IOCUPacket message;
         private int delay;
 
-        public DelayedMessage(IMessage message, int delay) {
+        public DelayedMessage(IOCUPacket message, int delay) {
             this.message = message;
             this.delay = delay;
         }
@@ -102,7 +138,7 @@ public class NetworkHandler {
 
         private Entity target;
 
-        public EntityMessage(IMessage message, int delay, Entity target) {
+        public EntityMessage(IOCUPacket message, int delay, Entity target) {
             super(message, delay);
             this.target = target;
         }
