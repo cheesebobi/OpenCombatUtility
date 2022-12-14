@@ -2,43 +2,31 @@ package com.LubieKakao1212.opencu.item;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
 import com.google.common.collect.Lists;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.commands.TagCommand;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CUMultiItem extends CUItem {
+/*public class CUMultiItem extends Item {
 
     private static CapabilityInitializer NO_CAPABILITY = tag -> null;
 
     private List<Variant> variants;
 
-    public CUMultiItem(String name) {
-        super(name);
+    public CUMultiItem(Properties props) {
+        super(props);
         this.setHasSubtypes(true);
         variants = new ArrayList<>();
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerModel() {
-        for(int i = 0; i < variants.size(); i++) {
-            OpenCUMod.proxy.registerItemRenderer(this, i, variants.get(i).id);
-        }
-    }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
+    public String getNameString(ItemStack stack) {
         return "item." + OpenCUMod.MODID + "." + variants.get(stack.getItemDamage()).id;
     }
 
@@ -103,7 +91,7 @@ public class CUMultiItem extends CUItem {
 
     @FunctionalInterface
     public interface CapabilityInitializer {
-        ICapabilityProvider Create(NBTTagCompound tag);
+        ICapabilityProvider Create(CompoundTag tag);
     }
 
-}
+}*/
