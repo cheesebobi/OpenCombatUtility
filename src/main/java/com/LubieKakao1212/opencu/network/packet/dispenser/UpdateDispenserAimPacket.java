@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.network.packet.dispenser;
 
-import com.LubieKakao1212.opencu.block.entity.TileEntityOmniDispenser;
+import com.LubieKakao1212.opencu.block.entity.BlockEntityOmniDispenser;
 import com.LubieKakao1212.opencu.network.IOCUPacket;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -68,8 +68,8 @@ public class UpdateDispenserAimPacket implements IOCUPacket {
 
             BlockEntity te = world.getBlockEntity(position);
 
-            if (te instanceof TileEntityOmniDispenser) {
-                ((TileEntityOmniDispenser) te).setCurrentAction(aim);
+            if (te instanceof BlockEntityOmniDispenser) {
+                ((BlockEntityOmniDispenser) te).setCurrentAction(aim);
             }
         });
         ctx.get().setPacketHandled(true);

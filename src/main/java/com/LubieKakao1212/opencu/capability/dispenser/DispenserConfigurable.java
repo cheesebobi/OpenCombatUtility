@@ -1,7 +1,7 @@
 package com.LubieKakao1212.opencu.capability.dispenser;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
 public class DispenserConfigurable extends DispenserBase {
 
@@ -85,21 +85,21 @@ public class DispenserConfigurable extends DispenserBase {
     }
 
     @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound nbt = new NBTTagCompound();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
 
-        nbt.setDouble("force", force);
-        nbt.setDouble("spread", spread);
+        nbt.putDouble("force", force);
+        nbt.putDouble("spread", spread);
 
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        if(nbt.hasKey("force", Constants.NBT.TAG_ANY_NUMERIC)) {
+    public void deserializeNBT(CompoundTag nbt) {
+        if(nbt.contains("force", Tag.TAG_ANY_NUMERIC)) {
             this.force = nbt.getDouble("force");
         }
-        if(nbt.hasKey("force", Constants.NBT.TAG_ANY_NUMERIC)) {
+        if(nbt.contains("force", Tag.TAG_ANY_NUMERIC)) {
             this.spread = nbt.getDouble("spread");
         }
     }

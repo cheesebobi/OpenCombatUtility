@@ -1,8 +1,5 @@
 package com.LubieKakao1212.opencu.capability.dispenser;
 
-import com.LubieKakao1212.opencu.config.OpenCUConfig;
-import com.LubieKakao1212.opencu.lib.math.MathUtil;
-
 public class DispenserConstant extends DispenserBase {
 
     private double constantSpread;

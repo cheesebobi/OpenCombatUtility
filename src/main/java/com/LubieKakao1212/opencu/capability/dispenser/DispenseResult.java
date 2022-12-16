@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.capability.dispenser;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class DispenseResult {
 

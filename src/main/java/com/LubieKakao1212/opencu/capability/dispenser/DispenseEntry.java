@@ -1,8 +1,8 @@
 package com.LubieKakao1212.opencu.capability.dispenser;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class DispenseEntry {
 
@@ -33,8 +33,8 @@ public class DispenseEntry {
         this(entity, leftover, mass, spreadMultiplier, energyMultiplier, DispenserMappings.DEFAULT_SHOOT_ACTION);
     }
 
-    public Entity getEntity(ItemStack stack, World world) {
-        return entity.get(stack, world);
+    public Entity getEntity(ItemStack stack, Level level) {
+        return entity.get(stack, level);
     }
 
     public double getMass() {

@@ -1,20 +1,20 @@
 package com.LubieKakao1212.opencu.capability.dispenser;
 
-import li.cil.oc.api.network.Connector;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.joml.Quaterniond;
 
-public interface IDispenser extends INBTSerializable<NBTTagCompound> {
+public interface IDispenser extends INBTSerializable<CompoundTag> {
 
     /**
      * @param shotItem always singe item
      * @return energy usage multiplier
      */
-    DispenseResult Shoot(Connector connector, World world, ItemStack shotItem, BlockPos pos, Quaterniond aim, double energyMultiplierFromFrequency);
+    DispenseResult shoot(ICapabilityProvider shooter, Level level, ItemStack shotItem, BlockPos pos, Quaterniond aim, double energyMultiplierFromFrequency);
 
     /**
      * @param spread spread value that would be set

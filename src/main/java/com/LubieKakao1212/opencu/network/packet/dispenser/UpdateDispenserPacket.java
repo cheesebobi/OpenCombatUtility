@@ -1,9 +1,8 @@
 package com.LubieKakao1212.opencu.network.packet.dispenser;
 
 import cofh.core.util.helpers.NBTHelper;
-import com.LubieKakao1212.opencu.block.entity.TileEntityOmniDispenser;
+import com.LubieKakao1212.opencu.block.entity.BlockEntityOmniDispenser;
 import com.LubieKakao1212.opencu.network.IOCUPacket;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.item.ItemStack;
@@ -62,8 +61,8 @@ public class UpdateDispenserPacket implements IOCUPacket {
 
             BlockEntity te = level.getBlockEntity(position);
 
-            if(te instanceof TileEntityOmniDispenser) {
-                ((TileEntityOmniDispenser) te).setCurrentDispenserItem(newDispenser);
+            if(te instanceof BlockEntityOmniDispenser) {
+                ((BlockEntityOmniDispenser) te).setCurrentDispenserItem(newDispenser);
             }
         });
     }

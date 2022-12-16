@@ -1,80 +1,66 @@
 package com.LubieKakao1212.opencu.block;
 
-import com.LubieKakao1212.opencu.block.tileentity.TileEntityOmniDispenser;
-import com.LubieKakao1212.opencu.block.tileentity.TileEntityRepulsor;
-import com.LubieKakao1212.opencu.block.tileentity.renderer.RendererRepulsor;
+import com.LubieKakao1212.opencu.block.entity.BlockEntityOmniDispenser;
 import com.LubieKakao1212.opencu.gui.OCUGuis;
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import com.google.common.collect.ImmutableMap;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Function;
 
-public class BlockOmniDispenserFrame extends CUBlock {
+public class BlockOmniDispenserFrame extends Block implements EntityBlock {
 
-    public BlockOmniDispenserFrame(Material material, String name) {
-        super(material, name);
-        this.setHardness(1f);
-        this.setHarvestLevel("pickaxe", 2);
-        this.setSoundType(SoundType.METAL);
-        this.setResistance(3.5f);
+    public BlockOmniDispenserFrame(BlockBehaviour.Properties properties) {
+        super(properties);
     }
 
     @Override
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
+    public RenderShape getRenderShape(BlockState pState) {
+        return RenderShape.MODEL;
     }
 
     @Override
-    public boolean isBlockNormalCube(IBlockState blockState) {
-        return false;
-    }
-
-    @Override
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.MODEL;
-    }
-
-    @Nullable
-    @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileEntityOmniDispenser();
-    }
-
-    @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if(!worldIn.isRemote){
-            OCUGuis.openGUI("dispenser", playerIn, worldIn, pos.getX(), pos.getY(), pos.getZ());
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if(!level.isClientSide){
+            OCUGuis.openGUI("dispenser", player, level, pos.getX(), pos.getY(), pos.getZ());
         }
-        return true;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-        TileEntity te = worldIn.getTileEntity(pos);
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        BlockEntity be = level.getBlockEntity(pos);
 
-        IItemHandler inventory = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        LazyOptional<IItemHandler> inventory = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
-        for(int i=0; i<inventory.getSlots(); i++) {
-            Block.spawnAsEntity(worldIn, pos, inventory.extractItem(i, 999, false));
-        }
+        inventory.ifPresent((inv) -> {
+            for(int i=0; i<inv.getSlots(); i++) {
+                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), inv.extractItem(i, 999, false));
+            }
+        });
 
-        super.breakBlock(worldIn, pos, state);
+        super.onRemove(state, level, pos, newState, isMoving);
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new BlockEntityOmniDispenser(pos, state);
     }
 }

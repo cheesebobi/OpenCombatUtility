@@ -1,8 +1,7 @@
 package com.LubieKakao1212.opencu.pulse;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.*;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.entity.Entity;
 
 public class VectorPulse extends EntityPulse {
 
@@ -38,21 +37,21 @@ public class VectorPulse extends EntityPulse {
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-        NBTTagList vector = new NBTTagList();
-        vector.appendTag(new NBTTagDouble(vX));
-        vector.appendTag(new NBTTagDouble(vY));
-        vector.appendTag(new NBTTagDouble(vZ));
-        tag.setTag("vector", vector);
+    public CompoundTag writeToNBT(CompoundTag tag) {
+        ListTag vector = new ListTag();
+        vector.add(DoubleTag.valueOf(vX));
+        vector.add(DoubleTag.valueOf(vY));
+        vector.add(DoubleTag.valueOf(vZ));
+        tag.put("vector", vector);
         return super.writeToNBT(tag);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound tag) {
+    public void readFromNBT(CompoundTag tag) {
         super.readFromNBT(tag);
-        NBTTagList vector = tag.getTagList("vector", 6);
-        vX = vector.getDoubleAt(0);
-        vY = vector.getDoubleAt(1);
-        vZ = vector.getDoubleAt(2);
+        ListTag vector = tag.getList("vector", 6);
+        vX = vector.getDouble(0);
+        vY = vector.getDouble(1);
+        vZ = vector.getDouble(2);
     }
 }

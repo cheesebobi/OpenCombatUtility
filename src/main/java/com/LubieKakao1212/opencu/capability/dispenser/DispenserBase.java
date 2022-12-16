@@ -1,14 +1,15 @@
 package com.LubieKakao1212.opencu.capability.dispenser;
 
-import com.LubieKakao1212.opencu.config.OpenCUConfig;
-import com.LubieKakao1212.opencu.lib.math.AimUtil;
-import com.LubieKakao1212.opencu.lib.math.MathUtil;
-import li.cil.oc.api.network.Connector;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import com.LubieKakao1212.qulib.math.AimUtil;
+import com.LubieKakao1212.qulib.math.MathUtil;
+import com.LubieKakao1212.qulib.util.joml.Vector3dUtil;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.joml.Quaterniond;
 import org.joml.Vector3d;
 
@@ -25,32 +26,33 @@ public abstract class DispenserBase implements IDispenser {
     }
 
     @Override
-    public DispenseResult Shoot(Connector connector, World world, ItemStack shotItem, BlockPos pos, Quaterniond aim, double energyMultiplierFromFrequency) {
+    public DispenseResult shoot(ICapabilityProvider shooter, Level level, ItemStack shotItem, BlockPos pos, Quaterniond aim, double energyMultiplierFromFrequency) {
         DispenseEntry entry = getMappings().getDispenseResult(shotItem);
-        if(connector.tryChangeBuffer(-entry.getEnergyMultiplier() * energyMultiplierFromFrequency * energyConsumption)) {
-            Entity entity = entry.getEntity(shotItem, world);
+        //TODO energy
+        //if(connector.tryChangeBuffer(-entry.getEnergyMultiplier() * energyMultiplierFromFrequency * energyConsumption)) {
+            Entity entity = entry.getEntity(shotItem, level);
 
-            Vector3d forward = AimUtil.calculateForwardWithSpread(aim, (getSpread() * entry.getSpreadMultiplier() * MathUtil.degToRad));
+            Vector3d forward = AimUtil.calculateForwardWithUniformSpread(aim, (getSpread() * entry.getSpreadMultiplier() * MathUtil.degToRad), Vector3dUtil.south());
 
-            entity.setLocationAndAngles(pos.getX() + 0.5 + forward.x, pos.getY() + 0.5 + forward.y, pos.getZ() + 0.5 + forward.z, 0.f,0.f);
+            //entity.setLocationAndAngles(pos.getX() + 0.5 + forward.x, pos.getY() + 0.5 + forward.y, pos.getZ() + 0.5 + forward.z, 0.f,0.f);
+
+            entity.setPos(pos.getX() + 0.5 + forward.x, pos.getY() + 0.5 + forward.y, pos.getZ() + 0.5 + forward.z);
 
             double velocity = getForce() / entry.getMass();
 
-            entity.motionX = forward.x * velocity;
-            entity.motionY = forward.y * velocity;
-            entity.motionZ = forward.z * velocity;
+            entity.setDeltaMovement(forward.x * velocity, forward.y * velocity, forward.z * velocity);
 
             entry.getPostShootAction().Execute(entity, forward, velocity);
 
-            world.spawnEntity(entity);
+            level.addFreshEntity(entity);
 
             entry.getPostSpawnAction().Execute(entity, forward, velocity);
 
             return new DispenseResult(entry.getLeftover());
-        }else
+        /*}else
         {
             return new DispenseResult(shotItem);
-        }
+        }*/
     }
 
     @Override
@@ -81,12 +83,12 @@ public abstract class DispenserBase implements IDispenser {
     }
 
     @Override
-    public NBTTagCompound serializeNBT() {
-        return new NBTTagCompound();
+    public CompoundTag serializeNBT() {
+        return new CompoundTag();
     }
 
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
 
     }
 }

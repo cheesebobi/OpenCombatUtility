@@ -2,31 +2,28 @@ package com.LubieKakao1212.opencu.capability.provider;
 
 import com.LubieKakao1212.opencu.capability.dispenser.DispenserCapability;
 import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
+import net.minecraft.core.Direction;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class DispenserProvider implements ICapabilityProvider {
 
-    private IDispenser dispenser;
+    private LazyOptional<IDispenser> dispenser;
 
     public DispenserProvider(IDispenser dispenser) {
-        this.dispenser = dispenser;
-    }
-
-    @Override
-    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-        return capability == DispenserCapability.DISPENSER_CAPABILITY;
+        this.dispenser = LazyOptional.of(() -> dispenser);
     }
 
     @Nullable
     @Override
-    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
         if(capability == DispenserCapability.DISPENSER_CAPABILITY){
-            return (T)dispenser;
+            return (LazyOptional<T>)dispenser;
         }
         return null;
     }

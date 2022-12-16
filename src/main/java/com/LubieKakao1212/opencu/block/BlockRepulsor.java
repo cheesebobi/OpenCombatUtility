@@ -1,60 +1,39 @@
 package com.LubieKakao1212.opencu.block;
 
-import com.LubieKakao1212.opencu.block.tileentity.TileEntityRepulsor;
-import com.LubieKakao1212.opencu.block.tileentity.renderer.RendererRepulsor;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import com.LubieKakao1212.opencu.block.entity.BlockEntityRepulsor;
+import com.LubieKakao1212.opencu.init.CUBlockEntities;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
+public class BlockRepulsor extends Block implements EntityBlock {
 
-public class BlockRepulsor extends CUBlock {
+    public BlockRepulsor(Properties properties) {
+        super(properties);
+    }
 
-    public BlockRepulsor(Material material, String name) {
-        super(material, name);
-        this.setHardness(1f);
-        this.setHarvestLevel("pickaxe", 2);
-        this.setSoundType(SoundType.METAL);
-        this.setResistance(3.5f);
+    @Override
+    public RenderShape getRenderShape(BlockState pState) {
+        return RenderShape.MODEL;
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new BlockEntityRepulsor(pos, state);
     }
 
     @Nullable
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileEntityRepulsor();
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        return pBlockEntityType == CUBlockEntities.REPULSOR ? BlockEntityRepulsor::tick : null;
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void registerItemModel() {
-        super.registerItemModel();
-    }
 
-    @Override
-    public boolean isOpaqueCube(IBlockState state) {
-        return false;
-    }
-
-    @Override
-    public boolean isBlockNormalCube(IBlockState blockState) {
-        return false;
-    }
-
-    @Override
-    public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.MODEL;
-    }
 }

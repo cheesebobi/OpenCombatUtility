@@ -9,6 +9,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import org.joml.Vector3d;
 
 import java.util.HashMap;
@@ -19,9 +28,9 @@ public abstract class DispenserMappings {
 
     public static final PostSpawnAction DEFAULT_SPAWN_ACTION = (entity, forward, velocity) -> { };
 
-    public static final DispenseEntry ITEM_ENTRY = new DispenseEntry((stack, world) -> {
-        EntityItem item = new EntityItem(world);
-        item.setItem(stack);
+    public static final DispenseEntry ITEM_ENTRY = new DispenseEntry((stack, level) -> {
+
+        ItemEntity item = new ItemEntity(level, 0, 0 ,0, stack);
         return item;
     }, ItemStack.EMPTY, 1., 1., 1.);
 
@@ -29,9 +38,10 @@ public abstract class DispenserMappings {
      * Experimental
      */
     public static final DispenseEntry BLOCK_ENTRY = new DispenseEntry((stack, world) -> {
-        ItemBlock blockItem = (ItemBlock)stack.getItem();
+        //TODO make fake player place items
+        BlockItem blockItem = (BlockItem)stack.getItem();
         Block block = blockItem.getBlock();
-        EntityFallingBlock sand = new EntityFallingBlock(world, 0, 0, 0, block.getStateFromMeta(stack.getItemDamage()));
+        FallingBlockEntity sand = null;//new FallingBlockEntity(world, 0, 0, 0, null);
         return sand;
     }, ItemStack.EMPTY, 1., 0.1, 1.);
 
@@ -39,7 +49,7 @@ public abstract class DispenserMappings {
 
     public void register(Item item, DispenseEntry mapping) {
         if(mappings.put(item, mapping) != null) {
-            OpenCUMod.logger.warn("Assigned dispenser mapping for same item twice, previous one will be overwritten");
+            OpenCUMod.LOGGER.warn("Assigned dispenser mapping for same item twice, previous one will be overwritten");
         }
     }
 
@@ -56,7 +66,7 @@ public abstract class DispenserMappings {
 
     @FunctionalInterface
     public interface EntityMapping {
-        Entity get(ItemStack stack, World world);
+        Entity get(ItemStack stack, Level Level);
     }
 
     @FunctionalInterface
