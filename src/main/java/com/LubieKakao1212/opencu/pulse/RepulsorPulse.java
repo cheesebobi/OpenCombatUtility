@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.pulse;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 public class RepulsorPulse extends EntityPulse {
 
@@ -14,9 +14,9 @@ public class RepulsorPulse extends EntityPulse {
 
         for(Entity e : entityList)
         {
-            double dX = e.posX - posX;
-            double dY = e.posY - posY;
-            double dZ = e.posZ - posZ;
+            double dX = e.getX() - posX;
+            double dY = e.getY() - posY;
+            double dZ = e.getZ() - posZ;
 
             double distanceSqr = dX*dX + dY*dY + dZ*dZ;
 

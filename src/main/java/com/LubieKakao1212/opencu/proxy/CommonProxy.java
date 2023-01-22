@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.proxy;
+/*package com.LubieKakao1212.opencu.proxy;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenserRegistry;
@@ -35,4 +35,4 @@ public class CommonProxy {
         ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(new ResourceLocation(OpenCUMod.MODID, id), "inventory"));
     }
 
-}
+}*/

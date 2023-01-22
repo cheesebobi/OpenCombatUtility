@@ -1,10 +1,8 @@
-package com.LubieKakao1212.opencu.gui;
+/*package com.LubieKakao1212.opencu.gui;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
-import com.LubieKakao1212.opencu.block.tileentity.TileEntityOmniDispenser;
-import com.LubieKakao1212.opencu.gui.container.OmnidispenserContainer;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
+import com.LubieKakao1212.opencu.block.entity.BlockEntityOmniDispenser;
+import com.LubieKakao1212.opencu.gui.container.OmnidispenserMenu;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,9 +15,9 @@ public class OCUGuis {
     {
         registerGui("dispenser",
                 new OCUGuiHandler.TEGuiFactory(
-                        TileEntityOmniDispenser.class,
-                        (OCUGuiHandler.TEGuiFactory.Factory<TileEntityOmniDispenser>)(EntityPlayer player, TileEntityOmniDispenser tileEntity) -> { return new OmnidispenserGUI(tileEntity, player); },
-                        (OCUGuiHandler.TEGuiFactory.Factory<TileEntityOmniDispenser>)(EntityPlayer player, TileEntityOmniDispenser tileEntity) -> { return new OmnidispenserContainer(tileEntity, player.inventory); }
+                        BlockEntityOmniDispenser.class,
+                        (OCUGuiHandler.TEGuiFactory.Factory<BlockEntityOmniDispenser>)(EntityPlayer player, BlockEntityOmniDispenser tileEntity) -> { return new OmnidispenserScreen(tileEntity, player); },
+                        (OCUGuiHandler.TEGuiFactory.Factory<BlockEntityOmniDispenser>)(EntityPlayer player, BlockEntityOmniDispenser tileEntity) -> { return new OmnidispenserMenu(tileEntity, player.inventory); }
                 ));
     }
 
@@ -31,4 +29,4 @@ public class OCUGuis {
         ids.put(id, OCUGuiHandler.guis.size());
         OCUGuiHandler.guis.add(factory);
     }
-}
+}*/

@@ -3,7 +3,6 @@ package com.LubieKakao1212.opencu.capability.provider;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenserCapability;
 import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
 import net.minecraft.core.Direction;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;

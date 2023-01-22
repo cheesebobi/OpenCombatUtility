@@ -3,6 +3,7 @@ package com.LubieKakao1212.opencu.block.entity;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenseResult;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenserCapability;
 import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.gui.container.OmnidispenserMenu;
 import com.LubieKakao1212.opencu.init.CUBlockEntities;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
 import com.LubieKakao1212.opencu.network.packet.dispenser.RequestDispenserUpdatePacket;
@@ -16,9 +17,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.Containers;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -34,7 +42,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class BlockEntityOmniDispenser extends BlockEntity {
+public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvider {
 
     //TODO Temporary until CC support is implemented
     private static Random random = new Random();
@@ -254,7 +262,7 @@ public class BlockEntityOmniDispenser extends BlockEntity {
         }
     }
 
-    public boolean isUsableBy(ServerPlayer player) {
+    public boolean isUsableBy(Player player) {
         return player.distanceToSqr(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ()) <= 64D && level.getBlockEntity(worldPosition) == this;
     }
 
@@ -326,13 +334,23 @@ public class BlockEntityOmniDispenser extends BlockEntity {
         this.currentDispenserItem = currentDispenserItem;
     }
 
+    @Override
+    public Component getDisplayName() {
+        //TODO Translation
+        return new TextComponent("dispenser");
+    }
+
+    @Override
+    public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
+        return new OmnidispenserMenu(containerId, inventory, level, getBlockPos());
+    }
+
     public static class DispenseAction {
         private Quaterniond aim;
 
         private boolean lockedOn;
 
-        public DispenseAction(Quaterniond aim)
-        {
+        public DispenseAction(Quaterniond aim) {
             this.aim = aim;
         }
 
@@ -340,5 +358,6 @@ public class BlockEntityOmniDispenser extends BlockEntity {
             return aim;
         }
     }
+
 
 }

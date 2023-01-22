@@ -1,3 +1,4 @@
+/*
 package com.LubieKakao1212.opencu.gui;
 
 import net.minecraft.client.gui.Gui;
@@ -74,4 +75,4 @@ public class OCUGuiHandler implements IGuiHandler {
 
         Object ConstructServer(EntityPlayer player, World world, int x, int y, int z);
     }
-}
+}*/

@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu;
 
-import com.LubieKakao1212.opencu.proxy.CommonProxy;
+import com.LubieKakao1212.opencu.init.CURegister;
+import com.LubieKakao1212.opencu.network.NetworkHandler;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
@@ -15,5 +16,8 @@ public class OpenCUMod
 
     public OpenCUMod() {
 
+        NetworkHandler.init();
+
+        CURegister.init();
     }
 }

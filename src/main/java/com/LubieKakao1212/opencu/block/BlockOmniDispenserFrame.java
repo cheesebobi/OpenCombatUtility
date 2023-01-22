@@ -1,9 +1,9 @@
 package com.LubieKakao1212.opencu.block;
 
 import com.LubieKakao1212.opencu.block.entity.BlockEntityOmniDispenser;
-import com.LubieKakao1212.opencu.gui.OCUGuis;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -21,6 +21,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
@@ -39,7 +40,11 @@ public class BlockOmniDispenserFrame extends Block implements EntityBlock {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if(!level.isClientSide){
-            OCUGuis.openGUI("dispenser", player, level, pos.getX(), pos.getY(), pos.getZ());
+            //OCUGuis.openGUI("dispenser", player, level, pos.getX(), pos.getY(), pos.getZ());
+
+            BlockEntityOmniDispenser dis = (BlockEntityOmniDispenser) level.getBlockEntity(pos);
+
+            NetworkHooks.openGui((ServerPlayer) player, dis);
         }
         return InteractionResult.SUCCESS;
     }

@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.gui.container;
 
-import net.minecraft.inventory.Slot;
+import net.minecraft.world.inventory.Slot;
 
 @FunctionalInterface
 public interface SlotFactory {
