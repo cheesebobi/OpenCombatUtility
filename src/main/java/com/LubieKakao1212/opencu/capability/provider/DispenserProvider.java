@@ -24,6 +24,6 @@ public class DispenserProvider implements ICapabilityProvider {
         if(capability == DispenserCapability.DISPENSER_CAPABILITY){
             return (LazyOptional<T>)dispenser;
         }
-        return null;
+        return LazyOptional.empty();
     }
 }

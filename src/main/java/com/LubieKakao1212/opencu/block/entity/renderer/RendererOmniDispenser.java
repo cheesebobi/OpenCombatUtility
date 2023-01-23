@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Quaterniond;
 
@@ -21,6 +22,10 @@ public class RendererOmniDispenser implements BlockEntityRenderer<BlockEntityOmn
         y180 = QuaterniondUtil.toMojang(quat);
 
         miry = quat.set(1, -1, 1, -1);
+    }
+
+    public RendererOmniDispenser(BlockEntityRendererProvider.Context ctx) {
+
     }
 
 

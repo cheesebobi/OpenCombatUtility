@@ -1,16 +1,7 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "custom": { "flip-v": true },
-    "defaults" : {
-    }
-  },
   "variants": {
-    "normal": {
-      "model": "opencu:repulsor_frame.obj"
-    },
-    "inventory": {
-      "model": "opencu:item/repulsor"
+    "": {
+      "model": "opencu:block/repulsor_frame"
     }
   }
 }

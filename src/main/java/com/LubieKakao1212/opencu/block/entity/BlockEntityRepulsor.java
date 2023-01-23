@@ -8,6 +8,7 @@ import com.LubieKakao1212.opencu.pulse.VectorPulse;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -42,11 +43,12 @@ public class BlockEntityRepulsor extends BlockEntity {
         if (!level.isClientSide) {
             BlockEntityRepulsor rep = (BlockEntityRepulsor) blockEntity;
             if (rep.pulseTicksLeft > 0) {
-                rep.pulseTicksLeft--;
-                level.sendBlockUpdated(pos, state, state, 2);
-            }else {
+                level.sendBlockUpdated(pos, state, state, 3);
+                //level.markAndNotifyBlock(,);
+            }else if(rep.pulseTicksLeft < -10) {
                 rep.pulse();
             }
+            rep.pulseTicksLeft--;
         }
     }
 
@@ -136,6 +138,9 @@ public class BlockEntityRepulsor extends BlockEntity {
 
         BlockPos pos = getBlockPos();
 
+        pulse.setBaseForce(1f);
+        pulse.setRadius(5);
+
         pulse.lock(level, x1 + pos.getX() + 0.5, y1 + pos.getY() + 0.5, z1 + pos.getZ() + 0.5);
         pulse.filter(filter);
 
@@ -154,7 +159,7 @@ public class BlockEntityRepulsor extends BlockEntity {
         setChanged();
 
         BlockState state = level.getBlockState(pos);
-        level.sendBlockUpdated(pos, state, state, 2);
+        level.sendBlockUpdated(pos, state, state, 3);
     }
 
     @Override
@@ -162,6 +167,9 @@ public class BlockEntityRepulsor extends BlockEntity {
         CompoundTag pulseTag = new CompoundTag();
         pulseTag.putInt("type", pulseType);
         compound.put("pulse", pulse.writeToNBT(pulseTag));
+
+        //pulseTag.putInt("anim", pulseTicksLeft);
+
         super.saveAdditional(compound);
     }
 
@@ -183,6 +191,11 @@ public class BlockEntityRepulsor extends BlockEntity {
         return tag;
     }
 
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        pulseTicksLeft = tag.getInt("anim");
+    }
+
     @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
@@ -190,8 +203,9 @@ public class BlockEntityRepulsor extends BlockEntity {
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        pulseTicksLeft = tag.getInt("anim");
+    public final void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet ) {
+        var tag = packet.getTag();
+        if (tag != null) handleUpdateTag(tag);
     }
 
     public void setPulse(int type) {

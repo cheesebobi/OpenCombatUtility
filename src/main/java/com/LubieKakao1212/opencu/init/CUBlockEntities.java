@@ -19,6 +19,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.registries.RegistryObject;
 
+@ObjectHolder(OpenCUMod.MODID)
 public class CUBlockEntities {
 
     @ObjectHolder(CUBlocks.ID.REPULSOR)

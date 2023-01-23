@@ -18,7 +18,6 @@ import net.minecraftforge.registries.RegistryObject;
 import org.checkerframework.common.value.qual.StaticallyExecutable;
 import org.jetbrains.annotations.BlockingExecutor;
 
-@CUInit
 @ObjectHolder(OpenCUMod.MODID)
 public class CUBlocks {
 
@@ -32,16 +31,16 @@ public class CUBlocks {
 
     static
     {
-        blockItem(BLOCKS.register(ID.REPULSOR, () -> new BlockRepulsor(BlockBehaviour.Properties.of(Material.METAL).strength(1f))));
-        blockItem(BLOCKS.register(ID.OMNI_DISPENSER, () -> new BlockOmniDispenserFrame(BlockBehaviour.Properties.of(Material.METAL).strength(1f))));
+        blockItem(BLOCKS.register(ID.REPULSOR, () -> new BlockRepulsor(BlockBehaviour.Properties.of(Material.METAL).strength(1f).noOcclusion())));
+        blockItem(BLOCKS.register(ID.OMNI_DISPENSER, () -> new BlockOmniDispenserFrame(BlockBehaviour.Properties.of(Material.METAL).strength(1f).noOcclusion())));
 
         //TODO check if this works
         CURegister.register(BLOCKS);
     }
 
-/*    public static void init() {
+    public static void init() {
         //CURegister.register(BLOCKS);
-    }*/
+    }
 
     public static void blockItem(RegistryObject<Block> obj) {
         CUItems.ITEMS.register(obj.getId().getPath(), () -> new BlockItem(obj.get(), new Item.Properties().tab(OCUCreativeTabs.tabCUMain)));

@@ -23,9 +23,12 @@ public class CUMenu {
         MENUS.register(ID.OMNI_DISPENSER, () -> IForgeMenuType.create((id, inv, data) -> new OmnidispenserMenu(id, inv, Minecraft.getInstance().level, data.readBlockPos())));
 
         //TODO check if this works
-        CURegister.register(MENUS);
+        //CURegister.register(MENUS);
     }
 
+    public static void init() {
+        CURegister.register(MENUS);
+    }
 
     public static class ID {
         public static final String OMNI_DISPENSER = "omni_dispenser";
