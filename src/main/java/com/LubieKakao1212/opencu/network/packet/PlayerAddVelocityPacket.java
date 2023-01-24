@@ -74,6 +74,10 @@ public class PlayerAddVelocityPacket implements IOCUPacket {
         ctx.get().enqueueWork(() -> {
             Player player = Minecraft.getInstance().player;
             player.setDeltaMovement(player.getDeltaMovement().add(motionX / precision, motionY / precision, motionZ / precision));
+
+            if(player.getDeltaMovement().y > 0){
+                player.fallDistance = 0;
+            }
         });
         ctx.get().setPacketHandled(true);
     }

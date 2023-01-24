@@ -1,9 +1,13 @@
 package com.LubieKakao1212.opencu.pulse;
 
+import com.LubieKakao1212.opencu.network.NetworkHandler;
+import com.LubieKakao1212.opencu.network.packet.PlayerAddVelocityPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -99,13 +103,13 @@ public abstract class EntityPulse {
     protected static void addVelocity(Entity e, double vX, double vY, double vZ) {
         if(e instanceof ServerPlayer)
         {
-            /*NetworkHandler.sendTo((ServerPlayer)e, new EntityAddVelocityPacket(vX, vY, vZ));
-            if(e.motionY > 0){
-                e.fallDistance = 0;
-            }*/
+            NetworkHandler.sendTo((ServerPlayer)e, new PlayerAddVelocityPacket(vX, vY, vZ));
         }else {
-            //e.addVelocity(vX, vY, vZ);
             Vec3 movement = e.getDeltaMovement().add(vX, vY, vZ);
+            //TODO unground arrows
+            /*if(e instanceof AbstractArrow) {
+                AbstractArrow p = (AbstractArrow) e;
+            }*/
             e.setDeltaMovement(movement);
             if(e instanceof LivingEntity && movement.y > 0)
             {
