@@ -50,11 +50,10 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
 
     private long initialiseDelay = 3;
 
-    @SideOnly(Side.CLIENT)
     private boolean isInitialised = false;
-    @SideOnly(Side.CLIENT)
+
     private ItemStack currentDispenserItem = null;
-    @SideOnly(Side.CLIENT)
+
     private DispenseAction lastAction = null;
 
     public TileEntityOmniDispenser() {
@@ -361,31 +360,27 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
         NetworkHandler.sendTo(player, new UpdateDispenserAimPacket(pos, currentAction.aim));
     }
 
-    @SideOnly(Side.CLIENT)
     public ItemStack getCurrentDispenserItem() {
         return currentDispenserItem;
     }
 
-    @SideOnly(Side.CLIENT)
     public DispenseAction getCurrentAction() {
         return currentAction;
     }
 
-    @SideOnly(Side.CLIENT)
     public DispenseAction getLastAction() {
         return lastAction;
     }
 
-    @SideOnly(Side.CLIENT)
     public void setCurrentAction(Quaterniond newAction) {
         this.lastAction = currentAction;
         this.currentAction = new DispenseAction(newAction);
     }
 
-    @SideOnly(Side.CLIENT)
     public void setCurrentDispenserItem(ItemStack currentDispenserItem) {
         this.currentDispenserItem = currentDispenserItem;
     }
+
 
     public class DispenseAction {
         private Quaterniond aim;
@@ -401,5 +396,4 @@ public class TileEntityOmniDispenser extends TileEntity implements Environment, 
             return aim;
         }
     }
-
 }

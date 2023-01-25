@@ -8,12 +8,15 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 @Mod.EventBusSubscriber
 public class TooltipEventHandler {
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void AddTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
@@ -35,6 +38,7 @@ public class TooltipEventHandler {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     private static void replaceProperty(List<String> tooltip, String property, String value) {
         for(int i = 0; i < tooltip.size(); i++) {
             String line = tooltip.get(i);

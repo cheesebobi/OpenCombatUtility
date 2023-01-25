@@ -13,8 +13,7 @@ public class OCUGuis {
 
     public static final Map<String, Integer> ids = new HashMap<>();
 
-    static
-    {
+    public static void init() {
         registerGui("dispenser",
                 new OCUGuiHandler.TEGuiFactory(
                         TileEntityOmniDispenser.class,

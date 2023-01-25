@@ -22,6 +22,10 @@ function circles(count1, count2, pMax, pMin)
         p = lerp(pMin, pMax, (n-1) / count2)
         for i=1,count1,1 do
             dis.aim(((i-1) / count1) * pi2 - math.pi, p)
+            while not dis.isAligned() do
+                os.sleep(0.05)
+            end
+            os.sleep(0.1)
             dis.dispense()
         end
     end
