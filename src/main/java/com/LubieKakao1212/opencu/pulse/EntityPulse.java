@@ -60,7 +60,6 @@ public abstract class EntityPulse {
     public abstract void execute();
 
     public void setWhitelist(boolean whitelist) {
-        OpenCUMod.logger.warn(this.whitelist);
         this.whitelist = whitelist;
     }
 
