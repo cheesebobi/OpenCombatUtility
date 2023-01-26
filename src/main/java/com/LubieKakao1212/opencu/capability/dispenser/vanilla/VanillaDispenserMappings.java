@@ -15,9 +15,12 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Optional;
+
 public class VanillaDispenserMappings extends DispenserMappings {
 
     public void init() {
+        //region Mappings
         EntityMapping arrowMapping = (stack, level) -> {
             //TODO find a way to stop using bob
             LivingEntity bob = new Pig(EntityType.PIG, level);
@@ -39,7 +42,7 @@ public class VanillaDispenserMappings extends DispenserMappings {
             return arrow;
         }, ItemStack.EMPTY, 1., 1., 1.));
         register(Items.TIPPED_ARROW, new DispenseEntry(arrowMapping, ItemStack.EMPTY, 1.,1., 1.));
-        register(Items.SPECTRAL_ARROW, new DispenseEntry(arrowMapping, ItemStack.EMPTY, 1., 1.,1.));
+        //register(Items.SPECTRAL_ARROW, new DispenseEntry(arrowMapping, ItemStack.EMPTY, 1., 1.,1.));
 
         register(Items.TNT, new DispenseEntry((stack, level) -> {
             PrimedTnt tnt = new PrimedTnt(EntityType.TNT, level);
@@ -83,8 +86,21 @@ public class VanillaDispenserMappings extends DispenserMappings {
 
         register(Items.FIREWORK_ROCKET, new DispenseEntry((stack, level) -> {
             FireworkRocketEntity firework = new FireworkRocketEntity(level, 0, 0, 0, stack);
+            //TODO FireworkRocketEntity firework = new FireworkRocketEntity(level, stack, 0, 0, 0, true);
             return firework;
         },ItemStack.EMPTY, 50., 1., 1.));
+        //endregion
+
+        //region Redirections
+        register((stack) -> {
+            Item i = stack.getItem();
+            if(i != Items.ARROW && i instanceof ArrowItem) {
+                return Optional.of(Items.TIPPED_ARROW);
+            }else {
+                return Optional.empty();
+            }
+        });
+        //endregion
     }
 
     @Override

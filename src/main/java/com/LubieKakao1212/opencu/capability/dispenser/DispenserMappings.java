@@ -11,7 +11,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.joml.Vector3d;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 public abstract class DispenserMappings {
 
@@ -38,14 +41,24 @@ public abstract class DispenserMappings {
 
     private final HashMap<Item, DispenseEntry> mappings = new HashMap<>();
 
+    private final List<MappingRedirection> redirections = new ArrayList<>();
+
     public void register(Item item, DispenseEntry mapping) {
         if(mappings.put(item, mapping) != null) {
             OpenCUMod.LOGGER.warn("Assigned dispenser mapping for same item twice, previous one will be overwritten");
         }
     }
 
+    public void register(MappingRedirection predicate) {
+        redirections.add(predicate);
+    }
+
     public DispenseEntry getDispenseResult(ItemStack stack) {
-        DispenseEntry mapping = mappings.getOrDefault(stack.getItem(), getDefaultEntry());
+        final Item[] item = {stack.getItem()};
+        for(MappingRedirection redirector : redirections) {
+            redirector.get(stack).ifPresent((i) -> item[0] = i);
+        }
+        DispenseEntry mapping = mappings.getOrDefault(item[0], getDefaultEntry());
         return mapping;
     }
 
@@ -68,6 +81,12 @@ public abstract class DispenserMappings {
     @FunctionalInterface
     public interface PostSpawnAction {
         void Execute(Entity entity, Vector3d forward, double velocity);
+    }
+
+    @FunctionalInterface
+    public interface MappingRedirection {
+        Optional<Item> get(ItemStack stack);
+
     }
 
 }
