@@ -23,9 +23,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 
+import java.util.Optional;
+
 public class VanillaDispenserMappings extends DispenserMappings {
 
     public void init() {
+        //region mappings
         EntityMapping arrowMapping = (stack, world) -> {
             EntityLivingBase bob = new EntityPig(world);
             EntityArrow arrow = ((ItemArrow)stack.getItem()).createArrow(world, stack, bob);
@@ -47,7 +50,7 @@ public class VanillaDispenserMappings extends DispenserMappings {
             return arrow;
         }, ItemStack.EMPTY, 1., 1., 1.));
         register(Items.TIPPED_ARROW, new DispenseEntry(arrowMapping, ItemStack.EMPTY, 1.,1., 1.));
-        register(Items.SPECTRAL_ARROW, new DispenseEntry(arrowMapping, ItemStack.EMPTY, 1., 1.,1.));
+        //register(Items.SPECTRAL_ARROW, new DispenseEntry(arrowMapping, ItemStack.EMPTY, 1., 1.,1.));
 
         register(Item.getItemFromBlock(Blocks.TNT), new DispenseEntry((stack, world) -> {
             EntityTNTPrimed tnt = new EntityTNTPrimed(world);
@@ -94,6 +97,18 @@ public class VanillaDispenserMappings extends DispenserMappings {
             EntityFireworkRocket firework = new EntityFireworkRocket(world, 0, 0, 0, stack);
             return firework;
         },ItemStack.EMPTY, 50., 1., 1.));
+        //endregion
+
+        //region Redirections
+        register((stack) -> {
+            Item i = stack.getItem();
+            if(i != Items.ARROW && i instanceof ItemArrow) {
+                return Optional.of(Items.TIPPED_ARROW);
+            }else {
+                return Optional.empty();
+            }
+        });
+        //endregion
     }
 
     @Override
