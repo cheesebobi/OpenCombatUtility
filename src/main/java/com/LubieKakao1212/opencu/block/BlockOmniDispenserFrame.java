@@ -34,7 +34,7 @@ public class BlockOmniDispenserFrame extends Block implements EntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState pState) {
-        return RenderShape.MODEL;
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class BlockOmniDispenserFrame extends Block implements EntityBlock {
 
             BlockEntityOmniDispenser dis = (BlockEntityOmniDispenser) level.getBlockEntity(pos);
 
-            NetworkHooks.openGui((ServerPlayer) player, dis);
+            NetworkHooks.openGui((ServerPlayer) player, dis, pos);
         }
         return InteractionResult.SUCCESS;
     }

@@ -18,6 +18,7 @@ public class ClientRegister {
     public static void clientSetup(FMLClientSetupEvent event) {
         //ItemBlockRenderTypes.setRenderLayer(CUBlocks.REPULSOR, RenderType.cutout());
         //ItemBlockRenderTypes.setRenderLayer(CUBlocks.OMNI_DISPENSER, RenderType.cutout());
+        CUGuis.inti();
     }
 
 
