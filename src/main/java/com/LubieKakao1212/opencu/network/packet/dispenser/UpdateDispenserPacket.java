@@ -2,6 +2,7 @@ package com.LubieKakao1212.opencu.network.packet.dispenser;
 
 import com.LubieKakao1212.opencu.block.entity.BlockEntityOmniDispenser;
 import com.LubieKakao1212.opencu.network.IOCUPacket;
+import com.LubieKakao1212.opencu.network.NetworkHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,28 +13,16 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class UpdateDispenserPacket implements IOCUPacket {
+public abstract class UpdateDispenserPacket implements IOCUPacket {
 
-    private BlockPos position;
-    private ItemStack newDispenser;
-
-    public UpdateDispenserPacket() { }
+    protected BlockPos position;
+    protected ItemStack newDispenser;
 
     public UpdateDispenserPacket(BlockPos position, ItemStack newDispenser) {
         this.position = position;
         this.newDispenser = newDispenser;
     }
 
-    public static UpdateDispenserPacket fromBytes(FriendlyByteBuf buf) {
-        return new UpdateDispenserPacket(
-                new BlockPos(
-                        buf.readInt(),
-                        buf.readInt(),
-                        buf.readInt()
-                ),
-                buf.readItem()
-        );
-    }
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
@@ -43,16 +32,61 @@ public class UpdateDispenserPacket implements IOCUPacket {
         buf.writeItem(newDispenser);
     }
 
-    @Override
-    public void handle(Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            Level level =  Minecraft.getInstance().player.level;
 
-            BlockEntity te = level.getBlockEntity(position);
+    public static class FromServer extends UpdateDispenserPacket {
 
-            if(te instanceof BlockEntityOmniDispenser) {
-                ((BlockEntityOmniDispenser) te).setCurrentDispenserItem(newDispenser);
-            }
-        });
+        public FromServer(BlockPos position, ItemStack newDispenser) {
+            super(position, newDispenser);
+        }
+
+        public static UpdateDispenserPacket.FromServer fromBytes(FriendlyByteBuf buf) {
+            return new UpdateDispenserPacket.FromServer(
+                    new BlockPos(
+                            buf.readInt(),
+                            buf.readInt(),
+                            buf.readInt()
+                    ),
+                    buf.readItem()
+            );
+        }
+
+        @Override
+        public void handle(Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+                Level level =  Minecraft.getInstance().player.level;
+
+                BlockEntity te = level.getBlockEntity(position);
+
+                if(te instanceof BlockEntityOmniDispenser) {
+                    ((BlockEntityOmniDispenser) te).setCurrentDispenserItem(newDispenser);
+                }
+            });
+        }
+
+    }
+
+    public static class FromClient extends UpdateDispenserPacket {
+
+        public FromClient(BlockPos position, ItemStack newDispenser) {
+            super(position, newDispenser);
+        }
+
+        public static UpdateDispenserPacket.FromClient fromBytes(FriendlyByteBuf buf) {
+            return new UpdateDispenserPacket.FromClient(
+                    new BlockPos(
+                            buf.readInt(),
+                            buf.readInt(),
+                            buf.readInt()
+                    ),
+                    buf.readItem()
+            );
+        }
+
+        @Override
+        public void handle(Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+                NetworkHandler.sendToAllTracking(this, ctx.get().getSender().level, position);
+            });
+        }
     }
 }

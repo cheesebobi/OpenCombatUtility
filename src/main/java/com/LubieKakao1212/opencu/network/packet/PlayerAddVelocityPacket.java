@@ -1,9 +1,10 @@
 package com.LubieKakao1212.opencu.network.packet;
 
 import com.LubieKakao1212.opencu.network.IOCUPacket;
-import net.minecraft.client.Minecraft;
+import com.LubieKakao1212.opencu.network.util.ClientPlayerAddVelocity;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -72,12 +73,7 @@ public class PlayerAddVelocityPacket implements IOCUPacket {
 
     public void handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            Player player = Minecraft.getInstance().player;
-            player.setDeltaMovement(player.getDeltaMovement().add(motionX / precision, motionY / precision, motionZ / precision));
-
-            if(player.getDeltaMovement().y > 0){
-                player.fallDistance = 0;
-            }
+            DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> new ClientPlayerAddVelocity(motionX / precision, motionY / precision, motionZ / precision));
         });
         ctx.get().setPacketHandled(true);
     }

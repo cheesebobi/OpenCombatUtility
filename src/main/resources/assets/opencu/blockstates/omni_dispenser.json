@@ -1,15 +1,7 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "custom": { "flip-v": true }
-  },
   "variants": {
-    "normal": {
-      "model": "opencu:dispenser_frame.obj"
-    },
-    "inventory": {
-      "transform": "forge:default-block",
-      "model": "opencu:dispenser_frame.obj"
+    "": {
+      "model": "opencu:block/dispenser_frame"
     }
   }
 }

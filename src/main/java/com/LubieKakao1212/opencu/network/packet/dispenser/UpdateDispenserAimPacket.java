@@ -2,6 +2,7 @@ package com.LubieKakao1212.opencu.network.packet.dispenser;
 
 import com.LubieKakao1212.opencu.block.entity.BlockEntityOmniDispenser;
 import com.LubieKakao1212.opencu.network.IOCUPacket;
+import com.LubieKakao1212.opencu.proxy.Proxy;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -56,7 +57,7 @@ public class UpdateDispenserAimPacket implements IOCUPacket {
     @Override
     public void handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            Level world = Minecraft.getInstance().player.level;
+            Level world = Proxy.getLevel();
 
             BlockEntity te = world.getBlockEntity(position);
 

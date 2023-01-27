@@ -68,6 +68,8 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
     public BlockEntityOmniDispenser(BlockPos pos, BlockState blockState) {
         super(CUBlockEntities.OMNI_DISPENSER, pos, blockState);
         currentAction = new DispenseAction(new Quaterniond());
+        setCurrentAction(new Quaterniond());
+
         targetAim = new Quaterniond().identity();
 
         inventory = new ItemStackHandler(10) {
@@ -103,10 +105,11 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
 
     private void updateDispenser() {
         ItemStack dispenserStack = inventory.getStackInSlot(0);
-        currentDispenser = dispenserStack.getCapability(DispenserCapability.DISPENSER_CAPABILITY).resolve().get();
-        if(level != null) {
+        currentDispenser = dispenserStack.getCapability(DispenserCapability.DISPENSER_CAPABILITY).resolve().orElseGet(() -> null);
+        if(level != null && !level.isClientSide) {
             BlockPos pos = getBlockPos();
-            NetworkHandler.sendToAllTracking(new UpdateDispenserPacket(pos, dispenserStack), level, pos);
+            NetworkHandler.sendToAllTracking(new UpdateDispenserPacket.FromServer(pos, dispenserStack), level, pos);
+            //NetworkHandler.sendToServer(new UpdateDispenserPacket.FromClient(pos, dispenserStack));
         }else
         {
             //TODO Mark for update
@@ -123,7 +126,7 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
             if(dispenser.currentDispenser != null) {
                 if(QuaterniondUtil.smallerAngle(dispenser.targetAim, dispenser.currentAction.aim) > aimIdenticalityEpsilon) {
                     QuaterniondUtil.step(dispenser.currentAction.aim, dispenser.targetAim, dispenser.currentDispenser.getAlignmentSpeed() * MathUtil.degToRad);
-                    NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim) ,level, pos);
+                    NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim), level, pos);
                 } else {
                     dispenser.currentAction.aim = dispenser.targetAim;
                     if(!dispenser.currentAction.lockedOn)
@@ -309,7 +312,7 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
     }
 
     public void SendDispenserUpdateTo(ServerPlayer player) {
-        NetworkHandler.sendTo(player, new UpdateDispenserPacket(worldPosition, inventory.getStackInSlot(0)));
+        NetworkHandler.sendTo(player, new UpdateDispenserPacket.FromServer(worldPosition, inventory.getStackInSlot(0)));
         NetworkHandler.sendTo(player, new UpdateDispenserAimPacket(worldPosition, currentAction.aim));
     }
 

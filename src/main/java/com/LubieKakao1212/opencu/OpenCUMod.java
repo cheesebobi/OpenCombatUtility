@@ -2,7 +2,11 @@ package com.LubieKakao1212.opencu;
 
 import com.LubieKakao1212.opencu.init.CURegister;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
+import com.LubieKakao1212.opencu.proxy.ClientProxy;
+import com.LubieKakao1212.opencu.proxy.Proxy;
+import com.LubieKakao1212.opencu.proxy.ServerProxy;
 import com.mojang.logging.LogUtils;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
@@ -13,6 +17,8 @@ public class OpenCUMod
     public static final String MODID = "opencu";
 
     public static final Logger LOGGER = LogUtils.getLogger();
+
+    public static final Proxy PROXY = DistExecutor.unsafeRunForDist(() -> ()-> new ClientProxy(), () -> () -> new ServerProxy());
 
     public OpenCUMod() {
 

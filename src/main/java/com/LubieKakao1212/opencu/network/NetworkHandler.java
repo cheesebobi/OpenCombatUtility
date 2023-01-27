@@ -65,10 +65,18 @@ public class NetworkHandler {
                 .consumer(UpdateDispenserAimPacket::handle)
                 .add();
 
-        CHANNEL.messageBuilder(UpdateDispenserPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(UpdateDispenserPacket::toBytes)
-                .decoder(UpdateDispenserPacket::fromBytes)
-                .consumer(UpdateDispenserPacket::handle)
+        //main dispenser update packet
+        CHANNEL.messageBuilder(UpdateDispenserPacket.FromServer.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(UpdateDispenserPacket.FromServer::toBytes)
+                .decoder(UpdateDispenserPacket.FromServer::fromBytes)
+                .consumer(UpdateDispenserPacket.FromServer::handle)
+                .add();
+
+        //client to server request packet
+        CHANNEL.messageBuilder(UpdateDispenserPacket.FromClient.class, id++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(UpdateDispenserPacket.FromClient::toBytes)
+                .decoder(UpdateDispenserPacket.FromClient::fromBytes)
+                .consumer(UpdateDispenserPacket.FromClient::handle)
                 .add();
     }
 

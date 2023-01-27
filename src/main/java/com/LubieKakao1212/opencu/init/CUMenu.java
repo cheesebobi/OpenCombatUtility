@@ -2,6 +2,7 @@ package com.LubieKakao1212.opencu.init;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.gui.container.OmnidispenserMenu;
+import com.LubieKakao1212.opencu.proxy.Proxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.Block;
@@ -20,7 +21,7 @@ public class CUMenu {
     public static DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS, OpenCUMod.MODID);
 
     static {
-        MENUS.register(ID.OMNI_DISPENSER, () -> IForgeMenuType.create((id, inv, data) -> new OmnidispenserMenu(id, inv, Minecraft.getInstance().level, data.readBlockPos())));
+        MENUS.register(ID.OMNI_DISPENSER, () -> IForgeMenuType.create((id, inv, data) -> new OmnidispenserMenu(id, inv, Proxy.getLevel(), data.readBlockPos())));
 
         //TODO check if this works
         //CURegister.register(MENUS);

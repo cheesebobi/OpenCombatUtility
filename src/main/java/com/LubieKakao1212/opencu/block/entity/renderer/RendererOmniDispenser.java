@@ -28,7 +28,6 @@ public class RendererOmniDispenser implements BlockEntityRenderer<BlockEntityOmn
 
     }
 
-
     @Override
     public void render(BlockEntityOmniDispenser dispenser, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         //super.render(te, x, y, z, partialTicks, destroyStage, alpha);
@@ -39,7 +38,10 @@ public class RendererOmniDispenser implements BlockEntityRenderer<BlockEntityOmn
             Quaterniond last = dispenser.getLastAction().aim();
             Quaterniond current = dispenser.getCurrentAction().aim();
 
-            Quaterniond partial = last.slerp(current, partialTick).mul(miry);
+            Quaterniond partial = current.slerp(last, partialTick, new Quaterniond());
+
+            partial.y = -partial.y;
+            partial.w = -partial.w;
 
             poseStack.translate(0.5, 0.5, 0.5);
             poseStack.mulPose(y180);
