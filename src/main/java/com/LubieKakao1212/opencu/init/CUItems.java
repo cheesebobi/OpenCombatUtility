@@ -4,7 +4,6 @@ import com.LubieKakao1212.opencu.OCUCreativeTabs;
 import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenserConfigurable;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenserConstant;
-import com.LubieKakao1212.opencu.capability.dispenser.DispenserRegistry;
 import com.LubieKakao1212.opencu.capability.provider.DispenserProvider;
 import com.LubieKakao1212.opencu.capability.util.CapabilityInitializer;
 import com.LubieKakao1212.opencu.config.OpenCUConfig;
@@ -14,13 +13,12 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Supplier;
 
 public class CUItems {
 
     public static final CapabilityInitializer VANILLA_DISPENSER = tag -> new DispenserProvider(new DispenserConstant(
-            DispenserRegistry.VANILLA_DISPENSER,
+            CUDispensers.VANILLA_DISPENSER,
             (float) OpenCUConfig.omniDispenser.vanilla.rotationSpeed / 20.f,
             OpenCUConfig.omniDispenser.vanilla.spread,
             OpenCUConfig.omniDispenser.vanilla.force,
@@ -28,7 +26,7 @@ public class CUItems {
     ));
 
     public static final CapabilityInitializer VANILLA_DROPPER = tag -> new DispenserProvider(new DispenserConstant(
-            DispenserRegistry.VANILLA_DROPPER,
+            CUDispensers.VANILLA_DROPPER,
             (float) OpenCUConfig.omniDispenser.vanilla.rotationSpeed / 20.f,
             OpenCUConfig.omniDispenser.vanilla.spread,
             OpenCUConfig.omniDispenser.vanilla.force,
@@ -36,7 +34,7 @@ public class CUItems {
     ));
 
     public static final CapabilityInitializer TIER2_DISPENSER = tag -> new DispenserProvider(new DispenserConfigurable(
-            DispenserRegistry.TIER2_DISPENSER,
+            CUDispensers.TIER2_DISPENSER,
             (float) OpenCUConfig.omniDispenser.tier2.rotationSpeed / 20.f,
             OpenCUConfig.omniDispenser.tier2.spread,
             OpenCUConfig.omniDispenser.tier2.spread_max,
@@ -45,7 +43,7 @@ public class CUItems {
     ));
 
     public static final CapabilityInitializer TIER3_DISPENSER = tag -> new DispenserProvider(new DispenserConfigurable(
-            DispenserRegistry.TIER3_DISPENSER,
+            CUDispensers.TIER3_DISPENSER,
             (float) OpenCUConfig.omniDispenser.tier3.rotationSpeed / 20.f,
             OpenCUConfig.omniDispenser.tier3.spread,
             OpenCUConfig.omniDispenser.tier3.spread_max,
@@ -57,7 +55,7 @@ public class CUItems {
 
     public static CUMultiItem dispenser = new CUMultiItem("dispenser");*/
 
-    public static DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, OpenCUMod.MODID);
+    private static DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, OpenCUMod.MODID);
 
     static {
         /*item.addVariant("vector_mesh");
@@ -72,6 +70,11 @@ public class CUItems {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ITEMS.register(bus);
     }
+
+    public static void register(String id, Supplier<Item> item) {
+        ITEMS.register(id, item);
+    }
+
 
     public static class ID {
         public static final String VECTOR_MESH = "vector_mesh";

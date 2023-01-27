@@ -18,7 +18,7 @@ public class CUMenu {
     @ObjectHolder(ID.OMNI_DISPENSER)
     public static MenuType<OmnidispenserMenu> OMNI_DISPENSER;
 
-    public static DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS, OpenCUMod.MODID);
+    private static DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS, OpenCUMod.MODID);
 
     static {
         MENUS.register(ID.OMNI_DISPENSER, () -> IForgeMenuType.create((id, inv, data) -> new OmnidispenserMenu(id, inv, Proxy.getLevel(), data.readBlockPos())));

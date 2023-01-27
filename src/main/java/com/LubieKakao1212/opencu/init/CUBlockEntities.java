@@ -28,7 +28,7 @@ public class CUBlockEntities {
     @ObjectHolder(CUBlocks.ID.OMNI_DISPENSER)
     public static BlockEntityType<BlockEntityOmniDispenser> OMNI_DISPENSER;
 
-    public static DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, OpenCUMod.MODID);
+    private static DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, OpenCUMod.MODID);
 
     static
     {

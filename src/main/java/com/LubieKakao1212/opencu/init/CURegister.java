@@ -21,6 +21,7 @@ public class CURegister {
         CUBlockEntities.init();
         CUMenu.init();
         CUItems.init();
+        CUDispensers.init();
 
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         for(DeferredRegister register : registers) {

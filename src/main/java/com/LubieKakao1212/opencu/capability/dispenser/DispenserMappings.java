@@ -9,6 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class DispenserMappings {
+public abstract class DispenserMappings extends ForgeRegistryEntry<DispenserMappings> {
 
     public static final PostShootAction DEFAULT_SHOOT_ACTION = (entity, forward, velocity) -> { };
 

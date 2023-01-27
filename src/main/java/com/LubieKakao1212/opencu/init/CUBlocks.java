@@ -27,7 +27,7 @@ public class CUBlocks {
     @ObjectHolder(ID.OMNI_DISPENSER)
     public static Block OMNI_DISPENSER;
 
-    public static DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, OpenCUMod.MODID);
+    private static DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, OpenCUMod.MODID);
 
     static
     {
@@ -43,7 +43,7 @@ public class CUBlocks {
     }
 
     public static void blockItem(RegistryObject<Block> obj) {
-        CUItems.ITEMS.register(obj.getId().getPath(), () -> new BlockItem(obj.get(), new Item.Properties().tab(OCUCreativeTabs.tabCUMain)));
+        CUItems.register(obj.getId().getPath(), () -> new BlockItem(obj.get(), new Item.Properties().tab(OCUCreativeTabs.tabCUMain)));
     }
 
 
