@@ -78,6 +78,7 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
                 if(slot == 0) {
                     updateDispenser();
                 }
+                setChanged();
             }
 
             @Override
