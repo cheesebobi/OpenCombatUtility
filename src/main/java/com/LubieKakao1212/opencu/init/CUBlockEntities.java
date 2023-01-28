@@ -22,10 +22,10 @@ import net.minecraftforge.registries.RegistryObject;
 @ObjectHolder(OpenCUMod.MODID)
 public class CUBlockEntities {
 
-    @ObjectHolder(CUBlocks.ID.REPULSOR)
+    @ObjectHolder(ID.REPULSOR)
     public static BlockEntityType<BlockEntityRepulsor> REPULSOR;
 
-    @ObjectHolder(CUBlocks.ID.OMNI_DISPENSER)
+    @ObjectHolder(ID.OMNI_DISPENSER)
     public static BlockEntityType<BlockEntityOmniDispenser> OMNI_DISPENSER;
 
     private static DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, OpenCUMod.MODID);

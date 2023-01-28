@@ -40,8 +40,10 @@ public class TooltipEventHandler {
                 speedValue = new TextComponent(String.format("%.1f\u00B0/t", dis.getAlignmentSpeed()));
             }
             tooltip.add(new TranslatableComponent(speedKey).append(speedValue));
-            tooltip.add(getConfigurableProperty(dis.hasConfigurableSpread(), spreadKey, new TextComponent(String.format("%.0f\u00B0-%.0f\u00B0", dis.getMinSpread(), dis.getMaxSpread()))));
-            tooltip.add(getConfigurableProperty(dis.hasConfigurableForce(), forceKey, new TextComponent(String.format("%.1f-%.1f", dis.getMinForce(), dis.getMaxForce()))));
+            tooltip.add(getConfigurableProperty(dis.hasConfigurableSpread(), spreadKey,
+                    getValueOrRange(dis.hasConfigurableSpread(), "%.0f\u00B0", dis.getMinSpread(), dis.getMaxSpread())));
+            tooltip.add(getConfigurableProperty(dis.hasConfigurableForce(), forceKey,
+                    getValueOrRange(dis.hasConfigurableForce(), "%.1f", dis.getMinForce(), dis.getMaxForce())));
         });
     }
 
@@ -57,5 +59,14 @@ public class TooltipEventHandler {
 
         return root.append(new TranslatableComponent(translationKey)).append(value);
     }
+
+    private static Component getValueOrRange(boolean toggle, String valueFormat, double minValue, double maxValue) {
+        if(toggle) {
+            return new TextComponent(String.format(valueFormat+"-"+valueFormat, minValue, maxValue));
+        }else {
+            return new TextComponent(String.format(valueFormat, minValue));
+        }
+    }
+
 
 }

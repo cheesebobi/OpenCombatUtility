@@ -6,6 +6,7 @@ import com.LubieKakao1212.opencu.capability.dispenser.DispenserConstant;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenserMappings;
 import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
 import com.LubieKakao1212.opencu.capability.provider.DispenserProvider;
+import com.LubieKakao1212.opencu.capability.util.CapabilityInitializer;
 import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import com.LubieKakao1212.opencu.init.CUDispensers;
 import com.LubieKakao1212.opencu.init.CUItems;
@@ -18,12 +19,49 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.capabilities.CapabilityDispatcher;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.function.Supplier;
+
 @Mod.EventBusSubscriber()
 public class CapabilityHandler {
+
+    public static final Supplier<ICapabilityProvider> VANILLA_DISPENSER = () -> new DispenserProvider(new DispenserConstant(
+            CUDispensers.VANILLA_DISPENSER,
+            (float) OpenCUConfig.omniDispenser.vanilla.rotationSpeed / 20.f,
+            OpenCUConfig.omniDispenser.vanilla.spread,
+            OpenCUConfig.omniDispenser.vanilla.force,
+            OpenCUConfig.omniDispenser.vanilla.base_energy
+    ));
+
+    public static final Supplier<ICapabilityProvider> VANILLA_DROPPER = () -> new DispenserProvider(new DispenserConstant(
+            CUDispensers.VANILLA_DROPPER,
+            (float) OpenCUConfig.omniDispenser.vanilla.rotationSpeed / 20.f,
+            OpenCUConfig.omniDispenser.vanilla.spread,
+            OpenCUConfig.omniDispenser.vanilla.force,
+            OpenCUConfig.omniDispenser.vanilla.base_energy
+    ));
+
+    public static final Supplier<ICapabilityProvider> TIER2_DISPENSER = () -> new DispenserProvider(new DispenserConfigurable(
+            CUDispensers.TIER2_DISPENSER,
+            (float) OpenCUConfig.omniDispenser.tier2.rotationSpeed / 20.f,
+            OpenCUConfig.omniDispenser.tier2.spread,
+            OpenCUConfig.omniDispenser.tier2.spread_max,
+            OpenCUConfig.omniDispenser.tier2.force,
+            OpenCUConfig.omniDispenser.tier2.base_energy
+    ));
+
+    public static final Supplier<ICapabilityProvider> TIER3_DISPENSER = () -> new DispenserProvider(new DispenserConfigurable(
+            CUDispensers.TIER3_DISPENSER,
+            (float) OpenCUConfig.omniDispenser.tier3.rotationSpeed / 20.f,
+            OpenCUConfig.omniDispenser.tier3.spread,
+            OpenCUConfig.omniDispenser.tier3.spread_max,
+            OpenCUConfig.omniDispenser.tier3.force,
+            OpenCUConfig.omniDispenser.tier3.base_energy
+    ));
 
     @SubscribeEvent
     public static void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
@@ -94,10 +132,16 @@ public class CapabilityHandler {
         }
 
         if(stack.getItem() == Items.DISPENSER) {
-            event.addCapability(new ResourceLocation(OpenCUMod.MODID, "dispenser"), CUItems.VANILLA_DISPENSER.Create(null));
+            event.addCapability(new ResourceLocation(OpenCUMod.MODID, "dispenser"), VANILLA_DISPENSER.get());
         }
-        if(stack.getItem() == Items.DROPPER) {
-            event.addCapability(new ResourceLocation(OpenCUMod.MODID, "dispenser"), CUItems.VANILLA_DROPPER.Create(null));
+        else if(stack.getItem() == Items.DROPPER) {
+            event.addCapability(new ResourceLocation(OpenCUMod.MODID, "dispenser"), VANILLA_DROPPER.get());
+        }
+        else if(stack.getItem() == CUItems.DISPENSER_T2) {
+            event.addCapability(new ResourceLocation(OpenCUMod.MODID, "dispenser"), TIER2_DISPENSER.get());
+        }
+        else if(stack.getItem() == CUItems.DISPENSER_T3) {
+            event.addCapability(new ResourceLocation(OpenCUMod.MODID, "dispenser"), TIER3_DISPENSER.get());
         }
     }
 }

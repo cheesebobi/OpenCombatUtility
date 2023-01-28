@@ -1,6 +1,6 @@
 {
   "block.opencu.repulsor": "Repulsor",
-  "block.opencu.dispenser_frame": "Dispenser Frame",
+  "block.opencu.omni_dispenser": "Dispenser Frame",
 
   "item.opencu.vector_mesh": "Vector Mesh",
   "item.opencu.dispenser_t2.name": "§eDispenser(Tier)",
