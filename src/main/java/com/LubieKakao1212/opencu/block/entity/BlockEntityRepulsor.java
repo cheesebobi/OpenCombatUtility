@@ -1,10 +1,12 @@
 package com.LubieKakao1212.opencu.block.entity;
 
 
+import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import com.LubieKakao1212.opencu.init.CUBlockEntities;
 import com.LubieKakao1212.opencu.pulse.EntityPulse;
 import com.LubieKakao1212.opencu.pulse.RepulsorPulse;
 import com.LubieKakao1212.opencu.pulse.VectorPulse;
+import com.mojang.math.Vector3d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -44,115 +46,74 @@ public class BlockEntityRepulsor extends BlockEntity {
             BlockEntityRepulsor rep = (BlockEntityRepulsor) blockEntity;
             if (rep.pulseTicksLeft > 0) {
                 level.sendBlockUpdated(pos, state, state, 3);
-                //level.markAndNotifyBlock(,);
-            }else if(rep.pulseTicksLeft < -10) {
-                rep.pulse();
             }
             rep.pulseTicksLeft--;
         }
     }
 
-    //TODO CC
-    /*public Object[] recalibrate(Context context, Arguments args) {
-        int id = args.checkInteger(0);
-        if(id < 0) {
-            return new Object[] { false, "id cannot be negative" };
-        }
-        if(id > pulseFactories.length) {
-            return new Object[] { false, "id to large" };
-        }
-
-        setPulse(id);
-        return new Object[] { true };
-    }*/
-
-    //TODO CC
-    /*public Object[] setRadius(Context context, Arguments args) {
-        double radius = args.checkDouble(0);
+    public void setRadius(double radius) {
         if(radius > OpenCUConfig.repulsor.repulsorMaxRadius)
         {
-            return new Object[]{ false, "Radius to large" };
+            throw new RuntimeException("Attempting to set invalid radius");
         }
         pulse.setRadius(radius);
-        return new Object[] { true };
-    }*/
+    }
 
-    //TODO CC
-    /*public Object[] setForce(Context context, Arguments args) {
-        double force = args.checkDouble(0);
-        if(force > 1.0)
+    public void setForce(double force) {
+        if(Math.abs(force) > 1.0)
         {
-            return new Object[]{ false, "Force to large" };
+            throw new RuntimeException("Attempting to set invalid force");
         }
         pulse.setBaseForce(force);
-        return new Object[]{ true };
-    }*/
+    }
 
-    //TODO CC
-    /*public Object[] setVector(Context context, Arguments args) {
-        double x = args.checkInteger(0);
-        double y = args.checkInteger(1);
-        double z = args.checkInteger(2);
+    public void setVector(Vector3d vector) {
+        pulse.setVector(vector.x, vector.y, vector.z);
+    }
+
+    public void setVector(double x, double y, double z) {
         pulse.setVector(x, y, z);
-        return new Object[] { true };
-    }*/
+    }
 
-    //TODO CC
-    /*public Object[] setWhitelist(Context context, Arguments args) {
-        pulse.setWhitelist(args.checkBoolean(0));
-        return new Object[] { true };
-    }*/
+    public void setWhitelist(boolean whitelist) {
+        pulse.setWhitelist(whitelist);
+    }
 
-    //TODO CC
-    /*public Object[] addToFilter(Context context, Arguments args) {
-        filter.add(args.checkString(0));
-        return new Object[] { true };
-    }*/
+    public void addToFilter(String name) {
+        filter.add(name);
+    }
 
-    //TODO CC
-    /*public void removeFromFilter(Context context, Arguments args) {
-        filter.remove(args.checkString(0));
-        return new Object[] { true };
-    }*/
+    public void removeFromFilter(String name) {
+        filter.remove(name);
+    }
 
-    //TODO CC
-    /*public Object[] getFilter(Context context, Arguments args)
+    public Object[] getFilter()
     {
         return filter.toArray();
-    }*/
+    }
 
-    public void pulse() {
-
-        //TODO offset
-
-        /*double x1 = args.checkDouble(0);
-        double y1 = args.checkDouble(1);
-        double z1 = args.checkDouble(2);
-        double distanceSqr = x1*x1 + y1*y1 + z1*z1;
+    public PulseExecutionResult pulse(double xOffset, double yOffset, double zOffset) {
+        double distanceSqr = xOffset*xOffset + yOffset*yOffset + zOffset*zOffset;
 
         if(distanceSqr > OpenCUConfig.repulsor.repulsorMaxOffset * OpenCUConfig.repulsor.repulsorMaxOffset) {
-            return new Object[]{false, "Offset to large"};
-        }*/
-
-        double x1 = 0, y1 = 0, z1 = 0;
+            return new PulseExecutionResult("Offset to large");
+        }
 
         BlockPos pos = getBlockPos();
 
-        pulse.setBaseForce(1f);
-        pulse.setRadius(5);
-
-        pulse.lock(level, x1 + pos.getX() + 0.5, y1 + pos.getY() + 0.5, z1 + pos.getZ() + 0.5);
+        pulse.lock(level, xOffset + pos.getX() + 0.5, yOffset + pos.getY() + 0.5, zOffset + pos.getZ() + 0.5);
         pulse.filter(filter);
 
-        //TODO energy
-        /*double radiusRatio = pulse.getRadius() * pulse.getRadius() * pulse.getRadius() / (OpenCUConfig.repulsor.repulsorMaxRadius * OpenCUConfig.repulsor.repulsorMaxRadius * OpenCUConfig.repulsor.repulsorMaxRadius);
+        double radiusRatio = pulse.getRadius() * pulse.getRadius() * pulse.getRadius() / (OpenCUConfig.repulsor.repulsorMaxRadius * OpenCUConfig.repulsor.repulsorMaxRadius * OpenCUConfig.repulsor.repulsorMaxRadius);
         double forceRatio = pulse.getBaseForce() / OpenCUConfig.repulsor.repulsorForceScale;
         double distanceRatio = Math.sqrt(distanceSqr) / OpenCUConfig.repulsor.repulsorDistanceCost;
-        int energyUsage = MathHelper.floor(distanceRatio * OpenCUConfig.repulsor.repulsorDistanceCost + radiusRatio * OpenCUConfig.repulsor.repulsorVolumeCost + (Math.pow(2, Math.abs(forceRatio))-1.0) * OpenCUConfig.repulsor.repulsorForceCost);
-        if(!node.tryChangeBuffer(-energyUsage))//if(energyBuffer.getEnergyStored() < energyUsage)
+        int energyUsage = (int)Math.floor(distanceRatio * OpenCUConfig.repulsor.repulsorDistanceCost + radiusRatio * OpenCUConfig.repulsor.repulsorVolumeCost + (Math.pow(2, Math.abs(forceRatio))-1.0) * OpenCUConfig.repulsor.repulsorForceCost);
+        //TODO Check and drain energy buffer
+        /*if(!node.tryChangeBuffer(-energyUsage))//if(energyBuffer.getEnergyStored() < energyUsage)
         {
             return new Object[]{ false, "Not enough energy stored!!!", energyUsage };
         }*/
+
         pulse.execute();
         pulseTicksLeft = pulseTicks;
 
@@ -160,6 +121,8 @@ public class BlockEntityRepulsor extends BlockEntity {
 
         BlockState state = level.getBlockState(pos);
         level.sendBlockUpdated(pos, state, state, 3);
+
+        return new PulseExecutionResult();
     }
 
     @Override
@@ -210,11 +173,27 @@ public class BlockEntityRepulsor extends BlockEntity {
 
     public void setPulse(int type) {
         pulse = pulseFactories[type].get();
+        filter.clear();
         this.pulseType = type;
     }
 
-    /*@Override
-    public boolean hasFastRenderer() {
-        return true;
-    }*/
+    public int getPulseTypeCount() {
+        return pulseFactories.length;
+    }
+
+    public static class PulseExecutionResult {
+        public String errorDescription;
+
+        public boolean wasSuccessfull;
+
+        public PulseExecutionResult() {
+            this.errorDescription = null;
+            this.wasSuccessfull = true;
+        }
+
+        public PulseExecutionResult(String errorDescription) {
+            this.errorDescription = errorDescription;
+            this.wasSuccessfull = false;
+        }
+    }
 }

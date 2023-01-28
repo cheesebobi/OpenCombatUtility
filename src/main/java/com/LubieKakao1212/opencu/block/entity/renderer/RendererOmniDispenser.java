@@ -33,7 +33,7 @@ public class RendererOmniDispenser implements BlockEntityRenderer<BlockEntityOmn
         //super.render(te, x, y, z, partialTicks, destroyStage, alpha);
 
         ItemStack displayStack = dispenser.getCurrentDispenserItem();
-        if(displayStack != null) {
+        if(displayStack != null && !displayStack.isEmpty()) {
             poseStack.pushPose();
             Quaterniond last = dispenser.getLastAction().aim();
             Quaterniond current = dispenser.getCurrentAction().aim();

@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu;
 
+import com.LubieKakao1212.opencu.dependencies.cc.init.CCInit;
 import com.LubieKakao1212.opencu.init.CURegister;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
 import com.LubieKakao1212.opencu.proxy.ClientProxy;
@@ -7,6 +8,7 @@ import com.LubieKakao1212.opencu.proxy.Proxy;
 import com.LubieKakao1212.opencu.proxy.ServerProxy;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
@@ -25,5 +27,10 @@ public class OpenCUMod
         NetworkHandler.init();
 
         CURegister.init();
+
+        //For when ComputerCraft will be optional
+        if(ModList.get().isLoaded("computercraft")) {
+            CCInit.init();
+        }
     }
 }

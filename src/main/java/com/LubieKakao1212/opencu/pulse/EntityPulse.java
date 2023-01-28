@@ -46,7 +46,7 @@ public abstract class EntityPulse {
     }
 
     public void filter(ArrayList<String> list) {
-        entityList = entityList.stream().filter( e -> { return whitelist ? list.contains(e.getName()) : !list.contains(e.getName()); }).collect(Collectors.toList());
+        entityList = entityList.stream().filter( e -> { return whitelist ? list.contains(e.getName().getContents()) : !list.contains(e.getName().getContents()); }).collect(Collectors.toList());
     }
 
     protected void filter() {
