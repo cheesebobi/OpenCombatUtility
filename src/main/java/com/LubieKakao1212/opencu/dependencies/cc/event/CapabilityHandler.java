@@ -1,7 +1,9 @@
 package com.LubieKakao1212.opencu.dependencies.cc.event;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
+import com.LubieKakao1212.opencu.block.entity.BlockEntityOmniDispenser;
 import com.LubieKakao1212.opencu.block.entity.BlockEntityRepulsor;
+import com.LubieKakao1212.opencu.dependencies.cc.capability.DispenserPeripheral;
 import com.LubieKakao1212.opencu.dependencies.cc.capability.PeripheralCapabilityProvider;
 import com.LubieKakao1212.opencu.dependencies.cc.capability.RepulsorPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -23,6 +25,11 @@ public class CapabilityHandler {
         if(event.getObject() instanceof BlockEntityRepulsor) {
             BlockEntityRepulsor repulsor = (BlockEntityRepulsor) event.getObject();
             event.addCapability(new ResourceLocation(OpenCUMod.MODID, "peripheral"), new PeripheralCapabilityProvider(() -> new RepulsorPeripheral(repulsor)));
+        }
+
+        if(event.getObject() instanceof BlockEntityOmniDispenser) {
+            BlockEntityOmniDispenser dispenser = (BlockEntityOmniDispenser) event.getObject();
+            event.addCapability(new ResourceLocation(OpenCUMod.MODID, "peripheral"), new PeripheralCapabilityProvider(() -> new DispenserPeripheral(dispenser)));
         }
 
     }

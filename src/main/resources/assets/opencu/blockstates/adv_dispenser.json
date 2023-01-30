@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "opencu:block/adv_dispenser"
+    }
+  }
+}

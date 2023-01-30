@@ -19,7 +19,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.Containers;
@@ -135,10 +134,6 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
                         NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim), level, pos);
                         dispenser.currentAction.lockedOn = true;
                     }
-                    //TODO Temporary until CC support is implemented
-                    dispenser.aim(random.nextDouble() * MathUtil.pi, random.nextDouble() * MathUtil.pi * 2.);
-                    dispenser.dispense();
-                    //end TODO
                 }
             }
             while(dispenser.actionQueue.size() > 0)
@@ -164,52 +159,29 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
         setAim(AimUtil.aimRad(MathUtil.loop(pitch, -MathUtil.piHalf, MathUtil.piHalf), MathUtil.loop(yaw, -MathUtil.pi, MathUtil.pi)));
     }
 
-    //TODO CC
-    /*@SuppressWarnings("unused")
-    @Callback(doc = "function(): bool", direct = true)
-    public Object[] isAligned(Context context, Arguments args) {
-        return new Object[]{ AimUtil.smallerAngle(targetAim, currentAction.aim) < aimIdenticalityEpsilon};
-    }*/
+    public boolean isAligned() {
+        return QuaterniondUtil.smallerAngle(targetAim, currentAction.aim) < aimIdenticalityEpsilon;
+    }
 
-    //TODO CC
-    /*public Object[] aimingStatus(Context context, Arguments args) {
-        return new Object[]{ AimUtil.smallerAngle(targetAim, currentAction.aim) };
-    }*/
+    public double aimingStatus() {
+        return QuaterniondUtil.smallerAngle(targetAim, currentAction.aim);
+    }
 
-    //TODO CC
-    /*public Object[] setForce(Context context, Arguments args) {
-        String message = currentDispenser.trySetForce(args.checkDouble(0));
+    public String setForce(double force) {
+        return currentDispenser.trySetForce(force);
+    }
 
-        if(message != null) {
-            return new Object[] { false, message };
-        }
-        else {
-            return new Object[] { true };
-        }
-    }*/
+    public String setSpread(double spread) {
+        return currentDispenser.trySetSpread(spread);
+    }
 
-    //TODO CC
-    /*public Object[] setSpread(Context context, Arguments args) {
-        String message = currentDispenser.trySetSpread(args.checkDouble(0));
+    public double getMinSpread() {
+        return currentDispenser.getMaxSpread();
+    }
 
-        if(message != null) {
-            return new Object[] { false, message };
-        }
-        else {
-            return new Object[] { true };
-        }
-    }*/
-
-
-    //TODO CC
-    /*public Object[] getMinSpread(Context context, Arguments args) {
-        return new Object[] { currentDispenser.getMaxSpread() };
-    }*/
-
-    //TODO CC
-    /*public Object[] getMaxSpread(Context context, Arguments args) {
-        return new Object[] { currentDispenser.getMaxSpread() };
-    }*/
+    public double getMaxSpread() {
+        return currentDispenser.getMaxSpread();
+    }
 
     public void setAim(Quaterniond aim) {
         targetAim = aim.normalize();
@@ -312,7 +284,7 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
         return super.getCapability(capability, facing);
     }
 
-    public void SendDispenserUpdateTo(ServerPlayer player) {
+    public void sendDispenserUpdateTo(ServerPlayer player) {
         NetworkHandler.sendTo(player, new UpdateDispenserPacket.FromServer(worldPosition, inventory.getStackInSlot(0)));
         NetworkHandler.sendTo(player, new UpdateDispenserAimPacket(worldPosition, currentAction.aim));
     }

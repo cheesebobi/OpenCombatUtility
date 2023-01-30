@@ -1,4 +1,4 @@
-dis = component.adv_dispenser
+dis = peripheral.find("opencu:adv_dispenser")
 function circle(count, p)
     p = p or 0
     local pi2 = math.pi * 2
@@ -22,6 +22,9 @@ function circles(count1, count2, pMax, pMin)
         p = lerp(pMin, pMax, (n-1) / count2)
         for i=1,count1,1 do
             dis.aim(((i-1) / count1) * pi2 - math.pi, p)
+            while not dis.isAligned() do
+                os.sleep(0.2)
+            end
             dis.dispense()
         end
     end

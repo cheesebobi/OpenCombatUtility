@@ -3,7 +3,7 @@
 	"parent": "block/block",
 	"textures": {
 		"0": "opencu:block/repulsor_frame",
-		"1": "block/sea_lantern",
+		"1": "opencu:block/ender_lantern",
 		"particle": "opencu:block/repulsor_frame"
 	},
 	"elements": [

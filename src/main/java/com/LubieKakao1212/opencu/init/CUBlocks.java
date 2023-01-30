@@ -49,7 +49,7 @@ public class CUBlocks {
 
     public static class ID {
         public static final String REPULSOR = "repulsor";
-        public static final String OMNI_DISPENSER = "omni_dispenser";
+        public static final String OMNI_DISPENSER = "adv_dispenser";
     }
 
 

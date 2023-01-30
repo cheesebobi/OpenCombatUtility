@@ -10,18 +10,16 @@
   {
     "c":
     {
-      "item": "opencomputers:chameliumblock",
-      "data": 32767
+      "item": "minecraft:polished_deepslate"
     },
     "i":
     {
-      "item": "minecraft:iron_ingot",
-      "data": 32767
+      "item": "minecraft:iron_ingot"
     }
   },
   "result":
   {
-    "item": "opencu:dispenser_frame",
+    "item": "opencu:adv_dispenser",
     "count": 1
   }
 }

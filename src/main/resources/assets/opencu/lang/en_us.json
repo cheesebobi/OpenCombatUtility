@@ -1,10 +1,10 @@
 {
   "block.opencu.repulsor": "Repulsor",
-  "block.opencu.omni_dispenser": "Dispenser Frame",
+  "block.opencu.adv_dispenser": "Dispenser Frame",
 
   "item.opencu.vector_mesh": "Vector Mesh",
-  "item.opencu.dispenser_t2.name": "§eDispenser(Tier)",
-  "item.opencu.dispenser_t3.name": "§bDispenser(Tier3)",
+  "item.opencu.dispenser_tier2": "§eDispenser(Tier2)",
+  "item.opencu.dispenser_tier3": "§bDispenser(Tier3)",
 
   "info.opencu.dispenser.force": " Force: ",
   "info.opencu.dispenser.speed": "Alignment Speed: ",

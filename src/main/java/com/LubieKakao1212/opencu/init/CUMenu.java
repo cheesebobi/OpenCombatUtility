@@ -32,6 +32,6 @@ public class CUMenu {
     }
 
     public static class ID {
-        public static final String OMNI_DISPENSER = "omni_dispenser.json";
+        public static final String OMNI_DISPENSER = "adv_dispenser.json";
     }
 }

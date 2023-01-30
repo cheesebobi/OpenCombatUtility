@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "pattern":
   [
+    "sss",
     "sps",
-    "pep",
-    "sps"
+    "sss"
   ],
   "key":
   {
@@ -15,16 +15,11 @@
     "p":
     {
       "item": "minecraft:ender_pearl"
-    },
-    "e":
-    {
-      "item": "minecraft:ender_eye"
     }
   },
   "result":
   {
-    "item": "opencu:item",
-    "count": 1,
-    "data": 0
+    "item": "opencu:vector_mesh",
+    "count": 1
   }
 }

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "cgc",
+    "g#g",
+    "cvc"
+  ],
+  "key":
+  {
+    "c":
+    {
+      "item": "minecraft:polished_deepslate"
+    },
+    "g":
+    {
+      "item": "minecraft:gold_ingot"
+    },
+    "v":
+    {
+      "item": "opencu:vector_mesh"
+    },
+    "#":
+    {
+      "item": "minecraft:dispenser"
+    }
+  },
+  "result":
+  {
+    "item": "opencu:dispenser_tier2",
+    "count": 1
+  }
+}

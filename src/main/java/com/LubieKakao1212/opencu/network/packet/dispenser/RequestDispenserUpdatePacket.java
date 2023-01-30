@@ -45,7 +45,7 @@ public class RequestDispenserUpdatePacket implements IOCUPacket {
             BlockEntity be = level.getBlockEntity(position);
 
             if(be instanceof BlockEntityOmniDispenser) {
-                ((BlockEntityOmniDispenser) be).SendDispenserUpdateTo(sender);
+                ((BlockEntityOmniDispenser) be).sendDispenserUpdateTo(sender);
             }
         });
         ctx.get().setPacketHandled(true);
