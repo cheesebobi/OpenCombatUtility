@@ -22,6 +22,7 @@ public class OmnidispenserScreen extends AbstractContainerScreen<OmnidispenserMe
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        this.renderBackground(poseStack);
         this.renderBg(poseStack, partialTick, mouseX, mouseY);
         super.render(poseStack, mouseX, mouseY, partialTick);
         this.renderTooltip(poseStack, mouseX, mouseY);

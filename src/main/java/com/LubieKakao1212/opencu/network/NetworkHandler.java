@@ -29,7 +29,6 @@ public class NetworkHandler {
 
     private static SimpleChannel CHANNEL;
 
-    //public static List<DelayedMessage> messages = new ArrayList<>();
     public static final CounterList<DelayedMessage> messages = new CounterList<DelayedMessage>();
 
     public static void init() {

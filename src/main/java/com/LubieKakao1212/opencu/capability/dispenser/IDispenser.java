@@ -14,7 +14,7 @@ public interface IDispenser extends INBTSerializable<CompoundTag> {
      * @param shotItem always singe item
      * @return energy usage multiplier
      */
-    DispenseResult shoot(ICapabilityProvider shooter, Level level, ItemStack shotItem, BlockPos pos, Quaterniond aim, double energyMultiplierFromFrequency);
+    DispenseResult shoot(ICapabilityProvider shooter, Level level, ItemStack shotItem, BlockPos pos, Quaterniond aim);
 
     /**
      * @param spread spread value that would be set

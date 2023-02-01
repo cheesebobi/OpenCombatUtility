@@ -4,7 +4,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class DispenseResult {
 
-    private ItemStack leftover;
+    public ItemStack leftover;
 
     public DispenseResult(ItemStack leftover) {
         this.leftover = leftover;

@@ -41,10 +41,6 @@ public class RendererRepulsor implements BlockEntityRenderer<BlockEntityRepulsor
         {
             animProgress = 0;
         }
-        /*if(lanternSprite == null)
-        {
-            //lanternSprite = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/sea_lantern");
-        }*/
 
         ResourceLocation lanternLocation = new ModelResourceLocation("minecraft:sea_lantern#");
 
@@ -58,7 +54,7 @@ public class RendererRepulsor implements BlockEntityRenderer<BlockEntityRepulsor
 
         dirs.add(null);
 
-        float gap = 2f / 16f;
+        float gap = 1f / 16f;
         float scale = 1f - gap * 2f;
 
         poseStack.translate(gap, gap, gap);

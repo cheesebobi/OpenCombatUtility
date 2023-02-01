@@ -3,12 +3,14 @@ package com.LubieKakao1212.opencu.block.entity;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenseResult;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenserCapability;
 import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import com.LubieKakao1212.opencu.gui.container.OmnidispenserMenu;
 import com.LubieKakao1212.opencu.init.CUBlockEntities;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
 import com.LubieKakao1212.opencu.network.packet.dispenser.RequestDispenserUpdatePacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserAimPacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserPacket;
+import com.LubieKakao1212.qulib.capability.energy.InternalEnergyStorage;
 import com.LubieKakao1212.qulib.math.AimUtil;
 import com.LubieKakao1212.qulib.math.MathUtil;
 import com.LubieKakao1212.qulib.nbt.JomlNBT;
@@ -32,6 +34,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.joml.Quaterniond;
@@ -49,8 +53,13 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
     public static final double aimIdenticalityEpsilon = MathUtil.degToRad * 0.1;
 
     private final ConcurrentLinkedQueue<DispenseAction> actionQueue = new ConcurrentLinkedQueue<>();
+
     private final ItemStackHandler inventory;
     private final LazyOptional<ItemStackHandler> inventoryCap;
+
+    private final LazyOptional<InternalEnergyStorage> energyCap;
+    private final InternalEnergyStorage energy;
+
     private DispenseAction currentAction;
     private Quaterniond targetAim;
 
@@ -99,9 +108,11 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
                 }
             }
         };
-
         inventoryCap = LazyOptional.of(() -> inventory);
-   }
+
+        energy = new InternalEnergyStorage(OpenCUConfig.omniDispenser.energy.capacity, OpenCUConfig.omniDispenser.energy.maxReceive, 0);
+        energyCap = LazyOptional.of(() -> energy);
+    }
 
     private void updateDispenser() {
         ItemStack dispenserStack = inventory.getStackInSlot(0);
@@ -139,7 +150,7 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
             while(dispenser.actionQueue.size() > 0)
             {
                 dispenser.actionQueue.poll();
-                dispenser.shoot(dispenser.currentAction, 1f);
+                dispenser.shoot(dispenser.currentAction);
             }
         }else
         {
@@ -156,7 +167,7 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
     }
 
     public void aim(double pitch, double yaw) {
-        setAim(AimUtil.aimRad(MathUtil.loop(pitch, -MathUtil.piHalf, MathUtil.piHalf), MathUtil.loop(yaw, -MathUtil.pi, MathUtil.pi)));
+        setAim(AimUtil.aimRad(MathUtil.loop(pitch, -MathUtil.piHalf, MathUtil.piHalf), MathUtil.loop(yaw, -MathUtil.pi, MathUtil.pi), Direction.EAST, Direction.UP));
     }
 
     public boolean isAligned() {
@@ -188,11 +199,11 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
         currentAction.lockedOn = false;
     }
 
-    public void shoot(DispenseAction action, double energyMultiplier) {
+    private void shoot(DispenseAction action) {
         if(currentDispenser != null) {
             Tuple<ItemStack, Integer> ammo = findAmmo();
             if(ammo != null) {
-                DispenseResult result = currentDispenser.shoot(this, level, ammo.getA(), worldPosition, action.aim, energyMultiplier);
+                DispenseResult result = currentDispenser.shoot(this, level, ammo.getA(), worldPosition, action.aim);
                 useAmmo(ammo.getB(), result.getLeftover());
             }
         }
@@ -250,6 +261,8 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
         //Inventory
         compound.put("inventory", inventory.serializeNBT());
 
+        compound.put("energy", energy.serializeNBT());
+
         compound.put("aim", JomlNBT.writeQuaternion(currentAction.aim));
 
         compound.put("dispenser", currentDispenser != null ? currentDispenser.serializeNBT() : new CompoundTag());
@@ -267,6 +280,11 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
             inventory.deserializeNBT(inventoryTag);
         }
 
+        Tag energyTag = compound.get("energy");
+        if(energy != null) {
+            energy.deserializeNBT(energyTag);
+        }
+
         if(compound.contains("aim", Tag.TAG_LIST)) {
             setAim(JomlNBT.readQuaternion(compound.getList("aim", Tag.TAG_DOUBLE)));
         }
@@ -280,6 +298,9 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return (LazyOptional<T>)inventoryCap;
+        }
+        if(capability == CapabilityEnergy.ENERGY) {
+            return (LazyOptional<T>)energyCap;
         }
         return super.getCapability(capability, facing);
     }
@@ -334,6 +355,5 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
             return aim;
         }
     }
-
 
 }

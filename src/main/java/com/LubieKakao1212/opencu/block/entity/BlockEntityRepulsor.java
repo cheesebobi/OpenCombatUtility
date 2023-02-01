@@ -1,13 +1,16 @@
 package com.LubieKakao1212.opencu.block.entity;
 
 
+import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import com.LubieKakao1212.opencu.init.CUBlockEntities;
 import com.LubieKakao1212.opencu.pulse.EntityPulse;
 import com.LubieKakao1212.opencu.pulse.RepulsorPulse;
 import com.LubieKakao1212.opencu.pulse.VectorPulse;
+import com.LubieKakao1212.qulib.capability.energy.InternalEnergyStorage;
 import com.mojang.math.Vector3d;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
@@ -16,11 +19,13 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.EnergyStorage;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.function.Supplier;
@@ -36,8 +41,14 @@ public class BlockEntityRepulsor extends BlockEntity {
     public int pulseTicksLeft;
     public static final int pulseTicks = 10;
 
+    private final LazyOptional<InternalEnergyStorage> energyCap;
+
+    private final InternalEnergyStorage energy;
+
     public BlockEntityRepulsor(BlockPos pos, BlockState blockState) {
         super(CUBlockEntities.REPULSOR, pos, blockState);
+        energy = new InternalEnergyStorage(OpenCUConfig.repulsor.energy.capacity, OpenCUConfig.repulsor.energy.maxReceive, 0);
+        energyCap = LazyOptional.of(() -> energy);
         setPulse(0);
     }
 
@@ -64,7 +75,7 @@ public class BlockEntityRepulsor extends BlockEntity {
         {
             throw new RuntimeException("Attempting to set invalid force");
         }
-        pulse.setBaseForce(force);
+        pulse.setBaseForce(force * OpenCUConfig.repulsor.repulsorForceScale);
     }
 
     public void setVector(Vector3d vector) {
@@ -92,6 +103,15 @@ public class BlockEntityRepulsor extends BlockEntity {
         return filter.toArray();
     }
 
+    @NotNull
+    @Override
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @org.jetbrains.annotations.Nullable Direction side) {
+        if(cap == CapabilityEnergy.ENERGY) {
+            return (LazyOptional<T>) energyCap;
+        }
+        return super.getCapability(cap, side);
+    }
+
     public PulseExecutionResult pulse(double xOffset, double yOffset, double zOffset) {
         double distanceSqr = xOffset*xOffset + yOffset*yOffset + zOffset*zOffset;
 
@@ -108,11 +128,17 @@ public class BlockEntityRepulsor extends BlockEntity {
         double forceRatio = pulse.getBaseForce() / OpenCUConfig.repulsor.repulsorForceScale;
         double distanceRatio = Math.sqrt(distanceSqr) / OpenCUConfig.repulsor.repulsorDistanceCost;
         int energyUsage = (int)Math.floor(distanceRatio * OpenCUConfig.repulsor.repulsorDistanceCost + radiusRatio * OpenCUConfig.repulsor.repulsorVolumeCost + (Math.pow(2, Math.abs(forceRatio))-1.0) * OpenCUConfig.repulsor.repulsorForceCost);
-        //TODO Check and drain energy buffer
-        /*if(!node.tryChangeBuffer(-energyUsage))//if(energyBuffer.getEnergyStored() < energyUsage)
-        {
-            return new Object[]{ false, "Not enough energy stored!!!", energyUsage };
-        }*/
+
+        if(energy.getEnergyStored() < energyUsage) {
+            return new PulseExecutionResult("Not enough energy stored!!!");
+        }
+
+        int energyUsed = energy.extractEnergyInternal(energyUsage, false);
+
+        //Just in case something goes very wrong
+        if(energyUsed != energyUsage) {
+            OpenCUMod.LOGGER.warn("RepulsorEnergyDrainError, If you see this report this to the mod author.");
+        }
 
         pulse.execute();
         pulseTicksLeft = pulseTicks;
@@ -131,6 +157,8 @@ public class BlockEntityRepulsor extends BlockEntity {
         pulseTag.putInt("type", pulseType);
         compound.put("pulse", pulse.writeToNBT(pulseTag));
 
+        compound.put("energy", energy.serializeNBT());
+
         //pulseTag.putInt("anim", pulseTicksLeft);
 
         super.saveAdditional(compound);
@@ -145,6 +173,13 @@ public class BlockEntityRepulsor extends BlockEntity {
             setPulse(pulseTag.getInt("type"));
             pulse.readFromNBT(pulseTag);
         }
+
+        Tag energyTag = compound.get("energy");
+
+        if(energyTag != null) {
+            energy.deserializeNBT(energyTag);
+        }
+
     }
 
     @Override

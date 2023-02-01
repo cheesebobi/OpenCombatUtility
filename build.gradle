@@ -17,7 +17,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = "1.1.0"
+version = "1.1.1"
 group = "com.LubieKakao1212.opencu" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "OpenCU"
 
@@ -48,7 +48,8 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
             // "SCAN": For mods scan.
@@ -73,6 +74,8 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             property 'forge.logging.markers', 'REGISTRIES'
 
@@ -139,7 +142,12 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-	maven{
+
+    flatDir {
+        dirs 'mods'
+    }
+
+	maven {
         url = "file://${localMaven}"
     }
 
@@ -158,23 +166,33 @@ repositories {
             includeGroup 'org.squiddev'
         }
     }
+
+    //IE
+    maven {
+        url = "https://maven.blamejared.com/"
+    }
+
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.0'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.2.0'
 
+    //dependencies
     compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
-    // at runtime, use the full JEI jar
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
 
     implementation fg.deobf("com.LubieKakao1212.qulib:qulib:${qulib_version}")
 
-    runtimeOnly  fg.deobf("com.teamcofh:cofh_core:${mc_version}-${cofh_core_version}")
-    runtimeOnly  fg.deobf("com.teamcofh:thermal_foundation:${mc_version}-${thermal_foundation_version}")
-    runtimeOnly  fg.deobf("com.teamcofh:thermal_expansion:${mc_version}-${thermal_expansion_version}")
-
     compileOnly fg.deobf("org.squiddev:cc-tweaked-${mc_version}:${cct_version}:api")
     runtimeOnly fg.deobf("org.squiddev:cc-tweaked-${mc_version}:${cct_version}")
+
+    //Mods for testing, NOT dependencies
+    runtimeOnly fg.deobf("com.teamcofh:cofh_core:${mc_version}-${cofh_core_version}")
+    runtimeOnly fg.deobf("com.teamcofh:thermal_foundation:${mc_version}-${thermal_foundation_version}")
+    runtimeOnly fg.deobf("com.teamcofh:thermal_expansion:${mc_version}-${thermal_expansion_version}")
+    runtimeOnly fg.deobf("mcjty:theoneprobe:1.18-5.1.2")
+
+    runtimeOnly fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${version_ie}")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
