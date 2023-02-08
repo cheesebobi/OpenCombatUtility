@@ -15,8 +15,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import org.joml.Quaterniond;
-import org.joml.Vector3d;
+import com.LubieKakao1212.qulib.libs.joml.Quaterniond;
+import com.LubieKakao1212.qulib.libs.joml.Vector3d;
 
 public abstract class DispenserBase implements IDispenser {
 

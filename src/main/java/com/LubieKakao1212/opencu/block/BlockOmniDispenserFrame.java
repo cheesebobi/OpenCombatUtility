@@ -8,6 +8,7 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -52,10 +53,8 @@ public class BlockOmniDispenserFrame extends Block implements EntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        BlockEntity be = level.getBlockEntity(pos);
-
-        LazyOptional<IItemHandler> inventory = be.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
+        LazyOptional<IItemHandler> inventory = blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
         inventory.ifPresent((inv) -> {
             for(int i=0; i<inv.getSlots(); i++) {
@@ -63,7 +62,7 @@ public class BlockOmniDispenserFrame extends Block implements EntityBlock {
             }
         });
 
-        super.onRemove(state, level, pos, newState, isMoving);
+        super.playerDestroy(level, player, pos, state, blockEntity, tool);
     }
 
     @Override

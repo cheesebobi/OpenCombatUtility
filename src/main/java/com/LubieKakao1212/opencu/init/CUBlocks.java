@@ -31,8 +31,8 @@ public class CUBlocks {
 
     static
     {
-        blockItem(BLOCKS.register(ID.REPULSOR, () -> new BlockRepulsor(BlockBehaviour.Properties.of(Material.METAL).strength(1f).noOcclusion())));
-        blockItem(BLOCKS.register(ID.OMNI_DISPENSER, () -> new BlockOmniDispenserFrame(BlockBehaviour.Properties.of(Material.METAL).strength(1f).noOcclusion())));
+        blockItem(BLOCKS.register(ID.REPULSOR, () -> new BlockRepulsor(BlockBehaviour.Properties.of(Material.METAL).strength(3f).noOcclusion())));
+        blockItem(BLOCKS.register(ID.OMNI_DISPENSER, () -> new BlockOmniDispenserFrame(BlockBehaviour.Properties.of(Material.METAL).strength(3f).noOcclusion())));
 
         //TODO check if this works
         CURegister.register(BLOCKS);

@@ -10,7 +10,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
-import org.joml.Quaterniond;
+import com.LubieKakao1212.qulib.libs.joml.Quaterniond;
 
 import java.util.function.Supplier;
 
@@ -19,11 +19,14 @@ public class UpdateDispenserAimPacket implements IOCUPacket {
     private BlockPos position;
     private Quaterniond aim;
 
+    private boolean hardSet;
+
     public UpdateDispenserAimPacket() { }
 
-    public UpdateDispenserAimPacket(BlockPos position, Quaterniond aim) {
+    public UpdateDispenserAimPacket(BlockPos position, Quaterniond aim, boolean hardSet) {
         this.position = position;
         this.aim = aim;
+        this.hardSet = hardSet;
     }
 
     @Override
@@ -31,10 +34,13 @@ public class UpdateDispenserAimPacket implements IOCUPacket {
         buf.writeInt(position.getX());
         buf.writeInt(position.getY());
         buf.writeInt(position.getZ());
+
         buf.writeDouble(aim.x());
         buf.writeDouble(aim.y());
         buf.writeDouble(aim.z());
         buf.writeDouble(aim.w());
+
+        buf.writeBoolean(hardSet);
     }
 
     public static UpdateDispenserAimPacket fromBytes(ByteBuf buf) {
@@ -49,7 +55,8 @@ public class UpdateDispenserAimPacket implements IOCUPacket {
                         buf.readDouble(),
                         buf.readDouble(),
                         buf.readDouble()
-                )
+                ),
+                buf.readBoolean()
         );
     }
 
@@ -63,6 +70,10 @@ public class UpdateDispenserAimPacket implements IOCUPacket {
 
             if (te instanceof BlockEntityOmniDispenser) {
                 ((BlockEntityOmniDispenser) te).setCurrentAction(aim);
+                if(hardSet) {
+                    //Sets last aim to aim
+                    ((BlockEntityOmniDispenser) te).setCurrentAction(aim);
+                }
             }
         });
         ctx.get().setPacketHandled(true);

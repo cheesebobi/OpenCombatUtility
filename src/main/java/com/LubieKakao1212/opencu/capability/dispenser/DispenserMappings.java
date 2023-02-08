@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import org.joml.Vector3d;
+import com.LubieKakao1212.qulib.libs.joml.Vector3d;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -27,7 +27,7 @@ displayName="Open Combat Utility" #mandatory
 # A URL for the "homepage" for this mod, displayed in the mod UI
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="examplemod.png" #optional
+logoFile="icon.png" #optional
 # A text field displayed in the mod UI
 credits="" #optional
 # A text field displayed in the mod UI
@@ -55,7 +55,13 @@ description='''
     versionRange="[1.18.2,1.19)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.advancedperipherals]]
+[[dependencies.opencu]]
+    modId = "qulib"
+    mandatory = true
+    versionRange = "[1.0.20,)"
+    ordering = "NONE"
+    side = "BOTH"
+[[dependencies.opencu]]
     modId = "computercraft"
     mandatory = true
     versionRange = "[1.100.9,)"

@@ -38,7 +38,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.joml.Quaterniond;
+import com.LubieKakao1212.qulib.libs.joml.Quaterniond;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -130,19 +130,19 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
     public static <T> void tick(Level level, BlockPos pos, BlockState state, T blockEntity) {
         BlockEntityOmniDispenser dispenser = (BlockEntityOmniDispenser)blockEntity;
         if (!level.isClientSide) {
-            if(dispenser.initialiseDelay-- == 0){
+            if(dispenser.initialiseDelay-- == 0) {
                 dispenser.updateDispenser();
-                NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim), level, pos);
+                NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim, false), level, pos);
             }
             if(dispenser.currentDispenser != null) {
                 if(QuaterniondUtil.smallerAngle(dispenser.targetAim, dispenser.currentAction.aim) > aimIdenticalityEpsilon) {
                     QuaterniondUtil.step(dispenser.currentAction.aim, dispenser.targetAim, dispenser.currentDispenser.getAlignmentSpeed() * MathUtil.degToRad);
-                    NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim), level, pos);
+                    NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim, false), level, pos);
                 } else {
                     dispenser.currentAction.aim = dispenser.targetAim;
                     if(!dispenser.currentAction.lockedOn)
                     {
-                        NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim), level, pos);
+                        NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim, false), level, pos);
                         dispenser.currentAction.lockedOn = true;
                     }
                 }
@@ -307,7 +307,7 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
 
     public void sendDispenserUpdateTo(ServerPlayer player) {
         NetworkHandler.sendTo(player, new UpdateDispenserPacket.FromServer(worldPosition, inventory.getStackInSlot(0)));
-        NetworkHandler.sendTo(player, new UpdateDispenserAimPacket(worldPosition, currentAction.aim));
+        NetworkHandler.sendTo(player, new UpdateDispenserAimPacket(worldPosition, currentAction.aim, true));
     }
 
     public ItemStack getCurrentDispenserItem() {
