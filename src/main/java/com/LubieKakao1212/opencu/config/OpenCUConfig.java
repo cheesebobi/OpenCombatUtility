@@ -35,6 +35,8 @@ public class OpenCUConfig {
         //@Config.Comment("How much energy will be used per pulse from force at maximum force")
         //@Config.RangeDouble(min = 0)
         public double repulsorForceCost = 5000;
+
+        public double maximumStasisPower = 0.5;
     }
 
     public static class OmniDispenser {

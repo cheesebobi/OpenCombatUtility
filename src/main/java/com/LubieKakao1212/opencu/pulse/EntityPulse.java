@@ -2,6 +2,7 @@ package com.LubieKakao1212.opencu.pulse;
 
 import com.LubieKakao1212.opencu.network.NetworkHandler;
 import com.LubieKakao1212.opencu.network.packet.PlayerAddVelocityPacket;
+import com.LubieKakao1212.qulib.libs.joml.Vector3d;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -98,6 +99,10 @@ public abstract class EntityPulse {
         radius = tag.getDouble("radius");
         baseForce = tag.getDouble("force");
         whitelist = tag.getBoolean("whitelist");
+    }
+
+    protected static void addVelocity(Entity e, Vector3d deltaV) {
+        addVelocity(e, deltaV.x, deltaV.y, deltaV.z);
     }
 
     protected static void addVelocity(Entity e, double vX, double vY, double vZ) {

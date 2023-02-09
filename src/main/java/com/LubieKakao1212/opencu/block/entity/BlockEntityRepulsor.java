@@ -6,6 +6,7 @@ import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import com.LubieKakao1212.opencu.init.CUBlockEntities;
 import com.LubieKakao1212.opencu.pulse.EntityPulse;
 import com.LubieKakao1212.opencu.pulse.RepulsorPulse;
+import com.LubieKakao1212.opencu.pulse.StasisPulse;
 import com.LubieKakao1212.opencu.pulse.VectorPulse;
 import com.LubieKakao1212.qulib.capability.energy.InternalEnergyStorage;
 import com.mojang.math.Vector3d;
@@ -32,7 +33,7 @@ import java.util.function.Supplier;
 
 public class BlockEntityRepulsor extends BlockEntity {
 
-    private static final Supplier<EntityPulse>[] pulseFactories = new Supplier[] { RepulsorPulse::new, VectorPulse::new };
+    private static final Supplier<EntityPulse>[] pulseFactories = new Supplier[] { RepulsorPulse::new, VectorPulse::new, StasisPulse::new };
 
     private EntityPulse pulse;
     private final ArrayList<String> filter = new ArrayList<>();
