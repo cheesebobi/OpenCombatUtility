@@ -6,10 +6,7 @@ import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import com.LubieKakao1212.opencu.init.CUBlocks;
 import com.LubieKakao1212.opencu.init.CUPulse;
 import com.LubieKakao1212.opencu.pulse.EntityPulseType;
-import com.mojang.math.Vector3d;
 import dan200.computercraft.api.lua.LuaFunction;
-import dan200.computercraft.api.lua.MethodResult;
-import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -88,7 +85,7 @@ public class RepulsorPeripheral implements IPeripheral {
     }
 
     @LuaFunction
-    public final Object[] recalibrate(String type) {
+    public final Object[] recalibrateById(String type) {
         try
         {
             target.setPulse(new ResourceLocation(type));
