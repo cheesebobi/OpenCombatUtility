@@ -4,6 +4,8 @@ import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.block.entity.BlockEntityRepulsor;
 import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import com.LubieKakao1212.opencu.init.CUBlocks;
+import com.LubieKakao1212.opencu.init.CUPulse;
+import com.LubieKakao1212.opencu.pulse.EntityPulseType;
 import com.mojang.math.Vector3d;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
@@ -14,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class RepulsorPeripheral implements IPeripheral {
+
+    public static final EntityPulseType[] defaultPulseTypes = new EntityPulseType[] { CUPulse.REPULSOR, CUPulse.VECTOR, CUPulse.STASIS };
 
     public static final String TYPE = new ResourceLocation(OpenCUMod.MODID, CUBlocks.ID.REPULSOR).toString();
 
@@ -74,10 +78,24 @@ public class RepulsorPeripheral implements IPeripheral {
         if(type < 0) {
             return new Object[] { false, "id cannot be negative" };
         }
-        if(type > target.getPulseTypeCount()) {
+
+        if(type >= defaultPulseTypes.length) {
             return new Object[] { false, "id to large" };
         }
-        target.setPulse(type);
+
+        target.setPulse(defaultPulseTypes[type]);
+        return new Object[] { true };
+    }
+
+    @LuaFunction
+    public final Object[] recalibrate(String type) {
+        try
+        {
+            target.setPulse(new ResourceLocation(type));
+        }
+        catch(RuntimeException e) {
+            return new Object[] { false, e.getMessage() };
+        }
         return new Object[] { true };
     }
 

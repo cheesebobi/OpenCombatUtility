@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.pulse;
 
+import com.LubieKakao1212.opencu.util.EntityUtil;
 import com.LubieKakao1212.qulib.libs.joml.Vector3d;
 import com.LubieKakao1212.qulib.util.joml.Vector3dUtil;
 import net.minecraft.world.entity.Entity;
@@ -27,11 +28,11 @@ public class StasisPulse extends EntityPulse {
             Vector3d movement = Vector3dUtil.of(e.getDeltaMovement());
 
             if(movement.lengthSquared() < epsilonSqr) {
-                addVelocity(e, movement.mul(-1.));
+                EntityUtil.scaleVelocity(e, 0);
                 continue;
             }
 
-            addVelocity(e, movement.mul(-this.baseForce));
+            EntityUtil.scaleVelocity(e, 1 - baseForce);
         }
     }
 }

@@ -4,6 +4,7 @@ import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.lib.util.counting.CounterList;
 import com.LubieKakao1212.opencu.lib.util.counting.ICounter;
 import com.LubieKakao1212.opencu.network.packet.PlayerAddVelocityPacket;
+import com.LubieKakao1212.opencu.network.packet.PlayerScaleVelocityPacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.RequestDispenserUpdatePacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserAimPacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserPacket;
@@ -45,6 +46,13 @@ public class NetworkHandler {
                 .decoder(PlayerAddVelocityPacket::fromBytes)
                 .consumer(PlayerAddVelocityPacket::handle)
                 .add();
+
+        CHANNEL.messageBuilder(PlayerScaleVelocityPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(PlayerScaleVelocityPacket::toBytes)
+                .decoder(PlayerScaleVelocityPacket::fromBytes)
+                .consumer(PlayerScaleVelocityPacket::handle)
+                .add();
+
 
         CHANNEL.messageBuilder(UpdateFireballPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(UpdateFireballPacket::toBytes)

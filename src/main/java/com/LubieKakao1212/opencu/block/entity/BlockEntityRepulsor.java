@@ -4,10 +4,8 @@ package com.LubieKakao1212.opencu.block.entity;
 import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import com.LubieKakao1212.opencu.init.CUBlockEntities;
-import com.LubieKakao1212.opencu.pulse.EntityPulse;
-import com.LubieKakao1212.opencu.pulse.RepulsorPulse;
-import com.LubieKakao1212.opencu.pulse.StasisPulse;
-import com.LubieKakao1212.opencu.pulse.VectorPulse;
+import com.LubieKakao1212.opencu.init.CUPulse;
+import com.LubieKakao1212.opencu.pulse.*;
 import com.LubieKakao1212.qulib.capability.energy.InternalEnergyStorage;
 import com.mojang.math.Vector3d;
 import net.minecraft.core.BlockPos;
@@ -18,6 +16,8 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,12 +32,12 @@ import java.util.ArrayList;
 import java.util.function.Supplier;
 
 public class BlockEntityRepulsor extends BlockEntity {
+/*
+    private static final Supplier<EntityPulse>[] pulseFactories = new Supplier[] { RepulsorPulse::new, VectorPulse::new, StasisPulse::new };*/
 
-    private static final Supplier<EntityPulse>[] pulseFactories = new Supplier[] { RepulsorPulse::new, VectorPulse::new, StasisPulse::new };
-
-    private EntityPulse pulse;
+    private EntityPulseType pulseType;
+    private EntityPulse pulseInstance;
     private final ArrayList<String> filter = new ArrayList<>();
-    private int pulseType;
 
     public int pulseTicksLeft;
     public static final int pulseTicks = 10;
@@ -50,7 +50,7 @@ public class BlockEntityRepulsor extends BlockEntity {
         super(CUBlockEntities.REPULSOR, pos, blockState);
         energy = new InternalEnergyStorage(OpenCUConfig.repulsor.energy.capacity, OpenCUConfig.repulsor.energy.maxReceive, 0);
         energyCap = LazyOptional.of(() -> energy);
-        setPulse(0);
+        setPulse(CUPulse.REPULSOR);
     }
 
     public static <T> void tick(Level level, BlockPos pos, BlockState state, T blockEntity) {
@@ -68,7 +68,7 @@ public class BlockEntityRepulsor extends BlockEntity {
         {
             throw new RuntimeException("Attempting to set invalid radius");
         }
-        pulse.setRadius(radius);
+        pulseInstance.setRadius(radius);
     }
 
     public void setForce(double force) {
@@ -76,19 +76,19 @@ public class BlockEntityRepulsor extends BlockEntity {
         {
             throw new RuntimeException("Attempting to set invalid force");
         }
-        pulse.setBaseForce(force * OpenCUConfig.repulsor.repulsorForceScale);
+        pulseInstance.setBaseForce(pulseType.getForceTransformer().transform(force));
     }
 
     public void setVector(Vector3d vector) {
-        pulse.setVector(vector.x, vector.y, vector.z);
+        pulseInstance.setVector(vector.x, vector.y, vector.z);
     }
 
     public void setVector(double x, double y, double z) {
-        pulse.setVector(x, y, z);
+        pulseInstance.setVector(x, y, z);
     }
 
     public void setWhitelist(boolean whitelist) {
-        pulse.setWhitelist(whitelist);
+        pulseInstance.setWhitelist(whitelist);
     }
 
     public void addToFilter(String name) {
@@ -122,13 +122,17 @@ public class BlockEntityRepulsor extends BlockEntity {
 
         BlockPos pos = getBlockPos();
 
-        pulse.lock(level, xOffset + pos.getX() + 0.5, yOffset + pos.getY() + 0.5, zOffset + pos.getZ() + 0.5);
-        pulse.filter(filter);
+        pulseInstance.lock(level, xOffset + pos.getX() + 0.5, yOffset + pos.getY() + 0.5, zOffset + pos.getZ() + 0.5);
+        pulseInstance.filter(filter);
 
-        double radiusRatio = pulse.getRadius() * pulse.getRadius() * pulse.getRadius() / (OpenCUConfig.repulsor.repulsorMaxRadius * OpenCUConfig.repulsor.repulsorMaxRadius * OpenCUConfig.repulsor.repulsorMaxRadius);
-        double forceRatio = pulse.getBaseForce() / OpenCUConfig.repulsor.repulsorForceScale;
+        double radiusRatio = pulseInstance.getRadius() * pulseInstance.getRadius() * pulseInstance.getRadius() / (OpenCUConfig.repulsor.repulsorMaxRadius * OpenCUConfig.repulsor.repulsorMaxRadius * OpenCUConfig.repulsor.repulsorMaxRadius);
+        double forceRatio = pulseInstance.getBaseForce() / OpenCUConfig.repulsor.repulsorForceScale;
         double distanceRatio = Math.sqrt(distanceSqr) / OpenCUConfig.repulsor.repulsorDistanceCost;
-        int energyUsage = (int)Math.floor(distanceRatio * OpenCUConfig.repulsor.repulsorDistanceCost + radiusRatio * OpenCUConfig.repulsor.repulsorVolumeCost + (Math.pow(2, Math.abs(forceRatio))-1.0) * OpenCUConfig.repulsor.repulsorForceCost);
+        EntityPulseType.EnergyUsage energyUsageMul = pulseType.getEnergyUsage();
+        int energyUsage = (int)Math.floor(
+                distanceRatio * OpenCUConfig.repulsor.repulsorDistanceCost * energyUsageMul.distance +
+                radiusRatio * OpenCUConfig.repulsor.repulsorVolumeCost * energyUsageMul.volume +
+                (Math.pow(2, Math.abs(forceRatio)) - 1.0) * OpenCUConfig.repulsor.repulsorForceCost * energyUsageMul.force);
 
         if(energy.getEnergyStored() < energyUsage) {
             return new PulseExecutionResult("Not enough energy stored!!!");
@@ -141,7 +145,7 @@ public class BlockEntityRepulsor extends BlockEntity {
             OpenCUMod.LOGGER.warn("RepulsorEnergyDrainError, If you see this report this to the mod author.");
         }
 
-        pulse.execute();
+        pulseInstance.execute();
         pulseTicksLeft = pulseTicks;
 
         setChanged();
@@ -155,12 +159,10 @@ public class BlockEntityRepulsor extends BlockEntity {
     @Override
     public void saveAdditional(CompoundTag compound) {
         CompoundTag pulseTag = new CompoundTag();
-        pulseTag.putInt("type", pulseType);
-        compound.put("pulse", pulse.writeToNBT(pulseTag));
+        pulseTag.putString("type", pulseType.getRegistryName().toString());
+        compound.put("pulse", pulseInstance.writeToNBT(pulseTag));
 
         compound.put("energy", energy.serializeNBT());
-
-        //pulseTag.putInt("anim", pulseTicksLeft);
 
         super.saveAdditional(compound);
     }
@@ -171,8 +173,9 @@ public class BlockEntityRepulsor extends BlockEntity {
 
         if(compound.contains("pulse", Tag.TAG_COMPOUND)) {
             CompoundTag pulseTag = compound.getCompound("pulse");
-            setPulse(pulseTag.getInt("type"));
-            pulse.readFromNBT(pulseTag);
+
+            setPulse(new ResourceLocation(pulseTag.getString("type")));
+            pulseInstance.readFromNBT(pulseTag);
         }
 
         Tag energyTag = compound.get("energy");
@@ -207,14 +210,18 @@ public class BlockEntityRepulsor extends BlockEntity {
         if (tag != null) handleUpdateTag(tag);
     }
 
-    public void setPulse(int type) {
-        pulse = pulseFactories[type].get();
-        filter.clear();
-        this.pulseType = type;
+    public void setPulse(ResourceLocation id) {
+        EntityPulseType type = CUPulse.getRegistry().getValue(id);
+        if(type == null) {
+            throw new RuntimeException("Invalid pulse type id" + id.toString());
+        }
+        setPulse(type);
     }
 
-    public int getPulseTypeCount() {
-        return pulseFactories.length;
+    public void setPulse(EntityPulseType type) {
+        pulseType = type;
+        this.pulseInstance = type.createPulse();
+        filter.clear();
     }
 
     public static class PulseExecutionResult {

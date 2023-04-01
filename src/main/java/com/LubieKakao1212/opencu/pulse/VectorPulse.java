@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.pulse;
 
+import com.LubieKakao1212.opencu.util.EntityUtil;
 import net.minecraft.nbt.*;
 import net.minecraft.world.entity.Entity;
 
@@ -32,7 +33,7 @@ public class VectorPulse extends EntityPulse {
             double vY = this.vY * baseForce;
             double vZ = this.vZ * baseForce;
 
-            addVelocity(e, vX, vY, vZ);
+            EntityUtil.addVelocity(e, vX, vY, vZ);
         }
     }
 

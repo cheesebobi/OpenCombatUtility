@@ -101,26 +101,6 @@ public abstract class EntityPulse {
         whitelist = tag.getBoolean("whitelist");
     }
 
-    protected static void addVelocity(Entity e, Vector3d deltaV) {
-        addVelocity(e, deltaV.x, deltaV.y, deltaV.z);
-    }
 
-    protected static void addVelocity(Entity e, double vX, double vY, double vZ) {
-        if(e instanceof ServerPlayer)
-        {
-            NetworkHandler.sendTo((ServerPlayer)e, new PlayerAddVelocityPacket(vX, vY, vZ));
-        }else {
-            Vec3 movement = e.getDeltaMovement().add(vX, vY, vZ);
-            //TODO unground arrows
-            /*if(e instanceof AbstractArrow) {
-                AbstractArrow p = (AbstractArrow) e;
-            }*/
-            e.setDeltaMovement(movement);
-            if(e instanceof LivingEntity && movement.y > 0)
-            {
-                e.fallDistance = 0;
-            }
-        }
-    }
 
 }

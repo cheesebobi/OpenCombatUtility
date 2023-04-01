@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.pulse;
 
+import com.LubieKakao1212.opencu.util.EntityUtil;
 import net.minecraft.world.entity.Entity;
 
 public class RepulsorPulse extends EntityPulse {
@@ -25,7 +26,7 @@ public class RepulsorPulse extends EntityPulse {
 
             //if we have a very small delta we consider it to have an up direction to avoid floating point precision errors
             if(distanceSqr < epsilonSqr) {
-                addVelocity(e, 0, baseForce, 0);
+                EntityUtil.addVelocity(e, 0, baseForce, 0);
                 continue;
             }
 
@@ -35,7 +36,7 @@ public class RepulsorPulse extends EntityPulse {
             double vY = dY/distance * baseForce;
             double vZ = dZ/distance * baseForce;
 
-            addVelocity(e, vX, vY, vZ);
+            EntityUtil.addVelocity(e, vX, vY, vZ);
         }
     }
 }
