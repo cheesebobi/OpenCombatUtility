@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.item.ItemStack;
-import com.LubieKakao1212.qulib.libs.joml.Quaterniond;
+import org.joml.Quaterniond;
 
 public class RendererOmniDispenser implements BlockEntityRenderer<BlockEntityOmniDispenser> {
 

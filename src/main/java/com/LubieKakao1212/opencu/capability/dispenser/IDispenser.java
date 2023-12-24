@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
-import com.LubieKakao1212.qulib.libs.joml.Quaterniond;
+import org.joml.Quaterniond;
 
 public interface IDispenser extends INBTSerializable<CompoundTag> {
 

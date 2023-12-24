@@ -1,7 +1,7 @@
 package com.LubieKakao1212.opencu.pulse;
 
 import com.LubieKakao1212.opencu.util.EntityUtil;
-import com.LubieKakao1212.qulib.libs.joml.Vector3d;
+import org.joml.Vector3d;
 import com.LubieKakao1212.qulib.util.joml.Vector3dUtil;
 import net.minecraft.world.entity.Entity;
 

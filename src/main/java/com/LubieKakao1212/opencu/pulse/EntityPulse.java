@@ -2,7 +2,7 @@ package com.LubieKakao1212.opencu.pulse;
 
 import com.LubieKakao1212.opencu.network.NetworkHandler;
 import com.LubieKakao1212.opencu.network.packet.PlayerAddVelocityPacket;
-import com.LubieKakao1212.qulib.libs.joml.Vector3d;
+import org.joml.Vector3d;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;

@@ -38,7 +38,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import com.LubieKakao1212.qulib.libs.joml.Quaterniond;
+import org.joml.Quaterniond;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

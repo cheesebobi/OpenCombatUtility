@@ -10,7 +10,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
-import com.LubieKakao1212.qulib.libs.joml.Quaterniond;
+import org.joml.Quaterniond;
 
 import java.util.function.Supplier;
 
