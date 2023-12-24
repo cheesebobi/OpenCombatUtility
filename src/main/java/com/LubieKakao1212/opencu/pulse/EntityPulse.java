@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.pulse;
 
+import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
 import com.LubieKakao1212.opencu.network.packet.PlayerAddVelocityPacket;
 import org.joml.Vector3d;
@@ -12,14 +13,18 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.valkyrienskies.mod.common.VSGameUtilsKt;
+import org.valkyrienskies.mod.common.ValkyrienSkiesMod;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class EntityPulse {
 
     protected double radius;
+    protected double radiusSqr;
     protected double baseForce;
     protected double posX, posY, posZ;
     protected Level level;
@@ -47,17 +52,26 @@ public abstract class EntityPulse {
     }
 
     public void filter(ArrayList<String> list) {
-        entityList = entityList.stream().filter( e -> { return whitelist ? list.contains(e.getName().getContents()) : !list.contains(e.getName().getContents()); }).collect(Collectors.toList());
+        entityList = entityList.stream().filter( e -> { return whitelist == list.contains(e.getName().getContents()); }).collect(Collectors.toList());
     }
 
     protected void filter() {
-        entityList = entityList.stream().filter(entity -> {
-            double relX = entity.getX() - posX;
-            double relY = entity.getY() - posY;
-            double relZ = entity.getZ() - posZ;
+        Stream<Entity> stream = entityList.stream();
+        if(OpenCUMod.hasValkyrienSkies()) {
+            stream = stream.filter(entity ->
+                    VSGameUtilsKt.squaredDistanceBetweenInclShips(level, posX, posY, posZ, entity.getX(), entity.getY(), entity.getZ()) < radiusSqr
+            );
+        }
+        else {
+            stream = stream.filter(entity -> {
+                double relX = entity.getX() - posX;
+                double relY = entity.getY() - posY;
+                double relZ = entity.getZ() - posZ;
 
-            return relX*relX+relY*relY+relZ*relZ < radius * radius;
-        }).collect(Collectors.toList());
+                return relX * relX + relY * relY + relZ * relZ < radiusSqr;
+            });
+        }
+        entityList = stream.collect(Collectors.toList());
     }
 
     public abstract void execute();
@@ -70,6 +84,7 @@ public abstract class EntityPulse {
 
     public void setRadius(double radius) {
         this.radius = radius;
+        this.radiusSqr = radius * radius;
     }
 
     public void setBaseForce(double baseForce) {
@@ -100,7 +115,5 @@ public abstract class EntityPulse {
         baseForce = tag.getDouble("force");
         whitelist = tag.getBoolean("whitelist");
     }
-
-
 
 }

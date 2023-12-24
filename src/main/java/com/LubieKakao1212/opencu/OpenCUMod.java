@@ -22,6 +22,8 @@ public class OpenCUMod
 
     public static final Proxy PROXY = DistExecutor.unsafeRunForDist(() -> ()-> new ClientProxy(), () -> () -> new ServerProxy());
 
+    private static boolean hasValkyrienSkies;
+
     public OpenCUMod() {
 
         NetworkHandler.init();
@@ -32,5 +34,12 @@ public class OpenCUMod
         if(ModList.get().isLoaded("computercraft")) {
             CCInit.init();
         }
+
+        hasValkyrienSkies = ModList.get().isLoaded("valkyrienskies");
     }
+
+    public static boolean hasValkyrienSkies() {
+        return hasValkyrienSkies;
+    }
+
 }

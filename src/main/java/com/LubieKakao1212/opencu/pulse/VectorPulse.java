@@ -1,8 +1,14 @@
 package com.LubieKakao1212.opencu.pulse;
 
+import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.util.EntityUtil;
 import net.minecraft.nbt.*;
 import net.minecraft.world.entity.Entity;
+import org.joml.Vector3d;
+import org.valkyrienskies.core.api.ships.ServerShip;
+import org.valkyrienskies.core.api.ships.Ship;
+import org.valkyrienskies.core.api.ships.properties.ShipTransform;
+import org.valkyrienskies.mod.common.VSGameUtilsKt;
 
 public class VectorPulse extends EntityPulse {
 
@@ -27,13 +33,20 @@ public class VectorPulse extends EntityPulse {
     public void execute() {
         filter();
 
+        Vector3d force = new Vector3d(vX, vY, vZ);
+        force.mul(baseForce);
+
+        if(OpenCUMod.hasValkyrienSkies()) {
+            Ship ship = VSGameUtilsKt.getShipManagingPos(level, posX, posY, posZ);
+            if(ship != null){
+                ShipTransform transform = ship.getTransform();
+                force = transform.transformDirectionNoScalingFromShipToWorld(force, force);
+            }
+        }
+
         for(Entity e : entityList)
         {
-            double vX = this.vX * baseForce;
-            double vY = this.vY * baseForce;
-            double vZ = this.vZ * baseForce;
-
-            EntityUtil.addVelocity(e, vX, vY, vZ);
+            EntityUtil.addVelocity(e, force);
         }
     }
 

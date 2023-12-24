@@ -1,7 +1,10 @@
 package com.LubieKakao1212.opencu.pulse;
 
+import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.util.EntityUtil;
 import net.minecraft.world.entity.Entity;
+import org.joml.Vector3d;
+import org.valkyrienskies.mod.common.VSGameUtilsKt;
 
 public class RepulsorPulse extends EntityPulse {
 
@@ -16,11 +19,17 @@ public class RepulsorPulse extends EntityPulse {
     public void execute() {
         filter();
 
+        Vector3d wPos = new Vector3d(posX, posY, posZ);
+
+        if(OpenCUMod.hasValkyrienSkies()) {
+            wPos = VSGameUtilsKt.toWorldCoordinates(level, wPos);
+        }
+
         for(Entity e : entityList)
         {
-            double dX = e.getX() - posX;
-            double dY = e.getY() - posY;
-            double dZ = e.getZ() - posZ;
+            double dX = e.getX() - wPos.x;
+            double dY = e.getY() - wPos.y;
+            double dZ = e.getZ() - wPos.z;
 
             double distanceSqr = dX*dX + dY*dY + dZ*dZ;
 
