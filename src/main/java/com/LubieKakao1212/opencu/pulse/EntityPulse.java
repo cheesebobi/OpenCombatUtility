@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.pulse;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
+import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
 import com.LubieKakao1212.opencu.network.packet.PlayerAddVelocityPacket;
 import org.joml.Vector3d;
@@ -101,6 +102,10 @@ public abstract class EntityPulse {
 
     public double getBaseForce() {
         return baseForce;
+    }
+
+    public double getScaledForce() {
+        return baseForce * OpenCUConfigCommon.REPULSOR.getForceScale();
     }
 
     public CompoundTag writeToNBT(CompoundTag tag) {

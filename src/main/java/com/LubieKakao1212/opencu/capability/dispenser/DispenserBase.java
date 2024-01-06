@@ -1,20 +1,16 @@
 package com.LubieKakao1212.opencu.capability.dispenser;
 
-import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import com.LubieKakao1212.qulib.capability.energy.InternalEnergyStorage;
 import com.LubieKakao1212.qulib.math.AimUtil;
 import com.LubieKakao1212.qulib.math.MathUtil;
 import com.LubieKakao1212.qulib.util.joml.Vector3dUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import org.joml.Quaterniond;
 import org.joml.Vector3d;
 

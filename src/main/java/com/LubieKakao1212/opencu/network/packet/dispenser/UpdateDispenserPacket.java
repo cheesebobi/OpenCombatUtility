@@ -6,6 +6,7 @@ import com.LubieKakao1212.opencu.network.NetworkHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -85,7 +86,11 @@ public abstract class UpdateDispenserPacket implements IOCUPacket {
         @Override
         public void handle(Supplier<NetworkEvent.Context> ctx) {
             ctx.get().enqueueWork(() -> {
-                NetworkHandler.sendToAllTracking(this, ctx.get().getSender().level, position);
+                ServerPlayer sender = ctx.get().getSender();
+                if(sender.distanceToSqr(position.getX(), position.getY(), position.getZ()) < (64 * 64))
+                {
+                    NetworkHandler.sendToAllTracking(this, sender.level, position);
+                }
             });
         }
     }

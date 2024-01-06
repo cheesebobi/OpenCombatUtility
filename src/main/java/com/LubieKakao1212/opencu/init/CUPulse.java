@@ -37,7 +37,6 @@ public class CUPulse {
         PULSES.register(ID.VECTOR, () -> new EntityPulseType.Builder(VectorPulse::new)
                 .build());
         PULSES.register(ID.STASIS, () -> new EntityPulseType.Builder(StasisPulse::new)
-                .forceTransformer(ForceTransformer.scale(0.95f))
                 .build());
 
         CURegister.register(PULSES);

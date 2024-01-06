@@ -42,10 +42,12 @@ public class RequestDispenserUpdatePacket implements IOCUPacket {
             ServerPlayer sender = ctx.get().getSender();
             Level level = sender.getLevel();
 
-            BlockEntity be = level.getBlockEntity(position);
+            if(sender.distanceToSqr(position.getX(), position.getY(), position.getZ()) < (64 * 64)) {
+                BlockEntity be = level.getBlockEntity(position);
 
-            if(be instanceof BlockEntityOmniDispenser) {
-                ((BlockEntityOmniDispenser) be).sendDispenserUpdateTo(sender);
+                if(be instanceof BlockEntityOmniDispenser) {
+                    ((BlockEntityOmniDispenser) be).sendDispenserUpdateTo(sender);
+                }
             }
         });
         ctx.get().setPacketHandled(true);

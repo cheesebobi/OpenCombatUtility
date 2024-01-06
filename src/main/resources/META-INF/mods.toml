@@ -58,7 +58,7 @@ description='''
 [[dependencies.opencu]]
     modId = "qulib"
     mandatory = true
-    versionRange = "[2.0.19,3)"
+    versionRange = "[1.18.2-2.0,1.18.2-3.0)"
     ordering = "NONE"
     side = "BOTH"
 [[dependencies.opencu]]

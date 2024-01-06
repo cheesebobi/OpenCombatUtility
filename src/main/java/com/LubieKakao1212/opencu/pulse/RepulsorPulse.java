@@ -25,6 +25,8 @@ public class RepulsorPulse extends EntityPulse {
             wPos = VSGameUtilsKt.toWorldCoordinates(level, wPos);
         }
 
+        double force = getScaledForce();
+
         for(Entity e : entityList)
         {
             double dX = e.getX() - wPos.x;
@@ -41,9 +43,9 @@ public class RepulsorPulse extends EntityPulse {
 
             double distance = Math.sqrt(distanceSqr);
 
-            double vX = dX/distance * baseForce;
-            double vY = dY/distance * baseForce;
-            double vZ = dZ/distance * baseForce;
+            double vX = dX/distance * force;
+            double vY = dY/distance * force;
+            double vZ = dZ/distance * force;
 
             EntityUtil.addVelocity(e, vX, vY, vZ);
         }

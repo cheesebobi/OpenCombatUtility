@@ -6,19 +6,15 @@ import com.LubieKakao1212.opencu.capability.dispenser.DispenserConstant;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenserMappings;
 import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
 import com.LubieKakao1212.opencu.capability.provider.DispenserProvider;
-import com.LubieKakao1212.opencu.capability.util.CapabilityInitializer;
-import com.LubieKakao1212.opencu.config.OpenCUConfig;
+import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.init.CUDispensers;
 import com.LubieKakao1212.opencu.init.CUItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.TagType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.capabilities.CapabilityDispatcher;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,36 +27,36 @@ public class CapabilityHandler {
 
     public static final Supplier<ICapabilityProvider> VANILLA_DISPENSER = () -> new DispenserProvider(new DispenserConstant(
             CUDispensers.VANILLA_DISPENSER,
-            (float) OpenCUConfig.omniDispenser.vanilla.rotationSpeed / 20.f,
-            OpenCUConfig.omniDispenser.vanilla.spread,
-            OpenCUConfig.omniDispenser.vanilla.force,
-            OpenCUConfig.omniDispenser.vanilla.base_energy
+            (float) OpenCUConfigCommon.DISPENSER.vanillaDispenser.getRotationSpeed() / 20.f,
+            OpenCUConfigCommon.DISPENSER.vanillaDispenser.getSpread(),
+            OpenCUConfigCommon.DISPENSER.vanillaDispenser.getForce(),
+            OpenCUConfigCommon.DISPENSER.vanillaDispenser.getBaseEnergy()
     ));
 
     public static final Supplier<ICapabilityProvider> VANILLA_DROPPER = () -> new DispenserProvider(new DispenserConstant(
             CUDispensers.VANILLA_DROPPER,
-            (float) OpenCUConfig.omniDispenser.vanilla.rotationSpeed / 20.f,
-            OpenCUConfig.omniDispenser.vanilla.spread,
-            OpenCUConfig.omniDispenser.vanilla.force,
-            OpenCUConfig.omniDispenser.vanilla.base_energy
+            (float) OpenCUConfigCommon.DISPENSER.vanillaDispenser.getRotationSpeed() / 20.f,
+            OpenCUConfigCommon.DISPENSER.vanillaDispenser.getSpread(),
+            OpenCUConfigCommon.DISPENSER.vanillaDispenser.getForce(),
+            OpenCUConfigCommon.DISPENSER.vanillaDispenser.getBaseEnergy()
     ));
 
     public static final Supplier<ICapabilityProvider> TIER2_DISPENSER = () -> new DispenserProvider(new DispenserConfigurable(
             CUDispensers.TIER2_DISPENSER,
-            (float) OpenCUConfig.omniDispenser.tier2.rotationSpeed / 20.f,
-            OpenCUConfig.omniDispenser.tier2.spread,
-            OpenCUConfig.omniDispenser.tier2.spread_max,
-            OpenCUConfig.omniDispenser.tier2.force,
-            OpenCUConfig.omniDispenser.tier2.base_energy
+            (float) OpenCUConfigCommon.DISPENSER.dispenserT2.getRotationSpeed() / 20.f,
+            OpenCUConfigCommon.DISPENSER.dispenserT2.getSpread(),
+            OpenCUConfigCommon.DISPENSER.dispenserT2.getMaxSpread(),
+            OpenCUConfigCommon.DISPENSER.dispenserT2.getForce(),
+            OpenCUConfigCommon.DISPENSER.dispenserT2.getBaseEnergy()
     ));
 
     public static final Supplier<ICapabilityProvider> TIER3_DISPENSER = () -> new DispenserProvider(new DispenserConfigurable(
             CUDispensers.TIER3_DISPENSER,
-            (float) OpenCUConfig.omniDispenser.tier3.rotationSpeed / 20.f,
-            OpenCUConfig.omniDispenser.tier3.spread,
-            OpenCUConfig.omniDispenser.tier3.spread_max,
-            OpenCUConfig.omniDispenser.tier3.force,
-            OpenCUConfig.omniDispenser.tier3.base_energy
+            (float) OpenCUConfigCommon.DISPENSER.dispenserT3.getRotationSpeed() / 20.f,
+            OpenCUConfigCommon.DISPENSER.dispenserT3.getSpread(),
+            OpenCUConfigCommon.DISPENSER.dispenserT3.getMaxSpread(),
+            OpenCUConfigCommon.DISPENSER.dispenserT3.getForce(),
+            OpenCUConfigCommon.DISPENSER.dispenserT3.getBaseEnergy()
     ));
 
     @SubscribeEvent
@@ -78,12 +74,11 @@ public class CapabilityHandler {
 
             if(mappings != null) {
                 boolean configurable = false;
-                double minSpread = OpenCUConfig.omniDispenser.vanilla.spread;
-                double maxSpread = OpenCUConfig.omniDispenser.vanilla.spread;
-                double minForce = OpenCUConfig.omniDispenser.vanilla.force;
-                double maxForce = OpenCUConfig.omniDispenser.vanilla.force;
+                double minSpread = OpenCUConfigCommon.DISPENSER.vanillaDispenser.getSpread();
+                double maxSpread = minSpread;
+                double force = OpenCUConfigCommon.DISPENSER.vanillaDispenser.getForce();
 
-                double alignmentSpeed = OpenCUConfig.omniDispenser.vanilla.rotationSpeed;
+                double alignmentSpeed = OpenCUConfigCommon.DISPENSER.vanillaDispenser.getRotationSpeed();
 
                 if(dispenserTag.contains("Spread", Tag.TAG_ANY_NUMERIC)) {
                     minSpread = dispenserTag.getDouble("Spread");
@@ -100,17 +95,7 @@ public class CapabilityHandler {
                 }
 
                 if(dispenserTag.contains("Force", Tag.TAG_ANY_NUMERIC)) {
-                    minForce = dispenserTag.getDouble("Force");
-                    maxForce = minForce;
-                }
-                else {
-                    ListTag list = dispenserTag.getList("Force", Tag.TAG_ANY_NUMERIC);
-
-                    if(list.size() == 2) {
-                        minForce = list.getDouble(0);
-                        maxForce = list.getDouble(1);
-                        configurable = true;
-                    }
+                    force = dispenserTag.getDouble("Force");
                 }
 
                 if(dispenserTag.contains("Speed", Tag.TAG_ANY_NUMERIC)) {
@@ -121,9 +106,9 @@ public class CapabilityHandler {
 
                 //TODO Energy
                 if(configurable) {
-                    dispenser = new DispenserConfigurable(mappings, (float)alignmentSpeed / 20.f, minSpread, maxSpread, maxForce, 1.);
+                    dispenser = new DispenserConfigurable(mappings, (float)alignmentSpeed / 20.f, minSpread, maxSpread, force, 1.);
                 }else {
-                    dispenser = new DispenserConstant(mappings, (float)alignmentSpeed / 20.f, minSpread, minForce, 1.);
+                    dispenser = new DispenserConstant(mappings, (float)alignmentSpeed / 20.f, minSpread, force, 1.);
                 }
 
                 event.addCapability(new ResourceLocation(OpenCUMod.MODID, "dispenser"), new DispenserProvider(dispenser));

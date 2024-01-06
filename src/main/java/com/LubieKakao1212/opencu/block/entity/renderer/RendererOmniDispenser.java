@@ -34,15 +34,29 @@ public class RendererOmniDispenser implements BlockEntityRenderer<BlockEntityOmn
 
         ItemStack displayStack = dispenser.getCurrentDispenserItem();
         if(displayStack != null && !displayStack.isEmpty()) {
-            poseStack.pushPose();
-            Quaterniond last = dispenser.getLastAction().aim();
-            Quaterniond current = dispenser.getCurrentAction().aim();
 
-            Quaterniond partial = current.slerp(last, partialTick, new Quaterniond());
+            float step = partialTick;
+            if(dispenser.clientAge == dispenser.clientPrevFrameAge) {
+                step -= dispenser.clientPrevFramePartialTick;
+            }
+            dispenser.clientPrevFramePartialTick = partialTick;
+            dispenser.clientPrevFrameAge = dispenser.clientAge;
+
+            Quaterniond current = dispenser.getCurrentAction().aim();
+            Quaterniond last = dispenser.getLastAction().aim();
+
+            Quaterniond partial = current;
+
+            if(dispenser.deltaAngle > 0) {
+                //Quaterniond partial = last.slerp(current, partialTick, new Quaterniond());
+                partial = QuaterniondUtil.step(last, current, dispenser.deltaAngle * step);
+                dispenser.setLastAction(partial);
+            }
 
             partial.y = -partial.y;
             partial.w = -partial.w;
 
+            poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
             poseStack.mulPose(y180);
             poseStack.mulPose(QuaterniondUtil.toMojang(partial));
@@ -50,4 +64,25 @@ public class RendererOmniDispenser implements BlockEntityRenderer<BlockEntityOmn
             poseStack.popPose();
         }
     }
+
+    /**
+     * Prevents jitter caused by lerps of same two Quaternons twice
+     * @param dispenser
+     * @param partialTick
+     */
+    private Quaterniond getLastPreventJitter(BlockEntityOmniDispenser dispenser, Quaterniond currentAim, float partialTick) {
+        /*//Do we already have the next tick
+        if(dispenser.clientPrevFramePartialTick > partialTick) {
+            //Did we receive a change from the server
+            if(dispenser.clientPrevFrameAim == currentAim) {
+                dispenser.setCurrentAction(currentAim);
+                dispenser.clientPrevFrameAim = currentAim;
+                return currentAim;
+            }
+        }
+        dispenser.clientPrevFramePartialTick = partialTick;*/
+
+        return dispenser.getLastAction().aim();
+    }
+
 }

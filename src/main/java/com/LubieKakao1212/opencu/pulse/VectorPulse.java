@@ -34,7 +34,7 @@ public class VectorPulse extends EntityPulse {
         filter();
 
         Vector3d force = new Vector3d(vX, vY, vZ);
-        force.mul(baseForce);
+        force.mul(getScaledForce());
 
         if(OpenCUMod.hasValkyrienSkies()) {
             Ship ship = VSGameUtilsKt.getShipManagingPos(level, posX, posY, posZ);

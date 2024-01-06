@@ -2,7 +2,7 @@ package com.LubieKakao1212.opencu.dependencies.cc.capability;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.block.entity.BlockEntityRepulsor;
-import com.LubieKakao1212.opencu.config.OpenCUConfig;
+import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.init.CUBlocks;
 import com.LubieKakao1212.opencu.init.CUPulse;
 import com.LubieKakao1212.opencu.pulse.EntityPulseType;
@@ -98,7 +98,7 @@ public class RepulsorPeripheral implements IPeripheral {
 
     @LuaFunction
     public final Object[] setRadius(double radius) {
-        if(radius > OpenCUConfig.repulsor.repulsorMaxRadius)
+        if(radius > OpenCUConfigCommon.REPULSOR.getMaxRadius())
         {
             return new Object[]{ false, "Radius to large" };
         }

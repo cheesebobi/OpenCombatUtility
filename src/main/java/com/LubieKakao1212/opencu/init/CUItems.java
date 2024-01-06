@@ -2,11 +2,6 @@ package com.LubieKakao1212.opencu.init;
 
 import com.LubieKakao1212.opencu.OCUCreativeTabs;
 import com.LubieKakao1212.opencu.OpenCUMod;
-import com.LubieKakao1212.opencu.capability.dispenser.DispenserConfigurable;
-import com.LubieKakao1212.opencu.capability.dispenser.DispenserConstant;
-import com.LubieKakao1212.opencu.capability.provider.DispenserProvider;
-import com.LubieKakao1212.opencu.capability.util.CapabilityInitializer;
-import com.LubieKakao1212.opencu.config.OpenCUConfig;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;

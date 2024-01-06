@@ -3,7 +3,7 @@ package com.LubieKakao1212.opencu.block.entity;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenseResult;
 import com.LubieKakao1212.opencu.capability.dispenser.DispenserCapability;
 import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
-import com.LubieKakao1212.opencu.config.OpenCUConfig;
+import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.gui.container.OmnidispenserMenu;
 import com.LubieKakao1212.opencu.init.CUBlockEntities;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
@@ -35,9 +35,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Quaterniond;
 
 import javax.annotation.Nonnull;
@@ -47,9 +47,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvider {
 
-    //TODO Temporary until CC support is implemented
-    private static Random random = new Random();
-
     public static final double aimIdenticalityEpsilon = MathUtil.degToRad * 0.1;
 
     private final ConcurrentLinkedQueue<DispenseAction> actionQueue = new ConcurrentLinkedQueue<>();
@@ -58,7 +55,7 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
     private final LazyOptional<ItemStackHandler> inventoryCap;
 
     private final LazyOptional<InternalEnergyStorage> energyCap;
-    private final InternalEnergyStorage energy;
+    /*private final InternalEnergyStorage energy;*/
 
     private DispenseAction currentAction;
     private Quaterniond targetAim;
@@ -73,9 +70,17 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
 
     private DispenseAction lastAction = null;
 
+    public long clientAge;
+    public long clientPrevFrameAge;
+    public float clientPrevFramePartialTick;
+    public double deltaAngle;
+
+
     public BlockEntityOmniDispenser(BlockPos pos, BlockState blockState) {
         super(CUBlockEntities.OMNI_DISPENSER, pos, blockState);
         currentAction = new DispenseAction(new Quaterniond());
+
+        lastAction = new DispenseAction(new Quaterniond().identity());
         setCurrentAction(new Quaterniond());
 
         targetAim = new Quaterniond().identity();
@@ -110,8 +115,7 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
         };
         inventoryCap = LazyOptional.of(() -> inventory);
 
-        energy = new InternalEnergyStorage(OpenCUConfig.omniDispenser.energy.capacity, OpenCUConfig.omniDispenser.energy.maxReceive, 0);
-        energyCap = LazyOptional.of(() -> energy);
+        energyCap = OpenCUConfigCommon.DISPENSER.energyConfig.createCapFromConfig();
     }
 
     private void updateDispenser() {
@@ -132,22 +136,31 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
         if (!level.isClientSide) {
             if(dispenser.initialiseDelay-- == 0) {
                 dispenser.updateDispenser();
-                NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim, false), level, pos);
+                NetworkHandler.sendToAllTracking(
+                        new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim, false),
+                        level, pos);
             }
             if(dispenser.currentDispenser != null) {
                 if(QuaterniondUtil.smallerAngle(dispenser.targetAim, dispenser.currentAction.aim) > aimIdenticalityEpsilon) {
-                    QuaterniondUtil.step(dispenser.currentAction.aim, dispenser.targetAim, dispenser.currentDispenser.getAlignmentSpeed() * MathUtil.degToRad);
-                    NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim, false), level, pos);
+                    dispenser.currentAction.aim = QuaterniondUtil.step(
+                            dispenser.currentAction.aim,
+                            dispenser.targetAim,
+                            dispenser.currentDispenser.getAlignmentSpeed() * MathUtil.degToRad);
+                    NetworkHandler.sendToAllTracking(
+                            new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim, false),
+                            level, pos);
                 } else {
                     dispenser.currentAction.aim = dispenser.targetAim;
                     if(!dispenser.currentAction.lockedOn)
                     {
-                        NetworkHandler.sendToAllTracking(new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim, false), level, pos);
+                        NetworkHandler.sendToAllTracking(
+                                new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim, false),
+                                level, pos);
                         dispenser.currentAction.lockedOn = true;
                     }
                 }
             }
-            while(dispenser.actionQueue.size() > 0)
+            while(!dispenser.actionQueue.isEmpty())
             {
                 dispenser.actionQueue.poll();
                 dispenser.shoot(dispenser.currentAction);
@@ -159,6 +172,7 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
                 dispenser.setCurrentAction(dispenser.targetAim);
                 NetworkHandler.sendToServer(new RequestDispenserUpdatePacket(dispenser.getBlockPos()));
             }
+            dispenser.clientAge++;
         }
     }
 
@@ -254,14 +268,14 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
     }
 
     @Override
-    public void saveAdditional(CompoundTag compound) {
+    public void saveAdditional(@NotNull CompoundTag compound) {
         //Node
         CompoundTag nodeTag = new CompoundTag();
 
         //Inventory
         compound.put("inventory", inventory.serializeNBT());
 
-        compound.put("energy", energy.serializeNBT());
+        energyCap.ifPresent(energyStorage -> compound.put("energy", energyStorage.serializeNBT()));
 
         compound.put("aim", JomlNBT.writeQuaternion(currentAction.aim));
 
@@ -271,7 +285,7 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
     }
 
     @Override
-    public void load(CompoundTag compound) {
+    public void load(@NotNull CompoundTag compound) {
         super.load(compound);
 
         //Inventory
@@ -281,8 +295,8 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
         }
 
         Tag energyTag = compound.get("energy");
-        if(energy != null) {
-            energy.deserializeNBT(energyTag);
+        if(energyTag != null) {
+            energyCap.ifPresent((energy) -> energy.deserializeNBT(energyTag));
         }
 
         if(compound.contains("aim", Tag.TAG_LIST)) {
@@ -322,9 +336,14 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
         return lastAction;
     }
 
+    public void setLastAction(Quaterniond aim) {
+        lastAction.aim = aim;
+    }
+
     public void setCurrentAction(Quaterniond newAction) {
-        this.lastAction = currentAction;
+        //this.lastAction = currentAction;
         this.currentAction = new DispenseAction(newAction);
+        this.deltaAngle = QuaterniondUtil.smallerAngle(lastAction.aim(), currentAction.aim());
     }
 
     public void setCurrentDispenserItem(ItemStack currentDispenserItem) {
@@ -338,7 +357,7 @@ public class BlockEntityOmniDispenser extends BlockEntity implements MenuProvide
     }
 
     @Override
-    public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
+    public AbstractContainerMenu createMenu(int containerId, @NotNull Inventory inventory, @NotNull Player player) {
         return new OmnidispenserMenu(containerId, inventory, level, getBlockPos());
     }
 
