@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.pulse;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
+import com.LubieKakao1212.opencu.compat.valkyrienskies.VS2SoftUtil;
 import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
 import com.LubieKakao1212.opencu.network.packet.PlayerAddVelocityPacket;
@@ -53,26 +54,16 @@ public abstract class EntityPulse {
     }
 
     public void filter(ArrayList<String> list) {
-        entityList = entityList.stream().filter( e -> { return whitelist == list.contains(e.getName().getContents()); }).collect(Collectors.toList());
+        entityList = entityList.stream().filter( e -> whitelist == list.contains(e.getName().getContents())).collect(Collectors.toList());
     }
 
     protected void filter() {
         Stream<Entity> stream = entityList.stream();
-        if(OpenCUMod.hasValkyrienSkies()) {
-            stream = stream.filter(entity ->
-                    VSGameUtilsKt.squaredDistanceBetweenInclShips(level, posX, posY, posZ, entity.getX(), entity.getY(), entity.getZ()) < radiusSqr
-            );
-        }
-        else {
-            stream = stream.filter(entity -> {
-                double relX = entity.getX() - posX;
-                double relY = entity.getY() - posY;
-                double relZ = entity.getZ() - posZ;
-
-                return relX * relX + relY * relY + relZ * relZ < radiusSqr;
-            });
-        }
-        entityList = stream.collect(Collectors.toList());
+        entityList = stream.filter(entity ->
+                VS2SoftUtil.getDistanceSqr(level,
+                        new Vector3d(posX, posY, posZ),
+                        new Vector3d(entity.getX(), entity.getY(), entity.getZ())
+                ) < radiusSqr).collect(Collectors.toList());
     }
 
     public abstract void execute();

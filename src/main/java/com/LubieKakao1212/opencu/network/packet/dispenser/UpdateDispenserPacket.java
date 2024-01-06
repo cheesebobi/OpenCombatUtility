@@ -90,6 +90,9 @@ public abstract class UpdateDispenserPacket implements IOCUPacket {
                 if(sender.distanceToSqr(position.getX(), position.getY(), position.getZ()) < (64 * 64))
                 {
                     NetworkHandler.sendToAllTracking(this, sender.level, position);
+                }else
+                {
+                    OpenCUMod.LOGGER.warn("Potentially malicious packet received, skipping");
                 }
             });
         }

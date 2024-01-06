@@ -48,6 +48,9 @@ public class RequestDispenserUpdatePacket implements IOCUPacket {
                 if(be instanceof BlockEntityOmniDispenser) {
                     ((BlockEntityOmniDispenser) be).sendDispenserUpdateTo(sender);
                 }
+            }else
+            {
+                OpenCUMod.LOGGER.warn("Potentially malicious packet received, skipping");
             }
         });
         ctx.get().setPacketHandled(true);
