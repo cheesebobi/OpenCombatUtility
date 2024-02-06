@@ -32,11 +32,11 @@ public class CUPulse {
     public static void init() {
         registry = PULSES.makeRegistry(EntityPulseType.class, RegistryBuilder::new);
 
-        PULSES.register(ID.REPULSOR, () -> new EntityPulseType.Builder(RepulsorPulse::new)
+        PULSES.register(ID.REPULSOR, () -> new EntityPulseType.Builder(Pulses::repulsorPulse)
                 .build());
-        PULSES.register(ID.VECTOR, () -> new EntityPulseType.Builder(VectorPulse::new)
+        PULSES.register(ID.VECTOR, () -> new EntityPulseType.Builder(Pulses::vectorPulse)
                 .build());
-        PULSES.register(ID.STASIS, () -> new EntityPulseType.Builder(StasisPulse::new)
+        PULSES.register(ID.STASIS, () -> new EntityPulseType.Builder(Pulses::stasisPulse)
                 .build());
 
         CURegister.register(PULSES);

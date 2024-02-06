@@ -7,10 +7,15 @@ import com.LubieKakao1212.opencu.init.CUBlocks;
 import com.LubieKakao1212.opencu.init.CUPulse;
 import com.LubieKakao1212.opencu.pulse.EntityPulseType;
 import dan200.computercraft.api.lua.LuaFunction;
+import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3d;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RepulsorPeripheral implements IPeripheral {
 
@@ -47,7 +52,7 @@ public class RepulsorPeripheral implements IPeripheral {
      */
     @Override
     public boolean equals(@Nullable IPeripheral other) {
-        if(other != null && other instanceof RepulsorPeripheral) {
+        if(other instanceof RepulsorPeripheral) {
             RepulsorPeripheral otherRepulsor = ((RepulsorPeripheral) other);
             return otherRepulsor.getTargetRepulsor().getBlockPos().equals(getTargetRepulsor().getBlockPos());
         }
@@ -71,7 +76,19 @@ public class RepulsorPeripheral implements IPeripheral {
     }
 
     @LuaFunction
-    public final Object[] recalibrate(int type) {
+    public final Object[] recalibrate(String type) {
+        try
+        {
+            target.setPulse(new ResourceLocation(type));
+        }
+        catch(RuntimeException e) {
+            return new Object[] { false, e.getMessage() };
+        }
+        return new Object[] { true };
+    }
+
+    @LuaFunction
+    public final Object[] recalibrateByIdx(int type) {
         if(type < 0) {
             return new Object[] { false, "id cannot be negative" };
         }
@@ -85,18 +102,6 @@ public class RepulsorPeripheral implements IPeripheral {
     }
 
     @LuaFunction
-    public final Object[] recalibrateById(String type) {
-        try
-        {
-            target.setPulse(new ResourceLocation(type));
-        }
-        catch(RuntimeException e) {
-            return new Object[] { false, e.getMessage() };
-        }
-        return new Object[] { true };
-    }
-
-    @LuaFunction
     public final Object[] setRadius(double radius) {
         if(radius > OpenCUConfigCommon.REPULSOR.getMaxRadius())
         {
@@ -104,6 +109,21 @@ public class RepulsorPeripheral implements IPeripheral {
         }
         target.setRadius(radius);
         return new Object[] { true };
+    }
+
+    @LuaFunction
+    public final MethodResult getConvertedObfuscatedNonFictionalInstrumentGuide() {
+        return getConfig();
+    }
+
+    @LuaFunction
+    public final MethodResult getConfig() {
+        //TODO do stuff
+        Map<String, Object> result = new HashMap<>();
+        if(OpenCUMod.hasValkyrienSkies()) {
+            result.put("canPushShips", OpenCUConfigCommon.REPULSOR.getAffectsVSShips());
+        }
+        return MethodResult.of(result);
     }
 
     @LuaFunction
@@ -122,32 +142,9 @@ public class RepulsorPeripheral implements IPeripheral {
         return true;
     }
 
-    @LuaFunction
-    public final boolean setWhitelist(boolean whitelist) {
-        target.setWhitelist(whitelist);
-        return true;
-    }
-
-    @LuaFunction
-    public final boolean addToFilter(String name) {
-        target.addToFilter(name);
-        return true;
-    }
-
-    @LuaFunction
-    public final void removeFromFilter(String name) {
-        target.removeFromFilter(name);
-    }
-
-    @LuaFunction
-    public final Object[] getFilter()
-    {
-        return target.getFilter();
-    }
-
     @LuaFunction(mainThread = true)
     public final Object[] pulse(double xOffset, double yOffset, double zOffset) {
-        BlockEntityRepulsor.PulseExecutionResult result = target.pulse(xOffset, yOffset, zOffset);
+        BlockEntityRepulsor.PulseExecutionResult result = target.pulse(new Vector3d(xOffset, yOffset, zOffset));
 
         if(result.wasSuccessfull) {
             return new Object[] {true};

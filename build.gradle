@@ -194,7 +194,10 @@ dependencies {
     implementation fg.deobf("com.LubieKakao1212.qulib:qulib-kt:${qulib_version}:all")
 
     implementation fg.deobf("org.valkyrienskies:valkyrienskies-118-forge:${vs2_version}")
-    implementation("org.valkyrienskies.core:api:1.1.0+c92814e9b7")
+    implementation("org.valkyrienskies.core:api:${vs_core_version}")
+    implementation("org.valkyrienskies.core:api-game:${vs_core_version}")
+    implementation("org.valkyrienskies.core:util:${vs_core_version}")
+    implementation("org.valkyrienskies.core:impl:${vs_core_version}")
 
     compileOnly fg.deobf("org.squiddev:cc-tweaked-${mc_version}:${cct_version}:api")
     runtimeOnly fg.deobf("org.squiddev:cc-tweaked-${mc_version}:${cct_version}")
