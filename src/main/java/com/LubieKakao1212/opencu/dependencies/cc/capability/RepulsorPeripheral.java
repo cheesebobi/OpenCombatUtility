@@ -120,9 +120,9 @@ public class RepulsorPeripheral implements IPeripheral {
     public final MethodResult getConfig() {
         //TODO do stuff
         Map<String, Object> result = new HashMap<>();
-        if(OpenCUMod.hasValkyrienSkies()) {
+        /*if(OpenCUMod.hasValkyrienSkies()) {
             result.put("canPushShips", OpenCUConfigCommon.REPULSOR.getAffectsVSShips());
-        }
+        }*/
         return MethodResult.of(result);
     }
 
