@@ -21,3 +21,8 @@ build
 eclipse
 run
 mods
+
+access.properties
+src/
+!forge/src
+forge/srcOld

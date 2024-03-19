@@ -1,0 +1,42 @@
+modLoader = "javafml"
+loaderVersion = "[45,)"
+#issueTrackerURL = ""
+license = "MIT"
+
+[[mods]]
+modId = "opencu"
+version = "${version}"
+displayName = "Open Combat Utility"
+authors = "LubieKakao1212"
+description = '''
+TODO
+'''
+logoFile="icon.png"
+
+[[dependencies.opencu]]
+modId = "forge"
+mandatory = true
+versionRange = "[45,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.opencu]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.19.4,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.opencu]]
+modId = "qulib"
+mandatory = true
+versionRange = "[2.1.2,2.2)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.opencu]]
+modId = "architectury"
+mandatory = true
+versionRange = "[8.2.89,)"
+ordering = "AFTER"
+side = "BOTH"

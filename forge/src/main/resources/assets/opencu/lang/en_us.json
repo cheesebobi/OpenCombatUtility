@@ -1,0 +1,19 @@
+{
+  "block.opencu.repulsor": "Repulsor",
+  "block.opencu.adv_dispenser": "Dispenser Frame",
+
+  "item.opencu.vector_mesh": "Vector Mesh",
+  "item.opencu.dispenser_tier2": "§eDispenser(Tier2)",
+  "item.opencu.dispenser_tier3": "§bDispenser(Tier3)",
+
+  "info.opencu.dispenser.speed": "Alignment Speed: %s°/t",
+  "info.opencu.dispenser.speed.instant": "Alignment Speed: §aInstant",
+
+  "info.opencu.dispenser.force.constant": "Constant Force: %.1f",
+  "info.opencu.dispenser.force.configurable": "Configurable Force: %.1f-%.1f",
+
+  "info.opencu.dispenser.spread.constant": "Constant Spread: %.0f°",
+  "info.opencu.dispenser.spread.configurable": "Configurable Spread: %.0f°-%.0f°",
+
+  "itemGroup.ocu":"Open Combat Utility"
+}
