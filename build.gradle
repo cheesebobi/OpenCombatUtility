@@ -26,8 +26,6 @@ subprojects {
         // The following line declares the yarn mappings you may select this one as well.
         mappings "net.fabricmc:yarn:1.19.4+build.2:v2"
 
-        runtimeOnly "cc.tweaked:cobalt:0.9.1"
-
         modImplementation "com.LubieKakao1212.qulib:qulib-kt-${project.loader}-${minecraft_version}:${qulib_version}"
 
         modCompileOnly "cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cctVersion}"

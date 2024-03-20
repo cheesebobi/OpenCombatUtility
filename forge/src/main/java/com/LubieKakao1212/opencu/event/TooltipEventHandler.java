@@ -34,7 +34,7 @@ public class TooltipEventHandler {
             if(dis.getAlignmentSpeed() >= (180 - 0.1)) {
                 tooltip.add(Text.translatable(speedKey + instantSuffix));
             } else {
-                tooltip.add(Text.translatable(speedKey));
+                tooltip.add(Text.translatable(speedKey, dis.getAlignmentSpeed()));
             }
             tooltip.add(getProperty(dis.hasConfigurableSpread(), spreadKey, dis.getMinSpread(), dis.getMaxSpread()));
             tooltip.add(getProperty(dis.hasConfigurableForce(), forceKey, dis.getMinForce(), dis.getMaxForce()));

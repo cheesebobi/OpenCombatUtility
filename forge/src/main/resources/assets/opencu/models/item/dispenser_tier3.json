@@ -1,9 +1,9 @@
 {
     "parent":"opencu:item/dispenser",
     "textures": {
-		"back": "opencu:items/dispenser/dispenser_t3_back",
-		"front": "opencu:items/dispenser/dispenser_t3_front",
-		"side": "opencu:items/dispenser/dispenser_t3_side",
-		"particle": "opencu:items/dispenser/dispenser_t3_back"
+		"back": "opencu:item/dispenser/dispenser_t3_back",
+		"front": "opencu:item/dispenser/dispenser_t3_front",
+		"side": "opencu:item/dispenser/dispenser_t3_side",
+		"particle": "opencu:item/dispenser/dispenser_t3_back"
 	}
 }
