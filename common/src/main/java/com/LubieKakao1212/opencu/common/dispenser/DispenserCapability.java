@@ -1,10 +1,8 @@
-package com.LubieKakao1212.opencu.capability.dispenser;
+package com.LubieKakao1212.opencu.common.dispenser;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
-
-import javax.annotation.Nullable;
 
 public class DispenserCapability {
 

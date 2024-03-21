@@ -1,9 +1,14 @@
-package com.LubieKakao1212.opencu.block.entity;
+package com.LubieKakao1212.opencu.common.block.entity;
 
-import com.LubieKakao1212.opencu.common.dispenser.DispenseResult;
-import com.LubieKakao1212.opencu.common.dispenser.DispenserCapability;
-import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.capability.dispenser.DispenseResult;
+import com.LubieKakao1212.opencu.capability.dispenser.DispenserCapability;
+import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
 import com.LubieKakao1212.opencu.capability.energy.InternalEnergyStorage;
+import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.UpdateDispenserAimPacketClientbound;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.UpdateDispenserPacketClientbound;
+import com.LubieKakao1212.opencu.common.storage.IItemStorage;
+import com.LubieKakao1212.opencu.common.util.PlatformUtil;
 import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.gui.container.OmnidispenserMenu;
 import com.LubieKakao1212.opencu.init.CUBlockEntities;
@@ -17,6 +22,7 @@ import com.lubiekakao1212.qulib.math.MathUtilKt;
 import com.lubiekakao1212.qulib.math.extensions.QuaterniondExtensionsKt;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -38,22 +44,20 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaterniond;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static com.lubiekakao1212.qulib.math.extensions.QuaterniondExtensionsKt.smallAngle;
 
-public class BlockEntityOmniDispenser extends BlockEntity implements NamedScreenHandlerFactory {
+public abstract class BlockEntityModularFrame extends BlockEntity implements NamedScreenHandlerFactory {
 
     public static final double aimIdenticalityEpsilon = Constants.degToRad * 0.1;
 
     private final ConcurrentLinkedQueue<DispenseAction> actionQueue = new ConcurrentLinkedQueue<>();
 
-    private final ItemStackHandler inventory;
-    private final LazyOptional<ItemStackHandler> inventoryCap;
-
-    private final LazyOptional<InternalEnergyStorage> energyCap;
+    private final IItemStorage inventory;
+    //private final LazyOptional<ItemStackHandler> inventoryCap;
+    //private final LazyOptional<InternalEnergyStorage> energyCap;
 
     private DispenseAction currentAction;
     private Quaterniond targetAim;
@@ -73,9 +77,8 @@ public class BlockEntityOmniDispenser extends BlockEntity implements NamedScreen
     public float clientPrevFramePartialTick;
     public double deltaAngle;
 
-
-    public BlockEntityOmniDispenser(BlockPos pos, BlockState blockState) {
-        super(CUBlockEntities.OMNI_DISPENSER.get(), pos, blockState);
+    public BlockEntityModularFrame(BlockEntityType<BlockEntityModularFrame> type, BlockPos pos, BlockState blockState, @NotNull IItemStorage inventoryIn) {
+        super(type, pos, blockState);
         currentAction = new DispenseAction(new Quaterniond());
 
         lastAction = new DispenseAction(new Quaterniond().identity());
@@ -83,7 +86,9 @@ public class BlockEntityOmniDispenser extends BlockEntity implements NamedScreen
 
         targetAim = new Quaterniond().identity();
 
-        inventory = new ItemStackHandler(10) {
+        this.inventory = inventoryIn;
+
+        /*inventory = new ItemStackHandler(10) {
             @Override
             protected void onContentsChanged(int slot) {
                 if(slot == 0) {
@@ -110,32 +115,32 @@ public class BlockEntityOmniDispenser extends BlockEntity implements NamedScreen
                     return 64;
                 }
             }
-        };
-        inventoryCap = LazyOptional.of(() -> inventory);
+        };*/
+        //inventoryCap = LazyOptional.of(() -> inventory);
 
-        energyCap = OpenCUConfigCommon.DISPENSER.energyConfig.createCapFromConfig();
+        //energyCap = OpenCUConfigCommon.DISPENSER.energyConfig.createCapFromConfig();
     }
 
     private void updateDispenser() {
-        ItemStack dispenserStack = inventory.getStackInSlot(0);
-        currentDispenser = dispenserStack.getCapability(DispenserCapability.DISPENSER_CAPABILITY).resolve().orElseGet(() -> null);
+        ItemStack dispenserStack = inventory.getStack(0);
+        currentDispenser = PlatformUtil.getDispenser(dispenserStack);//dispenserStack.getCapability(DispenserCapability.DISPENSER_CAPABILITY).resolve().orElseGet(() -> null);
         if(world != null && !world.isClient) {
             BlockPos pos = getPos();
-            NetworkHandler.sendToAllTracking(new UpdateDispenserPacket.FromServer(pos, dispenserStack), world, pos);
+            PlatformUtil.Network.sendToAllTracking(new UpdateDispenserPacketClientbound(pos, dispenserStack), world, pos);
             //NetworkHandler.sendToServer(new UpdateDispenserPacket.FromClient(pos, dispenserStack));
-        }else
+        } else
         {
             //TODO Mark for update
         }
     }
 
     public static <T> void tick(World level, BlockPos pos, BlockState state, T blockEntity) {
-        BlockEntityOmniDispenser dispenser = (BlockEntityOmniDispenser)blockEntity;
+        BlockEntityModularFrame dispenser = (BlockEntityModularFrame)blockEntity;
         if (!level.isClient) {
             if(dispenser.initialiseDelay-- == 0) {
                 dispenser.updateDispenser();
-                NetworkHandler.sendToAllTracking(
-                        new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim, false),
+                PlatformUtil.Network.sendToAllTracking(
+                        UpdateDispenserAimPacketClientbound.create(pos, dispenser.currentAction.aim, false),
                         level, pos);
             }
             if(dispenser.currentDispenser != null) {
@@ -144,8 +149,8 @@ public class BlockEntityOmniDispenser extends BlockEntity implements NamedScreen
                             dispenser.currentAction.aim,
                             dispenser.targetAim,
                             dispenser.currentDispenser.getAlignmentSpeed() * Constants.degToRad, new Quaterniond());
-                    NetworkHandler.sendToAllTracking(
-                            new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim, false),
+                    PlatformUtil.Network.sendToAllTracking(
+                            UpdateDispenserAimPacketClientbound.create(pos, dispenser.currentAction.aim, false),
                             level, pos);
                 } else {
                     dispenser.currentAction.aim = dispenser.targetAim;

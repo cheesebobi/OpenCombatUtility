@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.event;
 
-import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;
 

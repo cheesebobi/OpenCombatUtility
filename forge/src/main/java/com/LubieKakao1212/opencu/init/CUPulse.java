@@ -1,9 +1,6 @@
 package com.LubieKakao1212.opencu.init;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
-import com.LubieKakao1212.opencu.capability.dispenser.DispenserMappings;
-import com.LubieKakao1212.opencu.capability.dispenser.vanilla.VanillaDispenserMappings;
-import com.LubieKakao1212.opencu.capability.dispenser.vanilla.VanillaDropperMappings;
 import com.LubieKakao1212.opencu.pulse.*;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;

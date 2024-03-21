@@ -1,10 +1,9 @@
 package com.LubieKakao1212.opencu.event;
 
-import com.LubieKakao1212.opencu.capability.dispenser.DispenserCapability;
-import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.common.dispenser.DispenserCapability;
+import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

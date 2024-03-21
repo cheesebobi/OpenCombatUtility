@@ -1,11 +1,9 @@
-package com.LubieKakao1212.opencu.capability.dispenser;
+package com.LubieKakao1212.opencu.common.dispenser;
 
 import com.LubieKakao1212.opencu.capability.energy.InternalEnergyStorage;
 import com.lubiekakao1212.qulib.math.AimUtilKt;
 import com.lubiekakao1212.qulib.math.Constants;
-import com.lubiekakao1212.qulib.math.MathUtilKt;
 import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensions;
-import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensionsKt;
 import com.lubiekakao1212.qulib.random.RandomEx;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -16,8 +14,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.joml.Quaterniond;
 import org.joml.Vector3d;
-
-import java.util.Random;
 
 public abstract class DispenserBase implements IDispenser {
 

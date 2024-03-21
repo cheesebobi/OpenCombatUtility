@@ -1,9 +1,9 @@
 package com.LubieKakao1212.opencu.init;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
-import com.LubieKakao1212.opencu.capability.dispenser.DispenserMappings;
-import com.LubieKakao1212.opencu.capability.dispenser.vanilla.VanillaDispenserMappings;
-import com.LubieKakao1212.opencu.capability.dispenser.vanilla.VanillaDropperMappings;
+import com.LubieKakao1212.opencu.common.dispenser.DispenserMappings;
+import com.LubieKakao1212.opencu.common.dispenser.vanilla.VanillaDispenserMappings;
+import com.LubieKakao1212.opencu.common.dispenser.vanilla.VanillaDropperMappings;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.registries.*;
 

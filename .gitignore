@@ -25,4 +25,6 @@ mods
 access.properties
 src/
 !forge/src
+!common/src
+!fabric/src
 forge/srcOld

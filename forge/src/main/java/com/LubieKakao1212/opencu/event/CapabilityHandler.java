@@ -1,10 +1,10 @@
 package com.LubieKakao1212.opencu.event;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
-import com.LubieKakao1212.opencu.capability.dispenser.DispenserConfigurable;
-import com.LubieKakao1212.opencu.capability.dispenser.DispenserConstant;
-import com.LubieKakao1212.opencu.capability.dispenser.DispenserMappings;
-import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.common.dispenser.DispenserConfigurable;
+import com.LubieKakao1212.opencu.common.dispenser.DispenserConstant;
+import com.LubieKakao1212.opencu.common.dispenser.DispenserMappings;
+import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
 import com.LubieKakao1212.opencu.capability.provider.DispenserProvider;
 import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.init.CUDispensers;
