@@ -3,6 +3,8 @@ package com.LubieKakao1212.opencu.block.entity;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.capability.energy.InternalEnergyStorage;
+import com.LubieKakao1212.opencu.common.pulse.EntityPulseType;
+import com.LubieKakao1212.opencu.common.pulse.PulseData;
 import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.init.CUBlockEntities;
 import com.LubieKakao1212.opencu.init.CUPulse;
@@ -151,7 +153,7 @@ public class BlockEntityRepulsor extends BlockEntity {
 
     @Override
     public void writeNbt(@NotNull NbtCompound compound) {
-        NbtCompound pulseTag = pulseData.serializeNBT();
+        NbtCompound pulseTag = pulseData.serialize();
         pulseTag.putString("type", pulseType.getRegistryKey().toString());
         compound.put("pulse", pulseTag);
 
@@ -168,7 +170,7 @@ public class BlockEntityRepulsor extends BlockEntity {
             NbtCompound pulseTag = compound.getCompound("pulse");
 
             setPulse(new Identifier(pulseTag.getString("type")));
-            pulseData.deserializeNBT(pulseTag);
+            pulseData.deserialize(pulseTag);
         }
 
         NbtElement energyTag = compound.get("energy");

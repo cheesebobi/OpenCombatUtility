@@ -1,6 +1,5 @@
 package com.LubieKakao1212.opencu.capability.provider;
 
-import com.LubieKakao1212.opencu.common.dispenser.DispenserCapability;
 import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;

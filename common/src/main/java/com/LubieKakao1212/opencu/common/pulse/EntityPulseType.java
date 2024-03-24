@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.pulse;
+package com.LubieKakao1212.opencu.common.pulse;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;

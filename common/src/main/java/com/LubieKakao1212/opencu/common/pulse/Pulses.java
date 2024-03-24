@@ -1,9 +1,9 @@
-package com.LubieKakao1212.opencu.pulse;
+package com.LubieKakao1212.opencu.common.pulse;
 
-import com.LubieKakao1212.opencu.util.EntityUtil;
+import com.LubieKakao1212.opencu.common.util.EntityUtil;
 import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensionsKt;
 import org.joml.Vector3d;
-import static com.LubieKakao1212.opencu.pulse.PulseUtil.*;
+
 import static java.lang.Math.*;
 
 import java.util.List;
@@ -15,13 +15,13 @@ public class Pulses {
     private static final float epsilonSqr = epsilon * epsilon;
 
     public static void repulsorPulse(World level, Vector3d pos, Vector3d direction, double radius, double force) {
-        List<Entity> entityList = getAffectedEntities(level, pos, radius);
+        List<Entity> entityList = PulseUtil.getAffectedEntities(level, pos, radius);
 
         /*if(OpenCUMod.hasValkyrienSkies()) {
             pos = VSGameUtilsKt.toWorldCoordinates(level, pos);
         }*/
 
-        force = getScaledForce(force);
+        force = PulseUtil.getScaledForce(force);
 
         for(Entity e : entityList) {
             double dX = e.getX() - pos.x;
@@ -47,8 +47,8 @@ public class Pulses {
     }
 
     public static void vectorPulse(World level, Vector3d pos, Vector3d direction, double radius, double force) {
-        List<Entity> entityList = getAffectedEntities(level, pos, radius);
-        Vector3d directionForce = direction.mul(getScaledForce(force));
+        List<Entity> entityList = PulseUtil.getAffectedEntities(level, pos, radius);
+        Vector3d directionForce = direction.mul(PulseUtil.getScaledForce(force));
 
         /*if(OpenCUMod.hasValkyrienSkies()) {
             Ship ship = VSGameUtilsKt.getShipManagingPos(level, pos);
@@ -65,7 +65,7 @@ public class Pulses {
     }
 
     public static void stasisPulse(World level, Vector3d pos, Vector3d direction, double radius, double force) {
-        List<Entity> entityList = getAffectedEntities(level, pos, radius);
+        List<Entity> entityList = PulseUtil.getAffectedEntities(level, pos, radius);
 
         double stasisFactor = min(1.0, abs(force));
 

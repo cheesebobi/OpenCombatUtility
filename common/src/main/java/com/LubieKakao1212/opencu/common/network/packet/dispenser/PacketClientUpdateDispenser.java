@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public record UpdateDispenserPacketClientbound(BlockPos position, ItemStack newDispenser) {
+public record PacketClientUpdateDispenser(BlockPos position, ItemStack newDispenser) {
 
     public static void execute(FromServer packet) {
         var player = MinecraftClient.getInstance().player;

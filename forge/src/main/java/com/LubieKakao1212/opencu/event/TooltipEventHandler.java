@@ -1,6 +1,5 @@
 package com.LubieKakao1212.opencu.event;
 
-import com.LubieKakao1212.opencu.common.dispenser.DispenserCapability;
 import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;

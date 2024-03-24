@@ -2,8 +2,8 @@ package com.LubieKakao1212.opencu.common.dispenser;
 
 public class DispenserConstant extends DispenserBase {
 
-    private double constantSpread;
-    private double constantForce;
+    private final double constantSpread;
+    private final double constantForce;
 
     public DispenserConstant(DispenserMappings mappings, float alignmentSpeed, double constantSpread, double constantForce, double baseEnergy) {
         super(mappings, alignmentSpeed, baseEnergy);

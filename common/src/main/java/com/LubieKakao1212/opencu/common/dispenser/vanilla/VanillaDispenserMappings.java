@@ -2,8 +2,8 @@ package com.LubieKakao1212.opencu.common.dispenser.vanilla;
 
 import com.LubieKakao1212.opencu.common.dispenser.DispenseEntry;
 import com.LubieKakao1212.opencu.common.dispenser.DispenserMappings;
-import com.LubieKakao1212.opencu.network.NetworkHandler;
-import com.LubieKakao1212.opencu.network.packet.projectile.UpdateFireballPacket;
+import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
+import com.LubieKakao1212.opencu.common.util.PlatformUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -73,7 +73,7 @@ public class VanillaDispenserMappings extends DispenserMappings {
             },
             (entity, forward, velocity) -> {
                 SmallFireballEntity fireball = (SmallFireballEntity) entity;
-                NetworkHandler.enqueueEntityUpdate(new UpdateFireballPacket(fireball.getId(), fireball.powerX, fireball.powerY, fireball.powerZ), fireball, 1);
+                PlatformUtil.Network.enqueueEntityUpdate(new PacketClientUpdateFireball(fireball.getId(), (float)fireball.powerX, (float)fireball.powerY, (float)fireball.powerZ), fireball, 1);
             }));
 
         DispenseEntry potionMapping = new DispenseEntry((stack, level) -> {

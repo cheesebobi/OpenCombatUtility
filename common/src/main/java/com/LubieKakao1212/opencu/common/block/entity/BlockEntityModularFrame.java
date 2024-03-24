@@ -1,21 +1,14 @@
 package com.LubieKakao1212.opencu.common.block.entity;
 
-import com.LubieKakao1212.opencu.capability.dispenser.DispenseResult;
-import com.LubieKakao1212.opencu.capability.dispenser.DispenserCapability;
-import com.LubieKakao1212.opencu.capability.dispenser.IDispenser;
-import com.LubieKakao1212.opencu.capability.energy.InternalEnergyStorage;
+import com.LubieKakao1212.opencu.common.dispenser.DispenseResult;
 import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.UpdateDispenserAimPacketClientbound;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.UpdateDispenserPacketClientbound;
+import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
+import com.LubieKakao1212.opencu.common.registry.CUBlockEntities;
 import com.LubieKakao1212.opencu.common.storage.IItemStorage;
 import com.LubieKakao1212.opencu.common.util.PlatformUtil;
-import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
-import com.LubieKakao1212.opencu.gui.container.OmnidispenserMenu;
-import com.LubieKakao1212.opencu.init.CUBlockEntities;
-import com.LubieKakao1212.opencu.network.NetworkHandler;
-import com.LubieKakao1212.opencu.network.packet.dispenser.RequestDispenserUpdatePacket;
-import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserAimPacket;
-import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserPacket;
 import com.lubiekakao1212.qulib.math.AimUtilKt;
 import com.lubiekakao1212.qulib.math.Constants;
 import com.lubiekakao1212.qulib.math.MathUtilKt;
@@ -37,14 +30,9 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaterniond;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static com.lubiekakao1212.qulib.math.extensions.QuaterniondExtensionsKt.smallAngle;
@@ -77,8 +65,8 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     public float clientPrevFramePartialTick;
     public double deltaAngle;
 
-    public BlockEntityModularFrame(BlockEntityType<BlockEntityModularFrame> type, BlockPos pos, BlockState blockState, @NotNull IItemStorage inventoryIn) {
-        super(type, pos, blockState);
+    public BlockEntityModularFrame(BlockPos pos, BlockState blockState, @NotNull IItemStorage inventoryIn) {
+        super(CUBlockEntities.modularFrame(), pos, blockState);
         currentAction = new DispenseAction(new Quaterniond());
 
         lastAction = new DispenseAction(new Quaterniond().identity());
@@ -126,7 +114,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         currentDispenser = PlatformUtil.getDispenser(dispenserStack);//dispenserStack.getCapability(DispenserCapability.DISPENSER_CAPABILITY).resolve().orElseGet(() -> null);
         if(world != null && !world.isClient) {
             BlockPos pos = getPos();
-            PlatformUtil.Network.sendToAllTracking(new UpdateDispenserPacketClientbound(pos, dispenserStack), world, pos);
+            PlatformUtil.Network.sendToAllTracking(new PacketClientUpdateDispenser(pos, dispenserStack), world, pos);
             //NetworkHandler.sendToServer(new UpdateDispenserPacket.FromClient(pos, dispenserStack));
         } else
         {
@@ -134,14 +122,23 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         }
     }
 
+    private void sendDispenserAimUpdate() {
+        PlatformUtil.Network.sendToAllTracking(
+                PacketClientUpdateDispenserAim.create(pos, currentAction.aim, false),
+                world, pos);
+    }
+
+    private void requestDispenserUpdate() {
+        PlatformUtil.Network.sendToServer(new PacketServerRequestDispenserUpdate(pos));
+    }
+
+
     public static <T> void tick(World level, BlockPos pos, BlockState state, T blockEntity) {
         BlockEntityModularFrame dispenser = (BlockEntityModularFrame)blockEntity;
         if (!level.isClient) {
             if(dispenser.initialiseDelay-- == 0) {
                 dispenser.updateDispenser();
-                PlatformUtil.Network.sendToAllTracking(
-                        UpdateDispenserAimPacketClientbound.create(pos, dispenser.currentAction.aim, false),
-                        level, pos);
+                dispenser.sendDispenserAimUpdate();
             }
             if(dispenser.currentDispenser != null) {
                 if(QuaterniondExtensionsKt.smallAngle(dispenser.targetAim, dispenser.currentAction.aim) > aimIdenticalityEpsilon) {
@@ -149,16 +146,12 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                             dispenser.currentAction.aim,
                             dispenser.targetAim,
                             dispenser.currentDispenser.getAlignmentSpeed() * Constants.degToRad, new Quaterniond());
-                    PlatformUtil.Network.sendToAllTracking(
-                            UpdateDispenserAimPacketClientbound.create(pos, dispenser.currentAction.aim, false),
-                            level, pos);
+                    dispenser.sendDispenserAimUpdate();
                 } else {
                     dispenser.currentAction.aim = dispenser.targetAim;
                     if(!dispenser.currentAction.lockedOn)
                     {
-                        NetworkHandler.sendToAllTracking(
-                                new UpdateDispenserAimPacket(pos, dispenser.currentAction.aim, false),
-                                level, pos);
+                        dispenser.sendDispenserAimUpdate();
                         dispenser.currentAction.lockedOn = true;
                     }
                 }
@@ -173,7 +166,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
             if(!dispenser.isInitialised) {
                 dispenser.isInitialised = true;
                 dispenser.setCurrentAction(dispenser.targetAim);
-                NetworkHandler.sendToServer(new RequestDispenserUpdatePacket(dispenser.getPos()));
+                dispenser.requestDispenserUpdate();
             }
             dispenser.clientAge++;
         }
@@ -229,7 +222,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
     private Pair<ItemStack, Integer> findAmmo() {
         for(int i=1; i<10; i++) {
-            ItemStack stack = inventory.extractItem(i, 1, true);
+            ItemStack stack = inventory.extract(i, 1, true);
             if(!stack.isEmpty()) {
                 return new Pair<>(stack, i);
             }
@@ -238,20 +231,20 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     }
 
     private void useAmmo(int slot, ItemStack leftover) {
-        inventory.extractItem(slot, 1, false);
+        inventory.extract(slot, 1, false);
 
         if(!leftover.isEmpty()) {
             slot = -1;
 
             for (int i = 9; i > 0; i--) {
-                if (inventory.getStackInSlot(i).isEmpty()) {
+                if (inventory.getStack(i).isEmpty()) {
                     if(slot == -1)
                     {
                         slot = i;
                     }
                 }else
                 {
-                    if(inventory.insertItem(i, leftover, false).isEmpty()) {
+                    if(inventory.insert(i, leftover, false).isEmpty()) {
                         slot = -1;
                         return;
                     }
@@ -259,7 +252,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
             }
 
             if(slot > 0) {
-                inventory.insertItem(slot, leftover, false);
+                inventory.insert(slot, leftover, false);
             }else
             {
                 assert world != null;
@@ -273,16 +266,20 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         return player.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) <= 64D && world.getBlockEntity(pos) == this;
     }
 
+    public IItemStorage getInventory() {
+        return inventory;
+    }
+
     @Override
     public void writeNbt(@NotNull NbtCompound compound) {
         //Inventory
-        compound.put("inventory", inventory.serializeNBT());
+        compound.put("inventory", inventory.serialize());
 
         //Energy
-        energyCap.ifPresent(energyStorage -> compound.put("energy", energyStorage.serializeNBT()));
+        //energyCap.ifPresent(energyStorage -> compound.put("energy", energyStorage.serializeNBT()));
 
         compound.put("aim", QuaterniondExtensionsKt.serializeNBT(currentAction.aim));
-        compound.put("dispenser", currentDispenser != null ? currentDispenser.serializeNBT() : new NbtCompound());
+        compound.put("dispenser", currentDispenser != null ? currentDispenser.serialize() : new NbtCompound());
 
         super.writeNbt(compound);
     }
@@ -294,24 +291,25 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         //Inventory
         NbtCompound inventoryTag = compound.getCompound("inventory");
         if(inventory != null) {
-            inventory.deserializeNBT(inventoryTag);
+            inventory.deserialize(inventoryTag);
         }
 
-        NbtElement energyTag = compound.get("energy");
+        //TODO Energy
+        /*NbtElement energyTag = compound.get("energy");
         if(energyTag != null) {
             energyCap.ifPresent((energy) -> energy.deserializeNBT(energyTag));
-        }
+        }*/
 
         if(compound.contains("aim", NbtElement.LIST_TYPE)) {
             setAim(QuaterniondExtensionsKt.deserializeNBT(new Quaterniond(), compound.getList("aim", NbtElement.DOUBLE_TYPE)));
         }
 
         if(currentDispenser != null && compound.contains("dispenser", NbtElement.COMPOUND_TYPE)) {
-            currentDispenser.deserializeNBT(compound.getCompound("dispenser"));
+            currentDispenser.deserialize(compound.getCompound("dispenser"));
         }
     }
 
-    @Override
+    /*@Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction facing) {
         if(capability == ForgeCapabilities.ITEM_HANDLER) {
             return (LazyOptional<T>)inventoryCap;
@@ -320,11 +318,11 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
             return (LazyOptional<T>)energyCap;
         }
         return super.getCapability(capability, facing);
-    }
+    }*/
 
     public void sendDispenserUpdateTo(ServerPlayerEntity player) {
-        NetworkHandler.sendTo(player, new UpdateDispenserPacket.FromServer(pos, inventory.getStackInSlot(0)));
-        NetworkHandler.sendTo(player, new UpdateDispenserAimPacket(pos, currentAction.aim, true));
+        PlatformUtil.Network.sendToPlayer(new PacketClientUpdateDispenser(pos, inventory.getStack(0)), player);
+        PlatformUtil.Network.sendToPlayer(PacketClientUpdateDispenserAim.create(pos, currentAction.aim, true), player);
     }
 
     public ItemStack getCurrentDispenserItem() {
@@ -362,7 +360,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     @Override
     public ScreenHandler createMenu(int containerId, @NotNull PlayerInventory inventory, @NotNull PlayerEntity player) {
         assert world != null;
-        return new OmnidispenserMenu(containerId, inventory, world, getPos());
+        return new ModularFrameMenu(containerId, inventory, world, getPos());
     }
 
     public static class DispenseAction {

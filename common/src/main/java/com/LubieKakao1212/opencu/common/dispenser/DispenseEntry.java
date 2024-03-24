@@ -7,13 +7,13 @@ import net.minecraft.world.World;
 public class DispenseEntry {
 
     //private Entity entity;
-    private DispenserMappings.EntityMapping entity;
-    private double mass;
-    private double spreadMultiplier;
-    private double energyMultiplier;
-    private ItemStack leftover;
-    private DispenserMappings.PostShootAction postShootAction;
-    private DispenserMappings.PostSpawnAction postSpawnAction;
+    private final DispenserMappings.EntityMapping entity;
+    private final double mass;
+    private final double spreadMultiplier;
+    private final double energyMultiplier;
+    private final ItemStack leftover;
+    private final DispenserMappings.PostShootAction postShootAction;
+    private final DispenserMappings.PostSpawnAction postSpawnAction;
 
     public DispenseEntry(DispenserMappings.EntityMapping entity, ItemStack leftover, double mass, double spreadMultiplier, double energyMultiplier, DispenserMappings.PostShootAction postShootAction, DispenserMappings.PostSpawnAction postSpawnAction) {
         this.entity = entity;

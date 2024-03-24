@@ -5,9 +5,9 @@ import net.minecraft.nbt.NbtElement;
 
 public class DispenserConfigurable extends DispenserBase {
 
-    private double maxForce;
-    private double minSpread;
-    private double maxSpread;
+    private final double maxForce;
+    private final double minSpread;
+    private final double maxSpread;
 
     private double force = 0;
 
@@ -85,7 +85,7 @@ public class DispenserConfigurable extends DispenserBase {
     }
 
     @Override
-    public NbtCompound serializeNBT() {
+    public NbtCompound serialize() {
         NbtCompound nbt = new NbtCompound();
 
         nbt.putDouble("force", force);
@@ -95,7 +95,7 @@ public class DispenserConfigurable extends DispenserBase {
     }
 
     @Override
-    public void deserializeNBT(NbtCompound nbt) {
+    public void deserialize(NbtCompound nbt) {
         if(nbt.contains("force", NbtElement.NUMBER_TYPE)) {
             this.force = nbt.getDouble("force");
         }

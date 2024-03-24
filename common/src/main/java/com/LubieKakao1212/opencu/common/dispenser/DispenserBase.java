@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.common.dispenser;
 
-import com.LubieKakao1212.opencu.capability.energy.InternalEnergyStorage;
+import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.lubiekakao1212.qulib.math.AimUtilKt;
 import com.lubiekakao1212.qulib.math.Constants;
 import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensions;
@@ -10,8 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.joml.Quaterniond;
 import org.joml.Vector3d;
 
@@ -19,9 +17,9 @@ public abstract class DispenserBase implements IDispenser {
 
     private static final RandomEx random = new RandomEx();
 
-    private DispenserMappings mappings;
-    private float alignmentSpeed;
-    private double energyConsumption;
+    private final DispenserMappings mappings;
+    private final float alignmentSpeed;
+    private final double energyConsumption;
 
     public DispenserBase(DispenserMappings mappings, float alignmentSpeed, double energyConsumption) {
         this.mappings = mappings;
@@ -30,19 +28,19 @@ public abstract class DispenserBase implements IDispenser {
     }
 
     @Override
-    public DispenseResult shoot(ICapabilityProvider shooter, World level, ItemStack shotItem, BlockPos pos, Quaterniond aim) {
+    public DispenseResult shoot(BlockEntityModularFrame shooter, World level, ItemStack shotItem, BlockPos pos, Quaterniond aim) {
         DispenseEntry entry = getMappings().getDispenseResult(shotItem);
 
         DispenseResult result = new DispenseResult(shotItem);
 
         //TODO energy
-        shooter.getCapability(ForgeCapabilities.ENERGY).ifPresent((energy) -> {
+        //shooter.getCapability(ForgeCapabilities.ENERGY).ifPresent((energy) -> {
 
             //region Energy Handling
+            /*
             if(!(energy instanceof InternalEnergyStorage)) {
                 return;
             }
-
             InternalEnergyStorage energyStorage = (InternalEnergyStorage) energy;
 
             int energyRequired = (int)(entry.getEnergyMultiplier() * energyConsumption);
@@ -52,7 +50,9 @@ public abstract class DispenserBase implements IDispenser {
             }
 
             energyStorage.extractEnergyInternal(energyRequired, false);
+            */
             //endregion
+
 
             //region Shooting
             Entity entity = entry.getEntity(shotItem, level);
@@ -75,7 +75,7 @@ public abstract class DispenserBase implements IDispenser {
 
             result.leftover = entry.getLeftover();
             //endregion
-        });
+        //});
 
         return result;
     }
@@ -108,12 +108,12 @@ public abstract class DispenserBase implements IDispenser {
     }
 
     @Override
-    public NbtCompound serializeNBT() {
+    public NbtCompound serialize() {
         return new NbtCompound();
     }
 
     @Override
-    public void deserializeNBT(NbtCompound nbt) {
+    public void deserialize(NbtCompound nbt) {
 
     }
 }

@@ -1,11 +1,10 @@
 package com.LubieKakao1212.opencu.common.block.entity;
 
 
-import com.LubieKakao1212.opencu.OpenCUMod;
-import com.LubieKakao1212.opencu.capability.energy.InternalEnergyStorage;
-import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
-import com.LubieKakao1212.opencu.init.CUBlockEntities;
-import com.LubieKakao1212.opencu.init.CUPulse;
+import com.LubieKakao1212.opencu.common.pulse.EntityPulseType;
+import com.LubieKakao1212.opencu.common.pulse.PulseData;
+import com.LubieKakao1212.opencu.common.registry.CUBlockEntities;
+import com.LubieKakao1212.opencu.common.registry.CUPulse;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -16,17 +15,13 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 
 import javax.annotation.Nullable;
 
-public class BlockEntityRepulsor extends BlockEntity {
+public abstract class BlockEntityRepulsor extends BlockEntity {
 
     private EntityPulseType pulseType;
     private final PulseData pulseData = new PulseData();
@@ -34,21 +29,21 @@ public class BlockEntityRepulsor extends BlockEntity {
     public int pulseTicksLeft;
     public static final int pulseTicks = 10;
 
-    private final LazyOptional<InternalEnergyStorage> energyCap;
+    //private final LazyOptional<InternalEnergyStorage> energyCap;
 
     public BlockEntityRepulsor(BlockPos pos, BlockState blockState) {
-        super(CUBlockEntities.REPULSOR.get(), pos, blockState);
+        super(CUBlockEntities.repulsor(), pos, blockState);
 
-        energyCap = OpenCUConfigCommon.REPULSOR.energyConfig.createCapFromConfig();
+        //energyCap = OpenCUConfigCommon.REPULSOR.energyConfig.createCapFromConfig();
 
-        setPulse(CUPulse.REPULSOR.get());
+        setPulse(CUPulse.defaultPulse());
     }
 
-    public static <T> void tick(@NotNull World level, BlockPos pos, BlockState state, T blockEntity) {
-        if (!level.isClient) {
+    public static <T> void tick(@NotNull World world, BlockPos pos, BlockState state, T blockEntity) {
+        if (!world.isClient) {
             BlockEntityRepulsor rep = (BlockEntityRepulsor) blockEntity;
             if (rep.pulseTicksLeft > 0) {
-                level.updateListeners(pos, state, state, 3);
+                world.updateListeners(pos, state, state, 3);
             }
             rep.pulseTicksLeft--;
         }
@@ -79,15 +74,6 @@ public class BlockEntityRepulsor extends BlockEntity {
     public void setVector(double x, double y, double z) {
         pulseData.direction.set(x, y, z);
         markDirty();
-    }
-
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @org.jetbrains.annotations.Nullable Direction side) {
-        if(cap == ForgeCapabilities.ENERGY) {
-            return (LazyOptional<T>) energyCap;
-        }
-        return super.getCapability(cap, side);
     }
 
     public PulseExecutionResult pulse(Vector3d offset) {
@@ -150,7 +136,7 @@ public class BlockEntityRepulsor extends BlockEntity {
 
     @Override
     public void writeNbt(@NotNull NbtCompound compound) {
-        NbtCompound pulseTag = pulseData.serializeNBT();
+        NbtCompound pulseTag = pulseData.serialize();
         pulseTag.putString("type", pulseType.getRegistryKey().toString());
         compound.put("pulse", pulseTag);
 
@@ -167,7 +153,7 @@ public class BlockEntityRepulsor extends BlockEntity {
             NbtCompound pulseTag = compound.getCompound("pulse");
 
             setPulse(new Identifier(pulseTag.getString("type")));
-            pulseData.deserializeNBT(pulseTag);
+            pulseData.deserialize(pulseTag);
         }
 
         NbtElement energyTag = compound.get("energy");

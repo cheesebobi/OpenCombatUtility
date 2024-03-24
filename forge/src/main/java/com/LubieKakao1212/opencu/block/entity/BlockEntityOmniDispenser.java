@@ -1,7 +1,6 @@
 package com.LubieKakao1212.opencu.block.entity;
 
 import com.LubieKakao1212.opencu.common.dispenser.DispenseResult;
-import com.LubieKakao1212.opencu.common.dispenser.DispenserCapability;
 import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
 import com.LubieKakao1212.opencu.capability.energy.InternalEnergyStorage;
 import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;

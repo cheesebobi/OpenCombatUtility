@@ -1,5 +1,6 @@
-package com.LubieKakao1212.opencu.pulse;
+package com.LubieKakao1212.opencu.common.pulse;
 
+import com.LubieKakao1212.opencu.common.compat.valkyrienskies.VS2SoftUtil;
 import com.LubieKakao1212.opencu.compat.valkyrienskies.VS2SoftUtil;
 import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
 import org.jetbrains.annotations.ApiStatus;

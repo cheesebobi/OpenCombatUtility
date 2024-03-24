@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.common.dispenser;
 
-import com.LubieKakao1212.opencu.OpenCUMod;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.FallingBlockEntity;
@@ -45,7 +45,7 @@ public abstract class DispenserMappings {
 
     public void register(Item item, DispenseEntry mapping) {
         if(mappings.put(item, mapping) != null) {
-            OpenCUMod.LOGGER.warn("Assigned dispenser mapping for same item twice, previous one will be overwritten");
+            OpenCUModCommon.LOGGER.warn("Assigned dispenser mapping for same item twice, previous one will be overwritten");
         }
     }
 

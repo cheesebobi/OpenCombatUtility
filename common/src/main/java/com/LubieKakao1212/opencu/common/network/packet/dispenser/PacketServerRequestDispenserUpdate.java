@@ -9,9 +9,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.joml.Vector3d;
 
-public record RequestDispenserUpdatePacketServerbound(BlockPos position) {
+public record PacketServerRequestDispenserUpdate(BlockPos position) {
 
-    public static void execute(RequestDispenserUpdatePacketServerbound packetIn, ServerPlayerEntity sender) {
+    public static void execute(PacketServerRequestDispenserUpdate packetIn, ServerPlayerEntity sender) {
         World level = sender.getWorld();
 
         var position = packetIn.position;

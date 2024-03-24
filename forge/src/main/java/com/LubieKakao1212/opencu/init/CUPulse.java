@@ -1,6 +1,8 @@
 package com.LubieKakao1212.opencu.init;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
+import com.LubieKakao1212.opencu.common.pulse.EntityPulseType;
+import com.LubieKakao1212.opencu.common.pulse.Pulses;
 import com.LubieKakao1212.opencu.pulse.*;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;

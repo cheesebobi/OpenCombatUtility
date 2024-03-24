@@ -1,12 +1,11 @@
-package com.LubieKakao1212.opencu.pulse;
+package com.LubieKakao1212.opencu.common.pulse;
 
 import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensionsKt;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraftforge.common.util.INBTSerializable;
 import org.joml.Vector3d;
 
-public class PulseData implements INBTSerializable<NbtCompound> {
+public class PulseData {
     public Vector3d direction;
     public double radius;
     public double force;
@@ -15,8 +14,7 @@ public class PulseData implements INBTSerializable<NbtCompound> {
         this.direction = new Vector3d();
     }
 
-    @Override
-    public NbtCompound serializeNBT() {
+    public NbtCompound serialize() {
         NbtCompound tag = new NbtCompound();
         tag.put("direction", Vector3dExtensionsKt.serializeNBT(direction));
         tag.putDouble("radius", radius);
@@ -24,8 +22,7 @@ public class PulseData implements INBTSerializable<NbtCompound> {
         return tag;
     }
 
-    @Override
-    public void deserializeNBT(NbtCompound compoundTag) {
+    public void deserialize(NbtCompound compoundTag) {
         direction = Vector3dExtensionsKt.deserializeNBT(new Vector3d(), compoundTag.getList("direction", NbtElement.DOUBLE_TYPE));
         radius = compoundTag.getDouble("radius");
         force = compoundTag.getDouble("force");

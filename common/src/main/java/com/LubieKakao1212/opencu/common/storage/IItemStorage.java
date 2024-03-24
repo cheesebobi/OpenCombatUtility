@@ -11,8 +11,15 @@ public interface IItemStorage {
 
     ItemStack insert(int slot, ItemStack stack, boolean simulate);
 
+    int getMaxStackSize(int slot);
+
+    void set(int slot, ItemStack stack);
+
+    boolean isValid(int slot, ItemStack stack);
+
     NbtElement serialize();
 
     void deserialize(NbtElement nbt);
+
 
 }

@@ -1,8 +1,7 @@
-package com.LubieKakao1212.opencu.util;
+package com.LubieKakao1212.opencu.common.util;
 
-import com.LubieKakao1212.opencu.network.NetworkHandler;
-import com.LubieKakao1212.opencu.network.packet.PlayerAddVelocityPacket;
-import com.LubieKakao1212.opencu.network.packet.PlayerScaleVelocityPacket;
+import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerAddVelocity;
+import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerScaleVelocity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -18,7 +17,7 @@ public class EntityUtil {
     public static void addVelocity(Entity e, double vX, double vY, double vZ) {
         if(e instanceof ServerPlayerEntity)
         {
-            NetworkHandler.sendTo((ServerPlayerEntity)e, new PlayerAddVelocityPacket(vX, vY, vZ));
+            PlatformUtil.Network.sendToPlayer(PacketClientPlayerAddVelocity.create(vX, vY, vZ), (ServerPlayerEntity)e);
         }else {
             Vec3d movement = e.getVelocity().add(vX, vY, vZ);
             //TODO unground arrows
@@ -36,7 +35,7 @@ public class EntityUtil {
     public static void scaleVelocity(Entity e, double scale) {
         if(e instanceof ServerPlayerEntity)
         {
-            NetworkHandler.sendTo((ServerPlayerEntity)e, new PlayerScaleVelocityPacket(scale));
+            PlatformUtil.Network.sendToPlayer(new PacketClientPlayerScaleVelocity((float)scale), (ServerPlayerEntity)e);
         }else {
             Vec3d movement = e.getVelocity();
             //TODO unground arrows

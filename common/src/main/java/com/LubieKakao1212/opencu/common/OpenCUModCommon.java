@@ -6,6 +6,6 @@ import org.slf4j.LoggerFactory;
 public class OpenCUModCommon {
     public static final String MODID = "opencu";
 
-    public static final Logger LOGGER = LoggerFactory.getLogger("modid");
+    public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
 
 }
