@@ -1,63 +1,41 @@
 package com.LubieKakao1212.opencu.common.config;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import org.jetbrains.annotations.NotNull;
 
 public class OpenCUConfigCommon {
-    /*
-    public static final ForgeConfigSpec SPEC;
-    */
-
-    /*public static final RepulsorDeviceConfig REPULSOR = new RepulsorDeviceConfig(
-            new EnergyStorageConfig(20000, 20000),
-            5.0,
-            5.0,
-            1.0,
-            20000,
-            1000
-    );
-
-    public static final DispenserDeviceConfig DISPENSER = new DispenserDeviceConfig(
-            new EnergyStorageConfig(10000, 10000),
-            new DispenserDeviceConfig.DispenserConfig(
-                    90.,
-                    5.,
-                    1.,
-                    1000),
-            new DispenserDeviceConfig.DispenserConfig(
-                    180.,
-                    5.,
-                    360.,
-                    1.,
-                    1000),
-            new DispenserDeviceConfig.DispenserConfig(
-                    3600.,
-                    0,
-                    360.,
-                    1.5,
-                    1000)
-    );*/
 
     @ExpectPlatform
     public static GeneralConfig general() {
         return null;
     }
+    @ExpectPlatform
+    public static CapacitorConfig capacitor() {
+        return null;
+    }
+    @ExpectPlatform
+    public static ModularFrameConfig modularFrame() {
+        return null;
+    }
+    @ExpectPlatform
+    public static RepulsorDeviceConfig repulsorDevice() {
+        return null;
+    }
 
-    static {
-        /*ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-
-        builder.push("OpenCU");
-        {
-            GENERAL.init(builder);
-            REPULSOR.init(builder);
-            DISPENSER.init(builder);
-        }
-        builder.pop();
-        SPEC = builder.build();*/
+    @ExpectPlatform
+    public static DispenserDeviceConfig vanillaDispenserDevice() {
+        return null;
+    }
+    @ExpectPlatform
+    public static DispenserDeviceConfig goldenDispenserDevice() {
+        return null;
+    }
+    @ExpectPlatform
+    public static DispenserDeviceConfig diamondDispenserDevice() {
+        return null;
     }
 
     public interface GeneralConfig {
-        boolean getEnergyEnabled();
+        boolean energyEnabled();
     }
 
     public interface CapacitorConfig {
@@ -69,26 +47,49 @@ public class OpenCUConfigCommon {
     }
 
     public interface RepulsorDeviceConfig {
-        double getMaxOffset();
-        double getMaxRadius();
-        double getForceScale();
-        double getPowerCost();
-        double getDistanceCost();
+        double maxOffset();
+        double maxRadius();
+        double forceScale();
+        double powerCost();
+        double distanceCost();
     }
 
     public interface DispenserDeviceConfig {
-        double getRotationSpeed();
-        double getSpread();
-        double getForce();
-        double getBaseEnergy();
+        double rotationSpeed();
+        double spread();
+        double force();
+        double baseEnergy();
 
         /**
          * Use only for configurable dispensers
          */
-        double getMaxSpread();
+        double maxSpread();
     }
 
     public static class Defaults {
+
+        public static final OpenCUConfigCommon.GeneralConfig GENERAL = new GeneralConfig(true);
+
+        public static final OpenCUConfigCommon.CapacitorConfig CAPACITOR = new CapacitorConfig(10000);
+        public static final OpenCUConfigCommon.ModularFrameConfig MODULAR_FRAME = new ModularFrameConfig();
+
+        public static final OpenCUConfigCommon.RepulsorDeviceConfig REPULSOR_DEVICE = new RepulsorDeviceConfig(5.0, 5.0, 1.0, 20000, 1000);
+
+
+        public static final OpenCUConfigCommon.DispenserDeviceConfig VANILLA_DISPENSER_DEVICE = new DispenserDeviceConfig(90, 5.0, 5.0, 1.0, 1000);
+        public static final OpenCUConfigCommon.DispenserDeviceConfig GOLDEN_DISPENSER_DEVICE = new DispenserDeviceConfig(180, 5.0, 360.0, 1.0, 1000);
+        public static final OpenCUConfigCommon.DispenserDeviceConfig DIAMOND_DISPENSER_DEVICE = new DispenserDeviceConfig(3600, 0.0, 360.0, 1.5, 1000);
+
+
+        public record GeneralConfig(boolean energyEnabled) implements OpenCUConfigCommon.GeneralConfig { }
+
+        public record CapacitorConfig(int energyCapacity) implements OpenCUConfigCommon.CapacitorConfig { }
+
+        public record ModularFrameConfig() implements OpenCUConfigCommon.ModularFrameConfig { }
+
+        public record RepulsorDeviceConfig(double maxOffset, double maxRadius, double forceScale, double powerCost, double distanceCost) implements OpenCUConfigCommon.RepulsorDeviceConfig { }
+
+        public record DispenserDeviceConfig(double rotationSpeed, double spread, double maxSpread, double force, double baseEnergy) implements OpenCUConfigCommon.DispenserDeviceConfig {  }
 
     }
 
