@@ -1,9 +1,8 @@
-package com.LubieKakao1212.opencu.common.gui.container;
+package com.lubiekakao1212.opencu.common.gui.container;
 
-import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
-import com.LubieKakao1212.opencu.common.registry.CUMenu;
-import com.LubieKakao1212.opencu.common.storage.IItemStorage;
-import net.minecraft.block.Blocks;
+import com.lubiekakao1212.opencu.common.registry.CUMenu;
+import com.lubiekakao1212.opencu.common.storage.IItemStorage;
+import com.lubiekakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;

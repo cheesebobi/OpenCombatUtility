@@ -1,7 +1,7 @@
 package com.LubieKakao1212.opencu.network.packet.dispenser;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
-import com.LubieKakao1212.opencu.block.entity.BlockEntityOmniDispenser;
+import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
 import com.LubieKakao1212.opencu.compat.valkyrienskies.VS2SoftUtil;
 import com.LubieKakao1212.opencu.network.IOCUPacket;
 import io.netty.buffer.ByteBuf;
@@ -48,8 +48,8 @@ public class RequestDispenserUpdatePacket implements IOCUPacket {
             if(VS2SoftUtil.getDistanceSqr(level, new Vector3d(sender.getX(), sender.getY(), sender.getY()), new Vector3d(position.getX(), position.getY(), position.getZ())) < (64 * 64)) {
                 BlockEntity be = level.getBlockEntity(position);
 
-                if(be instanceof BlockEntityOmniDispenser) {
-                    ((BlockEntityOmniDispenser) be).sendDispenserUpdateTo(sender);
+                if(be instanceof BlockEntityModularFrameImpl) {
+                    ((BlockEntityModularFrameImpl) be).sendDispenserUpdateTo(sender);
                 }
             }else
             {

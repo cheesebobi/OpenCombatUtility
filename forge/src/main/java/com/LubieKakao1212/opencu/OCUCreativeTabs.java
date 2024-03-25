@@ -2,11 +2,8 @@ package com.LubieKakao1212.opencu;
 
 import com.LubieKakao1212.opencu.init.CUBlocks;
 import com.LubieKakao1212.opencu.init.CUItems;
-import dan200.computercraft.api.ComputerCraftAPI;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;

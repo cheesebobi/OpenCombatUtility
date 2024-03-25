@@ -1,6 +1,6 @@
-package com.LubieKakao1212.opencu.common.dispenser;
+package com.lubiekakao1212.opencu.common.dispenser;
 
-import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.lubiekakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.lubiekakao1212.qulib.math.AimUtilKt;
 import com.lubiekakao1212.qulib.math.Constants;
 import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensions;

@@ -1,7 +1,5 @@
 package com.LubieKakao1212.opencu.lib.util.counting;
 
-import com.LubieKakao1212.opencu.network.NetworkHandler;
-
 import java.util.ArrayList;
 import java.util.List;
 

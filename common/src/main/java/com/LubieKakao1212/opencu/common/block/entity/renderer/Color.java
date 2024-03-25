@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.common.block.entity.renderer;
+package com.lubiekakao1212.opencu.common.block.entity.renderer;
 
 public class Color {
 

@@ -1,9 +1,9 @@
-package com.LubieKakao1212.opencu.common.dispenser.vanilla;
+package com.lubiekakao1212.opencu.common.dispenser.vanilla;
 
-import com.LubieKakao1212.opencu.common.dispenser.DispenseEntry;
-import com.LubieKakao1212.opencu.common.dispenser.DispenserMappings;
-import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
-import com.LubieKakao1212.opencu.common.util.PlatformUtil;
+import com.lubiekakao1212.opencu.common.dispenser.DispenseEntry;
+import com.lubiekakao1212.opencu.common.dispenser.DispenserMappings;
+import com.lubiekakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
+import com.lubiekakao1212.opencu.PlatformUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;

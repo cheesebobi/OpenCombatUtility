@@ -1,6 +1,6 @@
-package com.LubieKakao1212.opencu.common.dispenser;
+package com.lubiekakao1212.opencu.common.dispenser;
 
-import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.lubiekakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;

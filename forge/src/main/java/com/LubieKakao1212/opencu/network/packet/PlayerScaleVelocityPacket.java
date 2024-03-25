@@ -1,7 +1,6 @@
 package com.LubieKakao1212.opencu.network.packet;
 
 import com.LubieKakao1212.opencu.network.IOCUPacket;
-import com.LubieKakao1212.opencu.network.util.ClientPlayerAddVelocity;
 import com.LubieKakao1212.opencu.network.util.ClientPlayerScaleVelocity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraftforge.api.distmarker.Dist;

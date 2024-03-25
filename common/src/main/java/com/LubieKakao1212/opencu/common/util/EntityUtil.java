@@ -1,7 +1,8 @@
-package com.LubieKakao1212.opencu.common.util;
+package com.lubiekakao1212.opencu.common.util;
 
-import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerAddVelocity;
-import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerScaleVelocity;
+import com.lubiekakao1212.opencu.common.network.packet.PacketClientPlayerAddVelocity;
+import com.lubiekakao1212.opencu.common.network.packet.PacketClientPlayerScaleVelocity;
+import com.lubiekakao1212.opencu.PlatformUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.network.ServerPlayerEntity;

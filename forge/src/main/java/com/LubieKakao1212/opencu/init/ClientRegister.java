@@ -1,8 +1,6 @@
 package com.LubieKakao1212.opencu.init;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
-import com.LubieKakao1212.opencu.block.entity.renderer.RendererOmniDispenser;
-import com.LubieKakao1212.opencu.block.entity.renderer.RendererRepulsor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

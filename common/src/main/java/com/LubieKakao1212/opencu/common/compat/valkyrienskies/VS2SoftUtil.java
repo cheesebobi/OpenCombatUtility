@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.common.compat.valkyrienskies;
+package com.lubiekakao1212.opencu.common.compat.valkyrienskies;
 
 import net.minecraft.world.World;
 import org.joml.Vector3d;

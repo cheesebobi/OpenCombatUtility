@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.network.packet.dispenser;
 
-import com.LubieKakao1212.opencu.block.entity.BlockEntityOmniDispenser;
+import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
 import com.LubieKakao1212.opencu.network.IOCUPacket;
 import com.LubieKakao1212.opencu.proxy.Proxy;
 import io.netty.buffer.ByteBuf;
@@ -67,11 +67,11 @@ public class UpdateDispenserAimPacket implements IOCUPacket {
 
             BlockEntity te = world.getBlockEntity(position);
 
-            if (te instanceof BlockEntityOmniDispenser) {
-                ((BlockEntityOmniDispenser) te).setCurrentAction(aim);
+            if (te instanceof BlockEntityModularFrameImpl) {
+                ((BlockEntityModularFrameImpl) te).setCurrentAction(aim);
                 if(hardSet) {
                     //Sets last aim to aim
-                    ((BlockEntityOmniDispenser) te).setCurrentAction(aim);
+                    ((BlockEntityModularFrameImpl) te).setCurrentAction(aim);
                 }
             }
         });

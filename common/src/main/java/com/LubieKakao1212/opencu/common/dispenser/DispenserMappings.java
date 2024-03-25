@@ -1,6 +1,6 @@
-package com.LubieKakao1212.opencu.common.dispenser;
+package com.lubiekakao1212.opencu.common.dispenser;
 
-import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.lubiekakao1212.opencu.common.OpenCUModCommon;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.FallingBlockEntity;

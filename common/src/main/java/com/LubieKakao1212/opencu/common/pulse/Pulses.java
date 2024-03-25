@@ -1,6 +1,6 @@
-package com.LubieKakao1212.opencu.common.pulse;
+package com.lubiekakao1212.opencu.common.pulse;
 
-import com.LubieKakao1212.opencu.common.util.EntityUtil;
+import com.lubiekakao1212.opencu.common.util.EntityUtil;
 import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensionsKt;
 import org.joml.Vector3d;
 

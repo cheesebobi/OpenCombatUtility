@@ -1,8 +1,7 @@
-package com.LubieKakao1212.opencu.common.pulse;
+package com.lubiekakao1212.opencu.common.pulse;
 
-import com.LubieKakao1212.opencu.common.compat.valkyrienskies.VS2SoftUtil;
-import com.LubieKakao1212.opencu.compat.valkyrienskies.VS2SoftUtil;
-import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
+import com.lubiekakao1212.opencu.OpenCUConfigCommon;
+import com.lubiekakao1212.opencu.common.compat.valkyrienskies.VS2SoftUtil;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3d;
 
@@ -29,7 +28,7 @@ public class PulseUtil {
     }
 
     public static double getScaledForce(double baseForce) {
-        return baseForce * OpenCUConfigCommon.REPULSOR.getForceScale();
+        return baseForce * OpenCUConfigCommon.repulsorDevice().forceScale();
     }
 
     @ApiStatus.Experimental

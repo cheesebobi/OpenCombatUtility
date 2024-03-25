@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.common.pulse;
+package com.lubiekakao1212.opencu.common.pulse;
 
 import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensionsKt;
 import net.minecraft.nbt.NbtCompound;

@@ -1,6 +1,6 @@
-package com.LubieKakao1212.opencu.common.network.packet.dispenser;
+package com.lubiekakao1212.opencu.common.network.packet.dispenser;
 
-import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.lubiekakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;

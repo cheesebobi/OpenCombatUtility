@@ -1,7 +1,7 @@
 package com.LubieKakao1212.opencu.dependencies.cc.peripheral;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
-import com.LubieKakao1212.opencu.block.entity.BlockEntityOmniDispenser;
+import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
 import com.LubieKakao1212.opencu.init.CUBlocks;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -13,9 +13,9 @@ public class DispenserPeripheral implements IPeripheral {
 
     public static final String TYPE = new Identifier(OpenCUMod.MODID, CUBlocks.ID.OMNI_DISPENSER).toString();
 
-    private BlockEntityOmniDispenser target;
+    private BlockEntityModularFrameImpl target;
 
-    public DispenserPeripheral(BlockEntityOmniDispenser dispenser) {
+    public DispenserPeripheral(BlockEntityModularFrameImpl dispenser) {
         this.target = dispenser;
     }
 

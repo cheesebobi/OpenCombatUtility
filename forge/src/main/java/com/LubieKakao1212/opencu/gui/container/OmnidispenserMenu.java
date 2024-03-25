@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.gui.container;
 
-import com.LubieKakao1212.opencu.block.entity.BlockEntityOmniDispenser;
+import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
 import com.LubieKakao1212.opencu.init.CUMenu;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -20,12 +20,12 @@ public class OmnidispenserMenu extends ScreenHandler {
     private final int playerSlotsStart;
     private final int slotCount;
 
-    BlockEntityOmniDispenser blockEntity;
+    BlockEntityModularFrameImpl blockEntity;
 
     public OmnidispenserMenu(int id, PlayerInventory playerInventory, World world, BlockPos pos) {
         super(CUMenu.OMNI_DISPENSER.get(), id);
 
-        this.blockEntity = (BlockEntityOmniDispenser) world.getBlockEntity(pos);
+        this.blockEntity = (BlockEntityModularFrameImpl) world.getBlockEntity(pos);
         IItemHandler dispenserInventory = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().get();
         this.addSlot(new SlotItemHandler(dispenserInventory, 0, 43, 33));
 

@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.common;
+package com.lubiekakao1212.opencu.common;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -20,7 +20,7 @@ public class CURegister {
         CUBlockEntities.init();
         CUMenu.init();
         CUItems.init();
-        CUDispensers.init();
+        //CUDispensers.init();
         CUPulse.init();
 
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();

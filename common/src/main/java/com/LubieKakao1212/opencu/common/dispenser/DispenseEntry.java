@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.common.dispenser;
+package com.lubiekakao1212.opencu.common.dispenser;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;

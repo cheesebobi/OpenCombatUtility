@@ -1,21 +1,20 @@
-package com.LubieKakao1212.opencu.common.block.entity;
+package com.lubiekakao1212.opencu.common.block.entity;
 
-import com.LubieKakao1212.opencu.common.dispenser.DispenseResult;
-import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
-import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
-import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
-import com.LubieKakao1212.opencu.common.registry.CUBlockEntities;
-import com.LubieKakao1212.opencu.common.storage.IItemStorage;
-import com.LubieKakao1212.opencu.common.util.PlatformUtil;
+import com.lubiekakao1212.opencu.common.dispenser.DispenseResult;
+import com.lubiekakao1212.opencu.common.dispenser.IDispenser;
+import com.lubiekakao1212.opencu.common.gui.container.ModularFrameMenu;
+import com.lubiekakao1212.opencu.registry.CUBlockEntities;
+import com.lubiekakao1212.opencu.common.storage.IItemStorage;
+import com.lubiekakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
+import com.lubiekakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
+import com.lubiekakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
+import com.lubiekakao1212.opencu.PlatformUtil;
 import com.lubiekakao1212.qulib.math.AimUtilKt;
 import com.lubiekakao1212.qulib.math.Constants;
 import com.lubiekakao1212.qulib.math.MathUtilKt;
 import com.lubiekakao1212.qulib.math.extensions.QuaterniondExtensionsKt;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -34,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Quaterniond;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Function;
 
 import static com.lubiekakao1212.qulib.math.extensions.QuaterniondExtensionsKt.smallAngle;
 
@@ -65,7 +65,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     public float clientPrevFramePartialTick;
     public double deltaAngle;
 
-    public BlockEntityModularFrame(BlockPos pos, BlockState blockState, @NotNull IItemStorage inventoryIn) {
+    public BlockEntityModularFrame(BlockPos pos, BlockState blockState, @NotNull Function<BlockEntityModularFrame, IItemStorage> inventoryIn) {
         super(CUBlockEntities.modularFrame(), pos, blockState);
         currentAction = new DispenseAction(new Quaterniond());
 
@@ -74,7 +74,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
         targetAim = new Quaterniond().identity();
 
-        this.inventory = inventoryIn;
+        this.inventory = inventoryIn.apply(this);
 
         /*inventory = new ItemStackHandler(10) {
             @Override
@@ -109,7 +109,11 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         //energyCap = OpenCUConfigCommon.DISPENSER.energyConfig.createCapFromConfig();
     }
 
-    private void updateDispenser() {
+    /**
+     * Only use in child classes
+     * Cannot be protected because of anonymous types in forge version
+     */
+    public void updateDispenser() {
         ItemStack dispenserStack = inventory.getStack(0);
         currentDispenser = PlatformUtil.getDispenser(dispenserStack);//dispenserStack.getCapability(DispenserCapability.DISPENSER_CAPABILITY).resolve().orElseGet(() -> null);
         if(world != null && !world.isClient) {

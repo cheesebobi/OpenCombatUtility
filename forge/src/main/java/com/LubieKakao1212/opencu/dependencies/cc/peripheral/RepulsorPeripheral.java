@@ -1,8 +1,8 @@
 package com.LubieKakao1212.opencu.dependencies.cc.peripheral;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
-import com.LubieKakao1212.opencu.block.entity.BlockEntityRepulsor;
-import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityRepulsorImpl;
+import com.LubieKakao1212.opencu.config.OpenCUConfigForge;
 import com.LubieKakao1212.opencu.init.CUBlocks;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
@@ -19,9 +19,9 @@ public class RepulsorPeripheral implements IPeripheral {
 
     public static final String TYPE = new Identifier(OpenCUMod.MODID, CUBlocks.ID.REPULSOR).toString();
 
-    private BlockEntityRepulsor target;
+    private BlockEntityRepulsorImpl target;
 
-    public RepulsorPeripheral(BlockEntityRepulsor repulsor) {
+    public RepulsorPeripheral(BlockEntityRepulsorImpl repulsor) {
         this.target = repulsor;
     }
 
@@ -67,7 +67,7 @@ public class RepulsorPeripheral implements IPeripheral {
         return target;
     }
 
-    public BlockEntityRepulsor getTargetRepulsor() {
+    public BlockEntityRepulsorImpl getTargetRepulsor() {
         return target;
     }
 
@@ -85,7 +85,7 @@ public class RepulsorPeripheral implements IPeripheral {
 
     @LuaFunction
     public final Object[] setRadius(double radius) {
-        if(radius > OpenCUConfigCommon.REPULSOR.getMaxRadius())
+        if(radius > OpenCUConfigForge.REPULSOR.getMaxRadius())
         {
             return new Object[]{ false, "Radius to large" };
         }
@@ -126,7 +126,7 @@ public class RepulsorPeripheral implements IPeripheral {
 
     @LuaFunction(mainThread = true)
     public final Object[] pulse(double xOffset, double yOffset, double zOffset) {
-        BlockEntityRepulsor.PulseExecutionResult result = target.pulse(new Vector3d(xOffset, yOffset, zOffset));
+        BlockEntityRepulsorImpl.PulseExecutionResult result = target.pulse(new Vector3d(xOffset, yOffset, zOffset));
 
         if(result.wasSuccessfull) {
             return new Object[] {true};

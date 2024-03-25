@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu;
 
-import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.config.OpenCUConfigForge;
 import com.LubieKakao1212.opencu.dependencies.cc.init.CCInit;
 import com.LubieKakao1212.opencu.init.CURegister;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
@@ -33,7 +33,7 @@ public class OpenCUMod
 
         CURegister.init();
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, OpenCUConfigCommon.SPEC, "opencu-common.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, OpenCUConfigForge.SPEC, "opencu-common.toml");
 
         //For when ComputerCraft will be optional
         if(ModList.get().isLoaded("computercraft")) {

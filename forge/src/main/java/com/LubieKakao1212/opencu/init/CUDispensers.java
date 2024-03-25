@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 public class CUDispensers {
 
-    public static RegistryObject<DispenserMappings> VANILLA_DISPENSER;
+    /*public static RegistryObject<DispenserMappings> VANILLA_DISPENSER;
 
     public static RegistryObject<DispenserMappings> VANILLA_DROPPER;
 
@@ -52,5 +52,5 @@ public class CUDispensers {
         public static final String VANILLA_DROPPER = "dropper";
         public static final String TIER2_DISPENSER = "tier2";
         public static final String TIER3_DISPENSER = "tier3";
-    }
+    }*/
 }

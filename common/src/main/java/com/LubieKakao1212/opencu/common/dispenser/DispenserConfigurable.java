@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.common.dispenser;
+package com.lubiekakao1212.opencu.common.dispenser;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;

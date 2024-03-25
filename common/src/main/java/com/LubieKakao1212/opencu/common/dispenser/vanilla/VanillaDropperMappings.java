@@ -1,6 +1,6 @@
-package com.LubieKakao1212.opencu.common.dispenser.vanilla;
+package com.lubiekakao1212.opencu.common.dispenser.vanilla;
 
-import com.LubieKakao1212.opencu.common.dispenser.DispenserMappings;
+import com.lubiekakao1212.opencu.common.dispenser.DispenserMappings;
 
 public class VanillaDropperMappings extends DispenserMappings {
 

@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.common.pulse;
+package com.lubiekakao1212.opencu.common.pulse;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
@@ -22,7 +22,7 @@ public class EntityPulseType {
     }
 
     public void executePulse(World level, Vector3d pos, PulseData pulseData) {
-        executePulse(level, pos, pulseData.direction, pulseData.radius, pulseData.force);
+        executePulse(level, pos, new Vector3d(pulseData.direction), pulseData.radius, pulseData.force);
     }
 
     public void executePulse(World level, Vector3d pos, Vector3d direction, double radius, double force) {

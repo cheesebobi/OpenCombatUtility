@@ -1,7 +1,7 @@
 package com.LubieKakao1212.opencu.network.packet.dispenser;
 
 import com.LubieKakao1212.opencu.OpenCUMod;
-import com.LubieKakao1212.opencu.block.entity.BlockEntityOmniDispenser;
+import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
 import com.LubieKakao1212.opencu.compat.valkyrienskies.VS2SoftUtil;
 import com.LubieKakao1212.opencu.network.IOCUPacket;
 import com.LubieKakao1212.opencu.network.NetworkHandler;
@@ -61,8 +61,8 @@ public abstract class UpdateDispenserPacket implements IOCUPacket {
 
                 BlockEntity te = level.getBlockEntity(position);
 
-                if(te instanceof BlockEntityOmniDispenser) {
-                    ((BlockEntityOmniDispenser) te).setCurrentDispenserItem(newDispenser);
+                if(te instanceof BlockEntityModularFrameImpl) {
+                    ((BlockEntityModularFrameImpl) te).setCurrentDispenserItem(newDispenser);
                 }
             });
         }

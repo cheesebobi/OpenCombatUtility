@@ -1,6 +1,6 @@
-package com.LubieKakao1212.opencu.common.block.entity.renderer;
+package com.lubiekakao1212.opencu.common.block.entity.renderer;
 
-import com.LubieKakao1212.opencu.common.block.entity.BlockEntityRepulsor;
+import com.lubiekakao1212.opencu.common.block.entity.BlockEntityRepulsor;
 import com.google.common.collect.Lists;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
@@ -13,7 +13,6 @@ import net.minecraft.client.render.model.BasicBakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 
