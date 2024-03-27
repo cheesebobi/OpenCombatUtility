@@ -1,7 +1,8 @@
-package com.LubieKakao1212.opencu;
+package com.lubiekakao1212.opencu;
 
-import com.LubieKakao1212.opencu.init.CUBlocks;
-import com.LubieKakao1212.opencu.init.CUItems;
+import com.lubiekakao1212.opencu.common.OpenCUModCommon;
+import com.lubiekakao1212.opencu.registry.forge.CUBlocks;
+import com.lubiekakao1212.opencu.registry.forge.CUItems;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
@@ -16,7 +17,7 @@ public class OCUCreativeTabs {
 
     @SubscribeEvent
     public static void registerItemGroup(CreativeModeTabEvent.Register event) {
-        event.registerCreativeModeTab(new Identifier(OpenCUMod.MODID, "tab"), (builder) ->
+        event.registerCreativeModeTab(new Identifier(OpenCUModCommon.MODID, "tab"), (builder) ->
             builder.icon(() -> new ItemStack((ItemConvertible) CUBlocks.REPULSOR.get()))
                     .displayName(Text.literal("Open Combat Utility"))
                     .entries((displayContext, entries) -> {

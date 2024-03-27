@@ -1,16 +1,14 @@
 package com.lubiekakao1212.opencu.forge.event;
 
 import com.lubiekakao1212.opencu.OpenCUConfigCommon;
-import com.lubiekakao1212.opencu.OpenCUMod;
+import com.lubiekakao1212.opencu.common.OpenCUModCommon;
 import com.lubiekakao1212.opencu.common.dispenser.DispenserConfigurable;
 import com.lubiekakao1212.opencu.common.dispenser.DispenserConstant;
 import com.lubiekakao1212.opencu.common.dispenser.DispenserMappings;
 import com.lubiekakao1212.opencu.common.dispenser.IDispenser;
 import com.lubiekakao1212.opencu.forge.capability.provider.DispenserProvider;
-import com.lubiekakao1212.opencu.config.OpenCUConfigCommon;
-import com.lubiekakao1212.opencu.init.CUDispensers;
-import com.lubiekakao1212.opencu.init.CUItems;
 import com.lubiekakao1212.opencu.registry.CUDispensers;
+import com.lubiekakao1212.opencu.registry.forge.CUItems;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -72,15 +70,15 @@ public class CapabilityHandler {
 
             Identifier mappingLocation = new Identifier(dispenserTag.getString("Mapping"));
 
-            DispenserMappings mappings = CUDispensers.//CUDispensers.getRegistry().getValue(mappingLocation);
+            DispenserMappings mappings = CUDispensers.getDispenser(mappingLocation);//CUDispensers.getRegistry().getValue(mappingLocation);
 
             if(mappings != null) {
                 boolean configurable = false;
-                double minSpread = OpenCUConfigCommon.DISPENSER.vanillaDispenser.getSpread();
+                double minSpread = OpenCUConfigCommon.vanillaDispenserDevice().spread();
                 double maxSpread = minSpread;
-                double force = OpenCUConfigCommon.DISPENSER.vanillaDispenser.getForce();
+                double force = OpenCUConfigCommon.vanillaDispenserDevice().force();
 
-                double alignmentSpeed = OpenCUConfigCommon.DISPENSER.vanillaDispenser.getRotationSpeed();
+                double alignmentSpeed = OpenCUConfigCommon.vanillaDispenserDevice().rotationSpeed();
 
                 if(dispenserTag.contains("Spread", NbtElement.NUMBER_TYPE)) {
                     minSpread = dispenserTag.getDouble("Spread");
@@ -113,22 +111,22 @@ public class CapabilityHandler {
                     dispenser = new DispenserConstant(mappings, (float)alignmentSpeed / 20.f, minSpread, force, 1.);
                 }
 
-                event.addCapability(new Identifier(OpenCUMod.MODID, "dispenser"), new DispenserProvider(dispenser));
+                event.addCapability(new Identifier(OpenCUModCommon.MODID, "dispenser"), new DispenserProvider(dispenser));
                 return;
             }
         }
 
         if(stack.getItem() == Items.DISPENSER) {
-            event.addCapability(new Identifier(OpenCUMod.MODID, "dispenser"), VANILLA_DISPENSER.get());
+            event.addCapability(new Identifier(OpenCUModCommon.MODID, "dispenser"), VANILLA_DISPENSER.get());
         }
         else if(stack.getItem() == Items.DROPPER) {
-            event.addCapability(new Identifier(OpenCUMod.MODID, "dispenser"), VANILLA_DROPPER.get());
+            event.addCapability(new Identifier(OpenCUModCommon.MODID, "dispenser"), VANILLA_DROPPER.get());
         }
         else if(stack.getItem() == CUItems.DISPENSER_T2.get()) {
-            event.addCapability(new Identifier(OpenCUMod.MODID, "dispenser"), TIER2_DISPENSER.get());
+            event.addCapability(new Identifier(OpenCUModCommon.MODID, "dispenser"), TIER2_DISPENSER.get());
         }
         else if(stack.getItem() == CUItems.DISPENSER_T3.get()) {
-            event.addCapability(new Identifier(OpenCUMod.MODID, "dispenser"), TIER3_DISPENSER.get());
+            event.addCapability(new Identifier(OpenCUModCommon.MODID, "dispenser"), TIER3_DISPENSER.get());
         }
     }
 }

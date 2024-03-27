@@ -1,7 +1,7 @@
 package com.lubiekakao1212.opencu.forge.block;
 
 import com.lubiekakao1212.opencu.forge.block.entity.BlockEntityRepulsorImpl;
-import com.lubiekakao1212.opencu.init.CUBlockEntities;
+import com.lubiekakao1212.opencu.registry.CUBlockEntities;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockRenderType;
@@ -32,7 +32,7 @@ public class BlockRepulsor extends Block implements BlockEntityProvider {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return pBlockEntityType == CUBlockEntities.REPULSOR.get() ? BlockEntityRepulsorImpl::tick : null;
+        return pBlockEntityType == CUBlockEntities.repulsor() ? BlockEntityRepulsorImpl::tick : null;
     }
 
     /*//TODO For Debug purposes only

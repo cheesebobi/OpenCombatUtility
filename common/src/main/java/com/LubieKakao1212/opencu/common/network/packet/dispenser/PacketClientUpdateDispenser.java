@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 
 public record PacketClientUpdateDispenser(BlockPos position, ItemStack newDispenser) {
 
-    public static void execute(FromServer packet) {
+    public static void execute(PacketClientUpdateDispenser packet) {
         var player = MinecraftClient.getInstance().player;
         assert player != null;
         World level =  player.world;

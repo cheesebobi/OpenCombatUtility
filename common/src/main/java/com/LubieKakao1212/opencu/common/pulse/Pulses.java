@@ -18,7 +18,7 @@ public class Pulses {
         List<Entity> entityList = PulseUtil.getAffectedEntities(level, pos, radius);
 
         /*if(OpenCUMod.hasValkyrienSkies()) {
-            pos = VSGameUtilsKt.toWorldCoordinates(level, pos);
+            position = VSGameUtilsKt.toWorldCoordinates(level, position);
         }*/
 
         force = PulseUtil.getScaledForce(force);
@@ -51,7 +51,7 @@ public class Pulses {
         Vector3d directionForce = direction.mul(PulseUtil.getScaledForce(force));
 
         /*if(OpenCUMod.hasValkyrienSkies()) {
-            Ship ship = VSGameUtilsKt.getShipManagingPos(level, pos);
+            Ship ship = VSGameUtilsKt.getShipManagingPos(level, position);
             if(ship != null){
                 ShipTransform transform = ship.getTransform();
                 directionForce = transform.transformDirectionNoScalingFromShipToWorld(directionForce, directionForce);

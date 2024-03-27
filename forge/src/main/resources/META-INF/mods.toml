@@ -33,10 +33,3 @@ mandatory = true
 versionRange = "[2.1.2,2.2)"
 ordering = "NONE"
 side = "BOTH"
-
-[[dependencies.opencu]]
-modId = "architectury"
-mandatory = true
-versionRange = "[8.2.89,)"
-ordering = "AFTER"
-side = "BOTH"

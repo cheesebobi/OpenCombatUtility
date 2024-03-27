@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.joml.Quaterniond;
 
-public record PacketClientUpdateDispenserAim(boolean hard, BlockPos pos, float qx, float qy, float qz, float qw) {
+public record PacketClientUpdateDispenserAim(boolean hard, BlockPos position, float qx, float qy, float qz, float qw) {
 
     public static PacketClientUpdateDispenserAim create(BlockPos pos, Quaterniond aim, boolean hard) {
         return new PacketClientUpdateDispenserAim(
@@ -25,7 +25,7 @@ public record PacketClientUpdateDispenserAim(boolean hard, BlockPos pos, float q
         assert player != null;
         World world = player.getWorld();
 
-        BlockEntity te = world.getBlockEntity(packet.pos);
+        BlockEntity te = world.getBlockEntity(packet.position);
 
         var aim = new Quaterniond(packet.qx, packet.qy, packet.qz, packet.qw);
 

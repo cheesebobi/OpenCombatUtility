@@ -119,7 +119,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         if(world != null && !world.isClient) {
             BlockPos pos = getPos();
             PlatformUtil.Network.sendToAllTracking(new PacketClientUpdateDispenser(pos, dispenserStack), world, pos);
-            //NetworkHandler.sendToServer(new UpdateDispenserPacket.FromClient(pos, dispenserStack));
+            //NetworkHandler.sendToServer(new UpdateDispenserPacket.FromClient(position, dispenserStack));
         } else
         {
             //TODO Mark for update

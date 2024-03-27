@@ -11,11 +11,19 @@ public class CUIds {
     public static final Identifier DISPENSER_MAPPINGS = new Identifier(OpenCUModCommon.MODID, Str.DISPENSER);
     public static final Identifier DROPPER_MAPPINGS = new Identifier(OpenCUModCommon.MODID, Str.DROPPER);
 
+
+    public static final Identifier PULSE_REPULSOR = new Identifier(OpenCUModCommon.MODID, Str.REPULSOR);
+    public static final Identifier PULSE_VECTOR = new Identifier(OpenCUModCommon.MODID, Str.VECTOR);
+    public static final Identifier PULSE_STASIS = new Identifier(OpenCUModCommon.MODID, Str.STASIS);
+
+
     public static class Str {
         public static final String MODULAR_FRAME = "modular_frame";
         public static final String REPULSOR = "repulsor";
         public static final String DISPENSER = "dispenser";
         public static final String DROPPER = "dropper";
+        public static final String VECTOR = "vector";
+        public static final String STASIS = "stasis";
     }
 
 }
