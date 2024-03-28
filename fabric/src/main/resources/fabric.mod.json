@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "opencu",
+  "version": "${version}",
+  "name": "Open Combat Utility",
+  "description": "",
+  "authors": [
+    "LubieKakao1212"
+  ],
+  "contact": {
+    "sources": "https://github.com/LubieKakao1212/qulib-kt"
+  },
+  "license": "MIT",
+  "icon": "assets/qulib/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.LubieKakao1212.opencu.fabric.OpenCUModFabric"
+    ],
+    "client": [
+      "com.LubieKakao1212.opencu.fabric.OpenCUModFabric"
+    ]
+  },
+  "mixins": [
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.6",
+    "minecraft": "~1.19.4",
+    "java": ">=17",
+    "qulib": ">=2.1.0"
+  },
+  "suggests": {
+  }
+}

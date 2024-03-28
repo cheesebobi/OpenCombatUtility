@@ -26,6 +26,11 @@ dependencies {
 
     modRuntimeOnly "cc.tweaked:cc-tweaked-${minecraft_version}-${loader}:${cctVersion}"
 
+    //owo
+    modImplementation "io.wispforest:owo-lib:${project.owo_version}+${project.minecraft_version}"
+    annotationProcessor "io.wispforest:owo-lib:${project.owo_version}+${project.minecraft_version}"
+
+
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }

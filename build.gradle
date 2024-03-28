@@ -61,6 +61,7 @@ allprojects {
                 includeModule("org.squiddev", "Cobalt")
             }
         }
+        maven { url 'https://maven.wispforest.io' }
     }
 
     tasks.withType(JavaCompile) {
