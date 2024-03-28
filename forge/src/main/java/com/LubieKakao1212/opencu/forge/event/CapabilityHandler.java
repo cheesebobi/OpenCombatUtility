@@ -1,14 +1,14 @@
-package com.lubiekakao1212.opencu.forge.event;
+package com.LubieKakao1212.opencu.forge.event;
 
-import com.lubiekakao1212.opencu.OpenCUConfigCommon;
-import com.lubiekakao1212.opencu.common.OpenCUModCommon;
-import com.lubiekakao1212.opencu.common.dispenser.DispenserConfigurable;
-import com.lubiekakao1212.opencu.common.dispenser.DispenserConstant;
-import com.lubiekakao1212.opencu.common.dispenser.DispenserMappings;
-import com.lubiekakao1212.opencu.common.dispenser.IDispenser;
-import com.lubiekakao1212.opencu.forge.capability.provider.DispenserProvider;
-import com.lubiekakao1212.opencu.registry.CUDispensers;
-import com.lubiekakao1212.opencu.registry.forge.CUItems;
+import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.dispenser.DispenserConfigurable;
+import com.LubieKakao1212.opencu.common.dispenser.DispenserConstant;
+import com.LubieKakao1212.opencu.common.dispenser.DispenserMappings;
+import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.forge.capability.provider.DispenserProvider;
+import com.LubieKakao1212.opencu.registry.CUDispensers;
+import com.LubieKakao1212.opencu.registry.forge.CUItems;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;

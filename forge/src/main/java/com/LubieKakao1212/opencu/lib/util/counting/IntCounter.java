@@ -1,4 +1,4 @@
-package com.lubiekakao1212.opencu.lib.util.counting;
+package com.LubieKakao1212.opencu.lib.util.counting;
 
 public class IntCounter implements ICounter {
 

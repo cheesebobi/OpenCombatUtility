@@ -1,10 +1,10 @@
-package com.lubiekakao1212.opencu.forge.client;
+package com.LubieKakao1212.opencu.forge.client;
 
-import com.lubiekakao1212.opencu.common.OpenCUModCommon;
-import com.lubiekakao1212.opencu.common.block.entity.renderer.RendererModularFrame;
-import com.lubiekakao1212.opencu.common.block.entity.renderer.RendererRepulsor;
-import com.lubiekakao1212.opencu.registry.CUBlockEntities;
-import com.lubiekakao1212.opencu.registry.forge.CUGuis;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.block.entity.renderer.RendererModularFrame;
+import com.LubieKakao1212.opencu.common.block.entity.renderer.RendererRepulsor;
+import com.LubieKakao1212.opencu.registry.CUBlockEntities;
+import com.LubieKakao1212.opencu.registry.forge.CUGuis;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

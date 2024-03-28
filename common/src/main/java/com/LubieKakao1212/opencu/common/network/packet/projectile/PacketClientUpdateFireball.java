@@ -1,4 +1,4 @@
-package com.lubiekakao1212.opencu.common.network.packet.projectile;
+package com.LubieKakao1212.opencu.common.network.packet.projectile;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;

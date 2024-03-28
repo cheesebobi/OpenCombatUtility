@@ -1,8 +1,8 @@
-package com.lubiekakao1212.opencu.common.peripheral;
+package com.LubieKakao1212.opencu.common.peripheral;
 
-import com.lubiekakao1212.opencu.OpenCUConfigCommon;
-import com.lubiekakao1212.opencu.common.block.entity.BlockEntityRepulsor;
-import com.lubiekakao1212.opencu.registry.CUIds;
+import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.common.block.entity.BlockEntityRepulsor;
+import com.LubieKakao1212.opencu.registry.CUIds;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IPeripheral;

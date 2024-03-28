@@ -1,8 +1,8 @@
-package com.lubiekakao1212.opencu.registry.forge;
+package com.LubieKakao1212.opencu.registry.forge;
 
-import com.lubiekakao1212.opencu.common.OpenCUModCommon;
-import com.lubiekakao1212.opencu.forge.block.BlockModularFrame;
-import com.lubiekakao1212.opencu.forge.block.BlockRepulsor;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.forge.block.BlockModularFrame;
+import com.LubieKakao1212.opencu.forge.block.BlockRepulsor;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;

@@ -1,4 +1,4 @@
-package com.lubiekakao1212.opencu;
+package com.LubieKakao1212.opencu;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import org.jetbrains.annotations.NotNull;

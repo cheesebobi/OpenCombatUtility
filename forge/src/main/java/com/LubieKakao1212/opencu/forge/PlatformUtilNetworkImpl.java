@@ -1,15 +1,15 @@
-package com.lubiekakao1212.opencu.forge;
+package com.LubieKakao1212.opencu.forge;
 
-import com.lubiekakao1212.opencu.common.OpenCUModCommon;
-import com.lubiekakao1212.opencu.common.network.packet.PacketClientPlayerAddVelocity;
-import com.lubiekakao1212.opencu.common.network.packet.PacketClientPlayerScaleVelocity;
-import com.lubiekakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
-import com.lubiekakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
-import com.lubiekakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
-import com.lubiekakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
-import com.lubiekakao1212.opencu.forge.packet.PacketSerialize;
-import com.lubiekakao1212.opencu.lib.util.counting.CounterList;
-import com.lubiekakao1212.opencu.lib.util.counting.ICounter;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerAddVelocity;
+import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerScaleVelocity;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
+import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
+import com.LubieKakao1212.opencu.forge.packet.PacketSerialize;
+import com.LubieKakao1212.opencu.lib.util.counting.CounterList;
+import com.LubieKakao1212.opencu.lib.util.counting.ICounter;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;

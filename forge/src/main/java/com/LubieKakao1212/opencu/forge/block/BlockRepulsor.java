@@ -1,7 +1,7 @@
-package com.lubiekakao1212.opencu.forge.block;
+package com.LubieKakao1212.opencu.forge.block;
 
-import com.lubiekakao1212.opencu.forge.block.entity.BlockEntityRepulsorImpl;
-import com.lubiekakao1212.opencu.registry.CUBlockEntities;
+import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityRepulsorImpl;
+import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockRenderType;

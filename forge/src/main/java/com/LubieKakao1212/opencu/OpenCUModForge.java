@@ -1,13 +1,13 @@
-package com.lubiekakao1212.opencu;
+package com.LubieKakao1212.opencu;
 
 //import com.LubieKakao1212.opencu.config.OpenCUConfigForge;
-import com.lubiekakao1212.opencu.common.OpenCUModCommon;
-import com.lubiekakao1212.opencu.forge.PlatformUtilNetworkImpl;
-import com.lubiekakao1212.opencu.forge.compat.CCInit;
-import com.lubiekakao1212.opencu.forge.proxy.ClientProxy;
-import com.lubiekakao1212.opencu.forge.proxy.Proxy;
-import com.lubiekakao1212.opencu.forge.proxy.ServerProxy;
-import com.lubiekakao1212.opencu.registry.forge.CURegister;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.forge.PlatformUtilNetworkImpl;
+import com.LubieKakao1212.opencu.forge.compat.CCInit;
+import com.LubieKakao1212.opencu.forge.proxy.ClientProxy;
+import com.LubieKakao1212.opencu.forge.proxy.Proxy;
+import com.LubieKakao1212.opencu.forge.proxy.ServerProxy;
+import com.LubieKakao1212.opencu.registry.forge.CURegister;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;

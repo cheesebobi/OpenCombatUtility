@@ -1,7 +1,7 @@
-package com.lubiekakao1212.opencu.forge.capability.provider;
+package com.LubieKakao1212.opencu.forge.capability.provider;
 
-import com.lubiekakao1212.opencu.common.dispenser.IDispenser;
-import com.lubiekakao1212.opencu.forge.registry.CUCapabilities;
+import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.forge.registry.CUCapabilities;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;

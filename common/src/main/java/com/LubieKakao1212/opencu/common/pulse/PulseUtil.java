@@ -1,7 +1,7 @@
-package com.lubiekakao1212.opencu.common.pulse;
+package com.LubieKakao1212.opencu.common.pulse;
 
-import com.lubiekakao1212.opencu.OpenCUConfigCommon;
-import com.lubiekakao1212.opencu.common.compat.valkyrienskies.VS2SoftUtil;
+import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.common.compat.valkyrienskies.VS2SoftUtil;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3d;
 

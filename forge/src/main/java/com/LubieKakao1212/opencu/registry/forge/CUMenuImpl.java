@@ -1,10 +1,10 @@
-package com.lubiekakao1212.opencu.registry.forge;
+package com.LubieKakao1212.opencu.registry.forge;
 
-import com.lubiekakao1212.opencu.common.OpenCUModCommon;
-import com.lubiekakao1212.opencu.common.gui.container.ModularFrameMenu;
-import com.lubiekakao1212.opencu.forge.proxy.Proxy;
-import com.lubiekakao1212.opencu.registry.CUIds;
-import com.lubiekakao1212.opencu.registry.CUMenu;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
+import com.LubieKakao1212.opencu.forge.proxy.Proxy;
+import com.LubieKakao1212.opencu.registry.CUIds;
+import com.LubieKakao1212.opencu.registry.CUMenu;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;

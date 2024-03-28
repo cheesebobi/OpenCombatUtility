@@ -1,9 +1,9 @@
-package com.lubiekakao1212.opencu.registry.forge;
+package com.LubieKakao1212.opencu.registry.forge;
 
-import com.lubiekakao1212.opencu.common.OpenCUModCommon;
-import com.lubiekakao1212.opencu.common.pulse.EntityPulseType;
-import com.lubiekakao1212.opencu.common.pulse.Pulses;
-import com.lubiekakao1212.opencu.registry.CUIds;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.pulse.EntityPulseType;
+import com.LubieKakao1212.opencu.common.pulse.Pulses;
+import com.LubieKakao1212.opencu.registry.CUIds;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraftforge.registries.*;

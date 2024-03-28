@@ -1,4 +1,4 @@
-package com.lubiekakao1212.opencu.common.storage;
+package com.LubieKakao1212.opencu.common.storage;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtElement;

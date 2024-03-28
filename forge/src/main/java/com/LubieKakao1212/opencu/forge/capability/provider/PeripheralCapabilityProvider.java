@@ -1,6 +1,6 @@
-package com.lubiekakao1212.opencu.forge.capability.provider;
+package com.LubieKakao1212.opencu.forge.capability.provider;
 
-import com.lubiekakao1212.opencu.forge.capability.event.CapabilityHandler;
+import com.LubieKakao1212.opencu.forge.capability.event.CapabilityHandler;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;

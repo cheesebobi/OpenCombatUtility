@@ -1,11 +1,11 @@
-package com.lubiekakao1212.opencu.registry.forge;
+package com.LubieKakao1212.opencu.registry.forge;
 
-import com.lubiekakao1212.opencu.common.OpenCUModCommon;
-import com.lubiekakao1212.opencu.common.block.entity.BlockEntityModularFrame;
-import com.lubiekakao1212.opencu.common.block.entity.BlockEntityRepulsor;
-import com.lubiekakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
-import com.lubiekakao1212.opencu.forge.block.entity.BlockEntityRepulsorImpl;
-import com.lubiekakao1212.opencu.registry.CUIds;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.block.entity.BlockEntityRepulsor;
+import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
+import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityRepulsorImpl;
+import com.LubieKakao1212.opencu.registry.CUIds;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

@@ -1,11 +1,11 @@
-package com.lubiekakao1212.opencu.forge.capability.event;
+package com.LubieKakao1212.opencu.forge.capability.event;
 
-import com.lubiekakao1212.opencu.common.OpenCUModCommon;
-import com.lubiekakao1212.opencu.common.peripheral.DispenserPeripheral;
-import com.lubiekakao1212.opencu.common.peripheral.RepulsorPeripheral;
-import com.lubiekakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
-import com.lubiekakao1212.opencu.forge.block.entity.BlockEntityRepulsorImpl;
-import com.lubiekakao1212.opencu.forge.capability.provider.PeripheralCapabilityProvider;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.peripheral.DispenserPeripheral;
+import com.LubieKakao1212.opencu.common.peripheral.RepulsorPeripheral;
+import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
+import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityRepulsorImpl;
+import com.LubieKakao1212.opencu.forge.capability.provider.PeripheralCapabilityProvider;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Identifier;

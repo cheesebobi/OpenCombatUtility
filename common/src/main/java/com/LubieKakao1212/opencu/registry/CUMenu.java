@@ -1,6 +1,6 @@
-package com.lubiekakao1212.opencu.registry;
+package com.LubieKakao1212.opencu.registry;
 
-import com.lubiekakao1212.opencu.common.gui.container.ModularFrameMenu;
+import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.screen.ScreenHandlerType;
 

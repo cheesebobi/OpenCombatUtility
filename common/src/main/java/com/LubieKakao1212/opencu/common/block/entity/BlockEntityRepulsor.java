@@ -1,10 +1,10 @@
-package com.lubiekakao1212.opencu.common.block.entity;
+package com.LubieKakao1212.opencu.common.block.entity;
 
-import com.lubiekakao1212.opencu.OpenCUConfigCommon;
-import com.lubiekakao1212.opencu.registry.CUBlockEntities;
-import com.lubiekakao1212.opencu.common.pulse.EntityPulseType;
-import com.lubiekakao1212.opencu.common.pulse.PulseData;
-import com.lubiekakao1212.opencu.registry.CUPulse;
+import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.registry.CUBlockEntities;
+import com.LubieKakao1212.opencu.common.pulse.EntityPulseType;
+import com.LubieKakao1212.opencu.common.pulse.PulseData;
+import com.LubieKakao1212.opencu.registry.CUPulse;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;

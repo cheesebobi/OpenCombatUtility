@@ -1,11 +1,11 @@
-package com.lubiekakao1212.opencu.forge.packet;
+package com.LubieKakao1212.opencu.forge.packet;
 
-import com.lubiekakao1212.opencu.common.network.packet.PacketClientPlayerAddVelocity;
-import com.lubiekakao1212.opencu.common.network.packet.PacketClientPlayerScaleVelocity;
-import com.lubiekakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
-import com.lubiekakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
-import com.lubiekakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
-import com.lubiekakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
+import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerAddVelocity;
+import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerScaleVelocity;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
+import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
 import net.minecraft.network.PacketByteBuf;
 
 public class PacketSerialize {

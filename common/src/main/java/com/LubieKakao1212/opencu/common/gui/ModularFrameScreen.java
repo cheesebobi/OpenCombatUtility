@@ -1,7 +1,7 @@
-package com.lubiekakao1212.opencu.common.gui;
+package com.LubieKakao1212.opencu.common.gui;
 
-import com.lubiekakao1212.opencu.common.gui.container.ModularFrameMenu;
-import com.lubiekakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.GameRenderer;

@@ -1,7 +1,7 @@
-package com.lubiekakao1212.opencu.forge.event;
+package com.LubieKakao1212.opencu.forge.event;
 
-import com.lubiekakao1212.opencu.common.dispenser.IDispenser;
-import com.lubiekakao1212.opencu.forge.registry.CUCapabilities;
+import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.forge.registry.CUCapabilities;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraftforge.common.util.LazyOptional;

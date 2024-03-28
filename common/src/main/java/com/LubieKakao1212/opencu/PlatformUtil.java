@@ -1,6 +1,6 @@
-package com.lubiekakao1212.opencu;
+package com.LubieKakao1212.opencu;
 
-import com.lubiekakao1212.opencu.common.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;

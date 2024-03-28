@@ -1,6 +1,6 @@
 package com.lubiekakao1212.opencu.registry.fabric;
 
-import com.lubiekakao1212.opencu.common.gui.container.ModularFrameMenu;
+import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
 import net.minecraft.screen.ScreenHandlerType;
 
 public class CUMenuImpl {

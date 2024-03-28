@@ -1,4 +1,4 @@
-package com.lubiekakao1212.opencu.registry.forge;
+package com.LubieKakao1212.opencu.registry.forge;
 
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;

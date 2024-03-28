@@ -1,7 +1,7 @@
-package com.lubiekakao1212.opencu.forge;
+package com.LubieKakao1212.opencu.forge;
 
-import com.lubiekakao1212.opencu.common.dispenser.IDispenser;
-import com.lubiekakao1212.opencu.forge.registry.CUCapabilities;
+import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.forge.registry.CUCapabilities;
 import net.minecraft.item.ItemStack;
 
 public class PlatformUtilImpl {

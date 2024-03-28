@@ -1,6 +1,6 @@
-package com.lubiekakao1212.opencu.registry;
+package com.LubieKakao1212.opencu.registry;
 
-import com.lubiekakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import net.minecraft.util.Identifier;
 
 public class CUIds {

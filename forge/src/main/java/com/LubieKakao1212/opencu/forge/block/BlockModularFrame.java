@@ -1,6 +1,6 @@
-package com.lubiekakao1212.opencu.forge.block;
+package com.LubieKakao1212.opencu.forge.block;
 
-import com.lubiekakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
+import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;

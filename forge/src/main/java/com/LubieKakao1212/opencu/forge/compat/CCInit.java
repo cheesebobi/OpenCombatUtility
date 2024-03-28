@@ -1,6 +1,6 @@
-package com.lubiekakao1212.opencu.forge.compat;
+package com.LubieKakao1212.opencu.forge.compat;
 
-import com.lubiekakao1212.opencu.forge.capability.event.CapabilityHandler;
+import com.LubieKakao1212.opencu.forge.capability.event.CapabilityHandler;
 import net.minecraftforge.common.MinecraftForge;
 
 public class CCInit {

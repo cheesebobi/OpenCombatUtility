@@ -1,6 +1,6 @@
 package com.lubiekakao1212.opencu.fabric;
 
-import com.lubiekakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import org.jetbrains.annotations.NotNull;
 
 public class OpenCUConfigCommonImpl {

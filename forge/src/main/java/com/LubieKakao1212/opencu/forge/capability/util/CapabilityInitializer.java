@@ -1,4 +1,4 @@
-package com.lubiekakao1212.opencu.forge.capability.util;
+package com.LubieKakao1212.opencu.forge.capability.util;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;

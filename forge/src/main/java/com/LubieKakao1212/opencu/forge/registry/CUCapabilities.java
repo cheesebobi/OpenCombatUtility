@@ -1,7 +1,7 @@
-package com.lubiekakao1212.opencu.forge.registry;
+package com.LubieKakao1212.opencu.forge.registry;
 
 
-import com.lubiekakao1212.opencu.common.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;

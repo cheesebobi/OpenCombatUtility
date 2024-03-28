@@ -1,6 +1,6 @@
-package com.lubiekakao1212.opencu.common.block.entity.renderer;
+package com.LubieKakao1212.opencu.common.block.entity.renderer;
 
-import com.lubiekakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.lubiekakao1212.qulib.math.extensions.QuaterniondExtensionsKt;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;

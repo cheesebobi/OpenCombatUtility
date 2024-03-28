@@ -1,14 +1,14 @@
-package com.lubiekakao1212.opencu.common.block.entity;
+package com.LubieKakao1212.opencu.common.block.entity;
 
-import com.lubiekakao1212.opencu.common.dispenser.DispenseResult;
-import com.lubiekakao1212.opencu.common.dispenser.IDispenser;
-import com.lubiekakao1212.opencu.common.gui.container.ModularFrameMenu;
-import com.lubiekakao1212.opencu.registry.CUBlockEntities;
-import com.lubiekakao1212.opencu.common.storage.IItemStorage;
-import com.lubiekakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
-import com.lubiekakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
-import com.lubiekakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
-import com.lubiekakao1212.opencu.PlatformUtil;
+import com.LubieKakao1212.opencu.common.dispenser.DispenseResult;
+import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
+import com.LubieKakao1212.opencu.registry.CUBlockEntities;
+import com.LubieKakao1212.opencu.common.storage.IItemStorage;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
+import com.LubieKakao1212.opencu.PlatformUtil;
 import com.lubiekakao1212.qulib.math.AimUtilKt;
 import com.lubiekakao1212.qulib.math.Constants;
 import com.lubiekakao1212.qulib.math.MathUtilKt;

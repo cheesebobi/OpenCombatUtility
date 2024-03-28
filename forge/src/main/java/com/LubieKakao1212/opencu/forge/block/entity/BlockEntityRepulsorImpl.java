@@ -1,7 +1,7 @@
-package com.lubiekakao1212.opencu.forge.block.entity;
+package com.LubieKakao1212.opencu.forge.block.entity;
 
 
-import com.lubiekakao1212.opencu.common.block.entity.BlockEntityRepulsor;
+import com.LubieKakao1212.opencu.common.block.entity.BlockEntityRepulsor;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;

@@ -1,4 +1,4 @@
-package com.lubiekakao1212.opencu.forge.proxy;
+package com.LubieKakao1212.opencu.forge.proxy;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.world.World;

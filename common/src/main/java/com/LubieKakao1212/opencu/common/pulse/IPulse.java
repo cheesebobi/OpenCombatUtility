@@ -1,4 +1,4 @@
-package com.lubiekakao1212.opencu.common.pulse;
+package com.LubieKakao1212.opencu.common.pulse;
 
 import net.minecraft.world.World;
 import org.joml.Vector3d;

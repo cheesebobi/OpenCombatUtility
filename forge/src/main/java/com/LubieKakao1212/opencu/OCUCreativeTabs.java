@@ -1,8 +1,8 @@
-package com.lubiekakao1212.opencu;
+package com.LubieKakao1212.opencu;
 
-import com.lubiekakao1212.opencu.common.OpenCUModCommon;
-import com.lubiekakao1212.opencu.registry.forge.CUBlocks;
-import com.lubiekakao1212.opencu.registry.forge.CUItems;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.registry.forge.CUBlocks;
+import com.LubieKakao1212.opencu.registry.forge.CUItems;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;

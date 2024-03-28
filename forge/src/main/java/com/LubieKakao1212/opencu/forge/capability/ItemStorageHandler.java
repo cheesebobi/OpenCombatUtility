@@ -1,6 +1,6 @@
-package com.lubiekakao1212.opencu.forge.capability;
+package com.LubieKakao1212.opencu.forge.capability;
 
-import com.lubiekakao1212.opencu.common.storage.IItemStorage;
+import com.LubieKakao1212.opencu.common.storage.IItemStorage;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
