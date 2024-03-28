@@ -13,7 +13,7 @@ public class VS2SoftUtil {
                     p1.x(), p1.y(), p1.z(),
                     p2.x(), p2.y(), p2.z());
         }*/
-        return p1.distance(p2);
+        return p1.distanceSquared(p2);
     }
 
     public static double getDistance(World level, Vector3d p1, Vector3d p2) {

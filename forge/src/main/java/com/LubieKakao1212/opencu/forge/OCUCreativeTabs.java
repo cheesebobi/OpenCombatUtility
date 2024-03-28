@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu;
+package com.LubieKakao1212.opencu.forge;
 
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.registry.forge.CUBlocks;

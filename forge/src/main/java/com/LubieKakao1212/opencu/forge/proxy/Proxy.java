@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.forge.proxy;
 
-import com.LubieKakao1212.opencu.OpenCUModForge;
+import com.LubieKakao1212.opencu.forge.OpenCUModForge;
 import net.minecraft.world.World;
 
 public class Proxy {
