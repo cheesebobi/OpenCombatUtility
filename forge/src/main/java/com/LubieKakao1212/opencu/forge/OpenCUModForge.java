@@ -2,7 +2,6 @@ package com.LubieKakao1212.opencu.forge;
 
 //import com.LubieKakao1212.opencu.config.OpenCUConfigForge;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
-import com.LubieKakao1212.opencu.forge.PlatformUtilNetworkImpl;
 import com.LubieKakao1212.opencu.forge.compat.CCInit;
 import com.LubieKakao1212.opencu.forge.proxy.ClientProxy;
 import com.LubieKakao1212.opencu.forge.proxy.Proxy;
@@ -10,9 +9,7 @@ import com.LubieKakao1212.opencu.forge.proxy.ServerProxy;
 import com.LubieKakao1212.opencu.registry.forge.CURegister;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 
 //TODO Add config gui
 @Mod(OpenCUModCommon.MODID)
@@ -24,7 +21,7 @@ public class OpenCUModForge
 
     public OpenCUModForge() {
 
-        PlatformUtilNetworkImpl.init();
+        NetworkUtilImpl.init();
 
         CURegister.init();
 

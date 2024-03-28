@@ -36,7 +36,7 @@ public class ItemStorageHandler implements IItemStorage {
 
     @Override
     public void set(int slot, ItemStack stack) {
-
+        itemStackHandler.setStackInSlot(slot, stack);
     }
 
     @Override

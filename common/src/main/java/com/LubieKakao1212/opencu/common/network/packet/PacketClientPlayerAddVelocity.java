@@ -44,14 +44,4 @@ public record PacketClientPlayerAddVelocity(int x, int y, int z) {
                 (int)(motionYIn * precision),
                 (int)(motionZIn * precision));
     }
-
-    public static void execute(PacketClientPlayerAddVelocity packetIn) {
-        PlayerEntity player = MinecraftClient.getInstance().player;
-        assert player != null;
-        player.setVelocity(player.getVelocity().add(packetIn.x / precision, packetIn.y / precision, packetIn.z / precision));
-
-        if(player.getVelocity().y > 0){
-            player.fallDistance = 0;
-        }
-    }
 }

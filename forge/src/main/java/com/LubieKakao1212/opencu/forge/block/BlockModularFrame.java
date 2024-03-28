@@ -1,6 +1,8 @@
 package com.LubieKakao1212.opencu.forge.block;
 
+import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
+import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
@@ -18,6 +20,7 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -46,16 +49,20 @@ public class BlockModularFrame extends Block implements BlockEntityProvider {
     }
 
     @Override
-    public void afterBreak(World level, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
-        LazyOptional<IItemHandler> inventory = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if(!state.isOf(newState.getBlock())) {
+            var blockEntity = CUBlockEntities.modularFrame().get(world, pos);
+            if(blockEntity != null) {
+                LazyOptional<IItemHandler> inventory = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
 
-        inventory.ifPresent((inv) -> {
-            for(int i=0; i<inv.getSlots(); i++) {
-                ItemScatterer.spawn(level, pos.getX(), pos.getY(), pos.getZ(), inv.extractItem(i, 999, false));
+                inventory.ifPresent((inv) -> {
+                    for (int i = 0; i < inv.getSlots(); i++) {
+                        ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), inv.extractItem(i, 999, false));
+                    }
+                });
             }
-        });
-
-        super.afterBreak(level, player, pos, state, blockEntity, tool);
+        }
+        super.onStateReplaced(state, world, pos, newState, moved);
     }
 
     @Override

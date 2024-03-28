@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.common.block.entity;
 
+import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.common.dispenser.DispenseResult;
 import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
 import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
@@ -23,6 +24,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.Pair;
@@ -118,7 +120,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         currentDispenser = PlatformUtil.getDispenser(dispenserStack);//dispenserStack.getCapability(DispenserCapability.DISPENSER_CAPABILITY).resolve().orElseGet(() -> null);
         if(world != null && !world.isClient) {
             BlockPos pos = getPos();
-            PlatformUtil.Network.sendToAllTracking(new PacketClientUpdateDispenser(pos, dispenserStack), world, pos);
+            NetworkUtil.sendToAllTracking(new PacketClientUpdateDispenser(pos, dispenserStack), (ServerWorld) world, pos);
             //NetworkHandler.sendToServer(new UpdateDispenserPacket.FromClient(position, dispenserStack));
         } else
         {
@@ -127,13 +129,13 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     }
 
     private void sendDispenserAimUpdate() {
-        PlatformUtil.Network.sendToAllTracking(
+        NetworkUtil.sendToAllTracking(
                 PacketClientUpdateDispenserAim.create(pos, currentAction.aim, false),
-                world, pos);
+                (ServerWorld) world, pos);
     }
 
     private void requestDispenserUpdate() {
-        PlatformUtil.Network.sendToServer(new PacketServerRequestDispenserUpdate(pos));
+        NetworkUtil.sendToServer(new PacketServerRequestDispenserUpdate(pos));
     }
 
 
@@ -325,8 +327,8 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     }*/
 
     public void sendDispenserUpdateTo(ServerPlayerEntity player) {
-        PlatformUtil.Network.sendToPlayer(new PacketClientUpdateDispenser(pos, inventory.getStack(0)), player);
-        PlatformUtil.Network.sendToPlayer(PacketClientUpdateDispenserAim.create(pos, currentAction.aim, true), player);
+        NetworkUtil.sendToPlayer(new PacketClientUpdateDispenser(pos, inventory.getStack(0)), player);
+        NetworkUtil.sendToPlayer(PacketClientUpdateDispenserAim.create(pos, currentAction.aim, true), player);
     }
 
     public ItemStack getCurrentDispenserItem() {

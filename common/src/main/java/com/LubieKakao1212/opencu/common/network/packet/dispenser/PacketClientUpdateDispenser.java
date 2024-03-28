@@ -8,16 +8,4 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public record PacketClientUpdateDispenser(BlockPos position, ItemStack newDispenser) {
-
-    public static void execute(PacketClientUpdateDispenser packet) {
-        var player = MinecraftClient.getInstance().player;
-        assert player != null;
-        World level =  player.world;
-
-        BlockEntity te = level.getBlockEntity(packet.position);
-
-        if(te instanceof BlockEntityModularFrame) {
-            ((BlockEntityModularFrame) te).setCurrentDispenserItem(packet.newDispenser);
-        }
-    }
 }
