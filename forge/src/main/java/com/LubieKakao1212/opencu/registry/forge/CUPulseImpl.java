@@ -15,7 +15,7 @@ public class CUPulseImpl {
 
     public static RegistryObject<EntityPulseType> REPULSOR;
 
-    private static final DeferredRegister<EntityPulseType> PULSES = DeferredRegister.create(CUIds.REPULSOR, OpenCUModCommon.MODID);
+    private static final DeferredRegister<EntityPulseType> PULSES = DeferredRegister.create(CUIds.PULSE_TYPE, OpenCUModCommon.MODID);
 
     private static Supplier<IForgeRegistry<EntityPulseType>> registry;
 

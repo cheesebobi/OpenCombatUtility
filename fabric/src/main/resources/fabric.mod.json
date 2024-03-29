@@ -3,12 +3,12 @@
   "id": "opencu",
   "version": "${version}",
   "name": "Open Combat Utility",
-  "description": "",
+  "description": "TODO",
   "authors": [
     "LubieKakao1212"
   ],
   "contact": {
-    "sources": "https://github.com/LubieKakao1212/qulib-kt"
+    "sources": "https://github.com/LubieKakao1212/OpenCombatUtility"
   },
   "license": "MIT",
   "icon": "assets/qulib/icon.png",
