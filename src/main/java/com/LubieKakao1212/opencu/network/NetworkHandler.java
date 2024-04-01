@@ -9,6 +9,7 @@ import com.LubieKakao1212.opencu.network.packet.dispenser.RequestDispenserUpdate
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserAimPacket;
 import com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserPacket;
 import com.LubieKakao1212.opencu.network.packet.projectile.UpdateFireballPacket;
+import com.LubieKakao1212.opencu.network.packet.repulsor.RepulsorPulsePacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -84,6 +85,13 @@ public class NetworkHandler {
                 .encoder(UpdateDispenserPacket.FromClient::toBytes)
                 .decoder(UpdateDispenserPacket.FromClient::fromBytes)
                 .consumer(UpdateDispenserPacket.FromClient::handle)
+                .add();
+
+        //server to client repulsor reset animation
+        CHANNEL.messageBuilder(RepulsorPulsePacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(RepulsorPulsePacket::toBytes)
+                .decoder(RepulsorPulsePacket::fromBytes)
+                .consumer(RepulsorPulsePacket::handle)
                 .add();
     }
 

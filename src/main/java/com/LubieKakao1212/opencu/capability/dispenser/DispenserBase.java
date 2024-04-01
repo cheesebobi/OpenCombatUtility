@@ -32,7 +32,8 @@ public abstract class DispenserBase implements IDispenser {
 
         DispenseResult result = new DispenseResult(shotItem);
 
-        //TODO energy
+        boolean[] hasEnergy = new boolean[] { true };
+
         shooter.getCapability(CapabilityEnergy.ENERGY).ifPresent((energy) -> {
 
             //region Energy Handling
@@ -45,11 +46,14 @@ public abstract class DispenserBase implements IDispenser {
             int energyRequired = (int)(entry.getEnergyMultiplier() * energyConsumption);
 
             if(energyStorage.getEnergyStored() < energyRequired) {
-                return;
+                hasEnergy[0] = false;
             }
 
             energyStorage.extractEnergyInternal(energyRequired, false);
             //endregion
+        });
+
+        if(hasEnergy[0]) {
 
             //region Shooting
             Entity entity = entry.getEntity(shotItem, level);
@@ -72,7 +76,7 @@ public abstract class DispenserBase implements IDispenser {
 
             result.leftover = entry.getLeftover();
             //endregion
-        });
+        }
 
         return result;
     }

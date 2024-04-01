@@ -5,6 +5,8 @@ import com.LubieKakao1212.opencu.OpenCUMod;
 import com.LubieKakao1212.opencu.config.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.init.CUBlockEntities;
 import com.LubieKakao1212.opencu.init.CUPulse;
+import com.LubieKakao1212.opencu.network.NetworkHandler;
+import com.LubieKakao1212.opencu.network.packet.repulsor.RepulsorPulsePacket;
 import com.LubieKakao1212.opencu.pulse.*;
 import com.LubieKakao1212.qulib.capability.energy.InternalEnergyStorage;
 import net.minecraft.core.BlockPos;
@@ -46,11 +48,11 @@ public class BlockEntityRepulsor extends BlockEntity {
     }
 
     public static <T> void tick(@NotNull Level level, BlockPos pos, BlockState state, T blockEntity) {
-        if (!level.isClientSide) {
+        if (level.isClientSide) {
             BlockEntityRepulsor rep = (BlockEntityRepulsor) blockEntity;
-            if (rep.pulseTicksLeft > 0) {
+            /*if (rep.pulseTicksLeft > 0) {
                 level.sendBlockUpdated(pos, state, state, 3);
-            }
+            }*/
             rep.pulseTicksLeft--;
         }
     }
@@ -139,12 +141,15 @@ public class BlockEntityRepulsor extends BlockEntity {
         }
 
         pulseType.executePulse(level, pulseOrigin, pulseData);
-        pulseTicksLeft = pulseTicks;
+        //pulseTicksLeft = pulseTicks;
 
         setChanged();
 
-        BlockState state = level.getBlockState(pos);
-        level.sendBlockUpdated(pos, state, state, 3);
+        //BlockState state = level.getBlockState(pos);
+        //level.sendBlockUpdated(pos, state, state, 3);
+
+        assert level != null;
+        NetworkHandler.sendToAllTracking(new RepulsorPulsePacket(getBlockPos()), level, getBlockPos());
 
         return new PulseExecutionResult();
     }
@@ -181,26 +186,26 @@ public class BlockEntityRepulsor extends BlockEntity {
     @Override
     public @NotNull CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
-        tag.putInt("anim", pulseTicksLeft);
+        //tag.putInt("anim", pulseTicksLeft);
         return tag;
     }
 
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag) {
-        pulseTicksLeft = tag.getInt("anim");
+        //pulseTicksLeft = tag.getInt("anim");
     }
 
-    @Nullable
+    /*@Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
-    }
+    }*/
 
-    @Override
+    /*@Override
     public final void onDataPacket(Connection net, @NotNull ClientboundBlockEntityDataPacket packet ) {
         var tag = packet.getTag();
         if (tag != null) handleUpdateTag(tag);
-    }
+    }*/
 
     public void setPulse(ResourceLocation id) {
         EntityPulseType type = CUPulse.getRegistry().getValue(id);
@@ -212,6 +217,10 @@ public class BlockEntityRepulsor extends BlockEntity {
 
     public void setPulse(@NotNull EntityPulseType type) {
         pulseType = type;
+    }
+
+    public void setPulseTimer() {
+        pulseTicksLeft = pulseTicks;
     }
 
     public static class PulseExecutionResult {

@@ -45,12 +45,12 @@ public class RendererOmniDispenser implements BlockEntityRenderer<BlockEntityOmn
             Quaterniond current = dispenser.getCurrentAction().aim();
             Quaterniond last = dispenser.getLastAction().aim();
 
-            Quaterniond partial = current;
+            Quaterniond partial = new Quaterniond(current);
 
             if(dispenser.deltaAngle > 0) {
                 //Quaterniond partial = last.slerp(current, partialTick, new Quaterniond());
                 partial = QuaterniondUtil.step(last, current, dispenser.deltaAngle * step);
-                dispenser.setLastAction(partial);
+                dispenser.setLastAction(new Quaterniond(partial));
             }
 
             partial.y = -partial.y;
