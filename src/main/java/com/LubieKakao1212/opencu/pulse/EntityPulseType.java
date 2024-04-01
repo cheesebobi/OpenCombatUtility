@@ -20,7 +20,7 @@ public class EntityPulseType extends ForgeRegistryEntry<EntityPulseType> {
     }
 
     public void executePulse(Level level, Vector3d pos, PulseData pulseData) {
-        executePulse(level, pos, pulseData.direction, pulseData.radius, pulseData.force);
+        executePulse(level, pos, new Vector3d(pulseData.direction), pulseData.radius, pulseData.force);
     }
 
     public void executePulse(Level level, Vector3d pos, Vector3d direction, double radius, double force) {
