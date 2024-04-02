@@ -6,10 +6,10 @@
 ### 1. Porting
    - [x] Split Forge and Common
    - [ ] Port to fabric
-     - [ ] Repulsor
-       - [x] Block
-       - [ ] Peripheral
-       - [ ] Renderer
+     - [x] Repulsor
+       - [x] BlockF
+       - [x] Peripheral
+       - [x] Renderer
      - [ ] Dispenser
        - [ ] Block
        - [ ] Peripheral
@@ -21,11 +21,12 @@
      - Repulsors in the frame will cause vector based pulses
   - [ ] Remove vector pulse from normal repulsors
   - [ ] Make special Dispensers placeable
+  - [ ] Control array
+    - [ ] TODO
   - [ ] Energy overhaul
     - [ ] Capacitors
     - [ ] Plugs
-  - [ ] Control array
-    - [ ] TODO
+  - [ ] Blinker
 
 ---
 1. Removed recalibrateByIdx(mode:int) from repulsor api, please use recalibrate(mode:string) instead

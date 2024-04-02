@@ -18,7 +18,7 @@
       "com.LubieKakao1212.opencu.fabric.OpenCUModFabric"
     ],
     "client": [
-      "com.LubieKakao1212.opencu.fabric.OpenCUModFabric"
+      "com.LubieKakao1212.opencu.fabric.OpenCUClient"
     ]
   },
   "mixins": [
