@@ -2,10 +2,7 @@ package com.LubieKakao1212.opencu.forge;
 
 import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
-import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerAddVelocity;
-import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerScaleVelocity;
-import com.LubieKakao1212.opencu.common.network.packet.PacketHandlersClient;
-import com.LubieKakao1212.opencu.common.network.packet.PacketHandlersServer;
+import com.LubieKakao1212.opencu.common.network.packet.*;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
@@ -78,7 +75,15 @@ public class NetworkUtilImpl {
         CHANNEL.messageBuilder(PacketClientUpdateDispenser.class, id++, NetworkDirection.PLAY_TO_CLIENT)
                 .encoder(PacketSerialize::toBytes)
                 .decoder(PacketSerialize.ClientUpdateDispenser::fromBytes)
-                .consumerMainThread((msg, ctx) -> PacketHandlersClient.handle(msg))                .add();
+                .consumerMainThread((msg, ctx) -> PacketHandlersClient.handle(msg))
+                .add();
+
+        //Repulsor pulse animation trigger
+        CHANNEL.messageBuilder(PacketClientRepulsorPulse.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(PacketSerialize::toBytes)
+                .decoder(PacketSerialize.ClientRepulsorPulse::fromBytes)
+                .consumerMainThread((msg, ctx) -> PacketHandlersClient.handle(msg))
+                .add();
 
 //        //client to server request packet
 //        CHANNEL.messageBuilder(com.LubieKakao1212.opencu.network.packet.dispenser.UpdateDispenserPacket.FromClient.class, id++, NetworkDirection.PLAY_TO_SERVER)

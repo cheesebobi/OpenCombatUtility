@@ -1,6 +1,8 @@
 package com.LubieKakao1212.opencu.common.block.entity;
 
+import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.common.network.packet.PacketClientRepulsorPulse;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import com.LubieKakao1212.opencu.common.pulse.EntityPulseType;
 import com.LubieKakao1212.opencu.common.pulse.PulseData;
@@ -9,6 +11,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -34,12 +37,8 @@ public abstract class BlockEntityRepulsor extends BlockEntity {
     }
 
     public static <T> void tick(@NotNull World world, BlockPos pos, BlockState state, T blockEntity) {
-        if (!world.isClient) {
-            BlockEntityRepulsor rep = (BlockEntityRepulsor) blockEntity;
-            if (rep.pulseTicksLeft > 0) {
-                world.updateListeners(pos, state, state, 3);
-            }
-            rep.pulseTicksLeft--;
+        if (world.isClient) {
+            ((BlockEntityRepulsor)blockEntity).pulseTicksLeft--;
         }
     }
 
@@ -118,13 +117,15 @@ public abstract class BlockEntityRepulsor extends BlockEntity {
         }
 
         pulseType.executePulse(world, pulseOrigin, pulseData);
-        pulseTicksLeft = pulseTicks;
+        //pulseTicksLeft = pulseTicks;
 
         markDirty();
 
-        assert world != null;
+        /*assert world != null;
         BlockState state = world.getBlockState(pos);
-        world.updateListeners(pos, state, state, 3);
+        world.updateListeners(pos, state, state, 3);*/
+
+        NetworkUtil.sendToAllTracking(new PacketClientRepulsorPulse(pos), (ServerWorld) world, pos);
 
         return new PulseExecutionResult();
     }
@@ -158,37 +159,16 @@ public abstract class BlockEntityRepulsor extends BlockEntity {
         }*/
     }
 
-    @Override
-    public @NotNull NbtCompound toInitialChunkDataNbt() {
-        NbtCompound tag = new NbtCompound();
-        tag.putInt("anim", pulseTicksLeft);
-        return tag;
-    }
-
-    /*@Override
-    public void handleUpdateTag(@NotNull NbtCompound tag) {
-        pulseTicksLeft = tag.getInt("anim");
-    }
-    */
-
-    /*@Nullable
-    @Override
-    public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
-    }*/
-
-    /*@Override
-    public final void onDataPacket(ClientConnection net, @NotNull BlockEntityUpdateS2CPacket packet ) {
-        var tag = packet.getNbt();
-        if (tag != null) handleUpdateTag(tag);
-    }*/
-
     public void setPulse(Identifier id) {
         EntityPulseType type = CUPulse.get(id);
         if(type == null) {
             throw new RuntimeException("Invalid pulse type id" + id.toString());
         }
         setPulse(type);
+    }
+
+    public void setPulseTimer() {
+        pulseTicksLeft = pulseTicks;
     }
 
     public void setPulse(@NotNull EntityPulseType type) {

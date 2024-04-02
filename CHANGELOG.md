@@ -15,8 +15,9 @@
        - [ ] Peripheral
        - [ ] Renderer
      - [ ] Creative Tab
+   - [x] Port bugfixes from 1.18.2
 ### 2. Features
-  - [ ] Modular Frame (Replaces Dispenser Frame) 
+  - [ ] Modular Frame (Replaces Dispenser Frame)
      - Accepts repulsors as well as dispensers
      - Repulsors in the frame will cause vector based pulses
   - [ ] Remove vector pulse from normal repulsors

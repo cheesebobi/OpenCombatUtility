@@ -11,6 +11,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import org.joml.Quaterniond;
 import org.joml.Quaternionf;
+import org.joml.Vector3d;
 
 public class RendererModularFrame implements BlockEntityRenderer<BlockEntityModularFrame> {
 
@@ -43,12 +44,12 @@ public class RendererModularFrame implements BlockEntityRenderer<BlockEntityModu
             Quaterniond current = blockEntity.getCurrentAction().aim();
             Quaterniond last = blockEntity.getLastAction().aim();
 
-            Quaterniond partial = current;
+            Quaterniond partial = new Quaterniond(current);
 
             if(blockEntity.deltaAngle > 0) {
                 //Quaterniond partial = last.slerp(current, partialTick, new Quaterniond());
                 partial = QuaterniondExtensionsKt.step(last, current, blockEntity.deltaAngle * step, new Quaterniond());
-                blockEntity.setLastAction(partial);
+                blockEntity.setLastAction(new Quaterniond(partial));
             }
 
             partial.y = -partial.y;

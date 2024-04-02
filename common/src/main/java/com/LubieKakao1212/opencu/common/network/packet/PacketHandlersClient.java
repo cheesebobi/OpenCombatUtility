@@ -1,6 +1,8 @@
 package com.LubieKakao1212.opencu.common.network.packet;
 
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.block.entity.BlockEntityRepulsor;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
 import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
@@ -80,4 +82,17 @@ public class PacketHandlersClient {
             }
         }
     }
+
+    public static void handle(PacketClientRepulsorPulse packet) {
+        var world = MinecraftClient.getInstance().world;
+        assert world != null;
+
+        var be = world.getBlockEntity(packet.position());
+        if(!(be instanceof BlockEntityRepulsor)) {
+            OpenCUModCommon.LOGGER.warn("No repulsor found at: " + packet.position());
+            return;
+        }
+        ((BlockEntityRepulsor) be).setPulseTimer();
+    }
+
 }

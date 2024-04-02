@@ -2,6 +2,7 @@ package com.LubieKakao1212.opencu.forge.packet;
 
 import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerAddVelocity;
 import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerScaleVelocity;
+import com.LubieKakao1212.opencu.common.network.packet.PacketClientRepulsorPulse;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
@@ -43,6 +44,10 @@ public class PacketSerialize {
         buffer.writeFloat(packet.powX());
         buffer.writeFloat(packet.powY());
         buffer.writeFloat(packet.powZ());
+    }
+
+    public static void toBytes(PacketClientRepulsorPulse packet, PacketByteBuf buffer) {
+        buffer.writeBlockPos(packet.position());
     }
 
     public static class ClientPlayerAddVelocity {
@@ -88,5 +93,10 @@ public class PacketSerialize {
         }
     }
 
+    public static class ClientRepulsorPulse {
+        public static PacketClientRepulsorPulse fromBytes(PacketByteBuf buffer) {
+            return new PacketClientRepulsorPulse(buffer.readBlockPos());
+        }
+    }
 
 }
