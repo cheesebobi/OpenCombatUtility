@@ -11,7 +11,7 @@ authors = "LubieKakao1212"
 description = '''
 TODO
 '''
-logoFile="icon.png"
+logoFile= "../../../../../common/src/main/resources/icon.png"
 
 [[dependencies.opencu]]
 modId = "forge"

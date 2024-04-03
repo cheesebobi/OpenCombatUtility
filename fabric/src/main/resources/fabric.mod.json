@@ -11,7 +11,7 @@
     "sources": "https://github.com/LubieKakao1212/OpenCombatUtility"
   },
   "license": "MIT",
-  "icon": "assets/qulib/icon.png",
+  "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
