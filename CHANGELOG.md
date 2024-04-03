@@ -20,6 +20,8 @@
   - [ ] Modular Frame (Replaces Dispenser Frame)
      - Accepts repulsors as well as dispensers
      - Repulsors in the frame will cause vector based pulses
+     - API: 
+       - [ ] Add aimAt(x: number, y: number, z: number
   - [ ] Remove vector pulse from normal repulsors
   - [ ] Make special Dispensers placeable
   - [ ] Control array
@@ -28,6 +30,7 @@
     - [ ] Capacitors
     - [ ] Plugs
   - [ ] Blinker
-
+### 3. Backend
+  - [ ] Replace pitch and yaw in modular frame with direction vector
 ---
 1. Removed recalibrateByIdx(mode:int) from repulsor api, please use recalibrate(mode:string) instead
