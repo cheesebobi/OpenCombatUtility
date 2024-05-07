@@ -21,15 +21,16 @@
      - Accepts repulsors as well as dispensers
      - Repulsors in the frame will cause vector based pulses
      - API: 
-       - [ ] Add aimAt(x: number, y: number, z: number
+       - [ ] Add aimAt(x: number, y: number, z: number)
   - [ ] Remove vector pulse from normal repulsors
   - [ ] Make special Dispensers placeable
-  - [ ] Control array
+  - [ ] Array Controller
     - [ ] TODO
   - [ ] Energy overhaul
     - [ ] Capacitors
     - [ ] Plugs
   - [ ] Blinker
+  - [ ] Autonomy controller
 ### 3. Backend
   - [ ] Replace pitch and yaw in modular frame with direction vector
 ---
