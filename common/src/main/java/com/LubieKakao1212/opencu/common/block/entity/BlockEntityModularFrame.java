@@ -5,7 +5,6 @@ import com.LubieKakao1212.opencu.common.dispenser.DispenseResult;
 import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
 import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
-import com.LubieKakao1212.opencu.common.storage.IItemStorage;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
@@ -23,11 +22,11 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -35,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Quaterniond;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.function.Function;
 
 import static com.lubiekakao1212.qulib.math.extensions.QuaterniondExtensionsKt.smallAngle;
 
@@ -45,7 +43,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
     private final ConcurrentLinkedQueue<DispenseAction> actionQueue = new ConcurrentLinkedQueue<>();
 
-    private final IItemStorage inventory;
+    //private final IItemStorage inventory;
     //private final LazyOptional<ItemStackHandler> inventoryCap;
     //private final LazyOptional<InternalEnergyStorage> energyCap;
 
@@ -67,7 +65,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     public float clientPrevFramePartialTick;
     public double deltaAngle;
 
-    public BlockEntityModularFrame(BlockPos pos, BlockState blockState, @NotNull Function<BlockEntityModularFrame, IItemStorage> inventoryIn) {
+    public BlockEntityModularFrame(BlockPos pos, BlockState blockState) {
         super(CUBlockEntities.modularFrame(), pos, blockState);
         currentAction = new DispenseAction(new Quaterniond());
 
@@ -75,48 +73,11 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         setCurrentAction(new Quaterniond());
 
         targetAim = new Quaterniond().identity();
-
-        this.inventory = inventoryIn.apply(this);
-
-        /*inventory = new ItemStackHandler(10) {
-            @Override
-            protected void onContentsChanged(int slot) {
-                if(slot == 0) {
-                    updateDispenser();
-                }
-                markDirty();
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if(slot == 0)
-                {
-                    return stack.getCapability(DispenserCapability.DISPENSER_CAPABILITY).isPresent();
-                }
-                return true;
-            }
-
-            @Override
-            public int getSlotLimit(int slot) {
-                if(slot == 0)
-                {
-                    return 1;
-                }else {
-                    return 64;
-                }
-            }
-        };*/
-        //inventoryCap = LazyOptional.of(() -> inventory);
-
         //energyCap = OpenCUConfigCommon.DISPENSER.energyConfig.createCapFromConfig();
     }
 
-    /**
-     * Only use in child classes
-     * Cannot be protected because of anonymous types in forge version
-     */
-    public void updateDispenser() {
-        ItemStack dispenserStack = inventory.getStack(0);
+    protected void updateDispenser() {
+        ItemStack dispenserStack = getCurrentDispenserItem();
         currentDispenser = PlatformUtil.getDispenser(dispenserStack);//dispenserStack.getCapability(DispenserCapability.DISPENSER_CAPABILITY).resolve().orElseGet(() -> null);
         if(world != null && !world.isClient) {
             BlockPos pos = getPos();
@@ -133,11 +94,6 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                 PacketClientUpdateDispenserAim.create(pos, currentAction.aim, false),
                 (ServerWorld) world, pos);
     }
-
-    private void requestDispenserUpdate() {
-        NetworkUtil.sendToServer(new PacketServerRequestDispenserUpdate(pos));
-    }
-
 
     public static <T> void tick(World level, BlockPos pos, BlockState state, T blockEntity) {
         BlockEntityModularFrame dispenser = (BlockEntityModularFrame)blockEntity;
@@ -217,69 +173,44 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     }
 
     private void shoot(DispenseAction action) {
+        assert world != null;
         if(currentDispenser != null) {
-            Pair<ItemStack, Integer> ammo = findAmmo();
-            if(ammo != null) {
-                DispenseResult result = currentDispenser.shoot(this, world, ammo.getLeft(), pos, action.aim);
-                useAmmo(ammo.getRight(), result.getLeftover());
-            }
-        }
-    }
-
-    private Pair<ItemStack, Integer> findAmmo() {
-        for(int i=1; i<10; i++) {
-            ItemStack stack = inventory.extract(i, 1, true);
-            if(!stack.isEmpty()) {
-                return new Pair<>(stack, i);
-            }
-        }
-        return null;
-    }
-
-    private void useAmmo(int slot, ItemStack leftover) {
-        inventory.extract(slot, 1, false);
-
-        if(!leftover.isEmpty()) {
-            slot = -1;
-
-            for (int i = 9; i > 0; i--) {
-                if (inventory.getStack(i).isEmpty()) {
-                    if(slot == -1)
-                    {
-                        slot = i;
-                    }
-                }else
-                {
-                    if(inventory.insert(i, leftover, false).isEmpty()) {
-                        slot = -1;
-                        return;
+            try(ActionContext ctx = getNewContext()) {
+                var ammo = useAmmo(ctx);
+                if (ammo != null) {
+                    DispenseResult result = currentDispenser.shoot(this, world, ammo, pos, action.aim);
+                    if(result.wasSuccessful()) {
+                        var leftover = result.leftover();
+                        if(!(leftover = handleLeftover(ctx, leftover)).isEmpty()){
+                            ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), leftover);
+                        }
+                        ctx.commit();
                     }
                 }
             }
-
-            if(slot > 0) {
-                inventory.insert(slot, leftover, false);
-            }else
-            {
-                assert world != null;
-                ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), leftover);
-            }
         }
     }
+
+    protected abstract ActionContext getNewContext();
+    protected abstract ItemStack useAmmo(ActionContext ctx);
+    protected abstract ItemStack handleLeftover(ActionContext ctx, ItemStack leftover);
+
+    /**
+     * Creates a slot for gui
+     * @param idx slot index 0 => device; 1-9 => ammo
+     */
+    public abstract Slot createSlot(int idx, int x, int y);
+
 
     public boolean isUsableBy(PlayerEntity player) {
         assert world != null;
         return player.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) <= 64D && world.getBlockEntity(pos) == this;
     }
 
-    public IItemStorage getInventory() {
-        return inventory;
-    }
-
     @Override
     public void writeNbt(@NotNull NbtCompound compound) {
         //Inventory
-        compound.put("inventory", inventory.serialize());
+        //compound.put("inventory", inventory.serialize());
 
         //Energy
         //energyCap.ifPresent(energyStorage -> compound.put("energy", energyStorage.serializeNBT()));
@@ -295,10 +226,10 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         super.readNbt(compound);
 
         //Inventory
-        NbtCompound inventoryTag = compound.getCompound("inventory");
+        /*NbtCompound inventoryTag = compound.getCompound("inventory");
         if(inventory != null) {
             inventory.deserialize(inventoryTag);
-        }
+        }*/
 
         //TODO Energy
         /*NbtElement energyTag = compound.get("energy");
@@ -315,46 +246,9 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         }
     }
 
-    /*@Override
-    public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction facing) {
-        if(capability == ForgeCapabilities.ITEM_HANDLER) {
-            return (LazyOptional<T>)inventoryCap;
-        }
-        if(capability == ForgeCapabilities.ENERGY) {
-            return (LazyOptional<T>)energyCap;
-        }
-        return super.getCapability(capability, facing);
-    }*/
-
     public void sendDispenserUpdateTo(ServerPlayerEntity player) {
-        NetworkUtil.sendToPlayer(new PacketClientUpdateDispenser(pos, inventory.getStack(0)), player);
+        NetworkUtil.sendToPlayer(new PacketClientUpdateDispenser(pos, getCurrentDispenserItem()), player);
         NetworkUtil.sendToPlayer(PacketClientUpdateDispenserAim.create(pos, currentAction.aim, true), player);
-    }
-
-    public ItemStack getCurrentDispenserItem() {
-        return currentDispenserItem;
-    }
-
-    public DispenseAction getCurrentAction() {
-        return currentAction;
-    }
-
-    public DispenseAction getLastAction() {
-        return lastAction;
-    }
-
-    public void setLastAction(Quaterniond aim) {
-        lastAction.aim = aim;
-    }
-
-    public void setCurrentAction(Quaterniond newAction) {
-        //this.lastAction = currentAction;
-        this.currentAction = new DispenseAction(newAction);
-        this.deltaAngle = QuaterniondExtensionsKt.smallAngle(lastAction.aim(), currentAction.aim());
-    }
-
-    public void setCurrentDispenserItem(ItemStack currentDispenserItem) {
-        this.currentDispenserItem = currentDispenserItem;
     }
 
     @Override
@@ -368,6 +262,63 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         assert world != null;
         return new ModularFrameMenu(containerId, inventory, world, getPos());
     }
+
+    public ItemStack getCurrentDispenserItem() {
+        assert this.world != null;
+        if(this.world.isClient) {
+            return currentDispenserItem;
+        }
+        return getCurrentDispenserItemServer();
+    }
+
+    protected abstract ItemStack getCurrentDispenserItemServer();
+
+    //region Clinet Methods
+
+    /**
+     * Client method
+     */
+    public DispenseAction getCurrentAction() {
+        return currentAction;
+    }
+
+    /**
+     * Client method
+     */
+    public DispenseAction getLastAction() {
+        return lastAction;
+    }
+
+    /**
+     * Client method
+     */
+    public void setLastAction(Quaterniond aim) {
+        lastAction.aim = aim;
+    }
+
+    /**
+     * Client method
+     */
+    public void setCurrentAction(Quaterniond newAction) {
+        //this.lastAction = currentAction;
+        this.currentAction = new DispenseAction(newAction);
+        this.deltaAngle = QuaterniondExtensionsKt.smallAngle(lastAction.aim(), currentAction.aim());
+    }
+
+    /**
+     * Client method
+     */
+    public void setCurrentDispenserItem(ItemStack currentDispenserItem) {
+        this.currentDispenserItem = currentDispenserItem;
+    }
+
+    /**
+     * Client method
+     */
+    private void requestDispenserUpdate() {
+        NetworkUtil.sendToServer(new PacketServerRequestDispenserUpdate(pos));
+    }
+    //endregion
 
     public static class DispenseAction {
         private Quaterniond aim;
@@ -383,4 +334,10 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         }
     }
 
+    public interface ActionContext extends AutoCloseable {
+        @Override
+        void close();
+
+        void commit();
+    }
 }

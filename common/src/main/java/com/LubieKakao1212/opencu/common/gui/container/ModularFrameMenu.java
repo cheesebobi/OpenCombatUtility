@@ -1,6 +1,5 @@
 package com.LubieKakao1212.opencu.common.gui.container;
 
-import com.LubieKakao1212.opencu.common.storage.IItemStorage;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.registry.CUMenu;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,9 +12,18 @@ import net.minecraft.world.World;
 
 public class ModularFrameMenu extends ScreenHandler {
 
-    private final int slotSize = 18;
+    private static final int dispenserSlotsStart = 0;
+    private static final int dispenserSlotCount = 10;
+    private static final int dispenserSlotsEnd = dispenserSlotsStart + dispenserSlotCount;
 
-    private final int playerSlotsStart;
+    private static final int playerSlotsStart = dispenserSlotsEnd;
+    private static final int playerSlotCount = 36;
+    private static final int playerSlotsEnd = playerSlotsStart + playerSlotCount;
+
+
+    private static final int slotSize = 18;
+
+
     private final int slotCount;
 
     BlockEntityModularFrame blockEntity;
@@ -25,16 +33,13 @@ public class ModularFrameMenu extends ScreenHandler {
 
         this.blockEntity = (BlockEntityModularFrame) world.getBlockEntity(pos);
         assert blockEntity != null;
-        IItemStorage dispenserInventory = blockEntity.getInventory();//blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().get();
-        this.addSlot(new SlotItemStorage(dispenserInventory, 0, 43, 33));
+        this.addSlot(blockEntity.createSlot( 0, 43, 33));
 
         int startX = 80;
         int startY = 15;
         final int[] index = {1};
 
-        AddSlotBlock(startX, startY, 3, 3, slotSize, (int x, int y) -> new SlotItemStorage(dispenserInventory, index[0]++, x, y));
-
-        playerSlotsStart = this.slots.size();
+        AddSlotBlock(startX, startY, 3, 3, slotSize, (int x, int y) -> blockEntity.createSlot(index[0]++, x, y));
 
         index[0] = 0;
 
@@ -67,7 +72,7 @@ public class ModularFrameMenu extends ScreenHandler {
             if (!stack1.isEmpty()) {
                 stack = stack1.copy();
                 //Is in dispenser inventory
-                if (slot instanceof SlotItemStorage) {
+                if (slot.id < dispenserSlotsEnd) {
                     if (!this.insertItem(stack1, playerSlotsStart, slotCount, false)) {
                         return ItemStack.EMPTY;
                     }
@@ -76,7 +81,7 @@ public class ModularFrameMenu extends ScreenHandler {
 
                 }else //Is in player inventory
                 {
-                    if(this.insertItem(stack1, 0, playerSlotsStart, false)) {
+                    if(this.insertItem(stack1, dispenserSlotsStart, dispenserSlotsEnd, false)) {
                         return ItemStack.EMPTY;
                     }
                 }
