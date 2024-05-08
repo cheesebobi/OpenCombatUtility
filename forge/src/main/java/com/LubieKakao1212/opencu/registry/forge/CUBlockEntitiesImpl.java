@@ -20,8 +20,8 @@ public class CUBlockEntitiesImpl {
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, OpenCUModCommon.MODID);
 
     static {
-        REPULSOR = BLOCK_ENTITIES.register(CUIds.Str.REPULSOR, () -> BlockEntityType.Builder.<BlockEntityRepulsor>create(BlockEntityRepulsorImpl::new, CUBlocks.REPULSOR.get()).build(null));
-        MODULAR_FRAME = BLOCK_ENTITIES.register(CUIds.Str.DISPENSER, () -> BlockEntityType.Builder.<BlockEntityModularFrame>create(BlockEntityModularFrameImpl::new, CUBlocks.OMNI_DISPENSER.get()).build(null));
+        REPULSOR = BLOCK_ENTITIES.register(CUIds.Str.REPULSOR, () -> BlockEntityType.Builder.<BlockEntityRepulsor>create(BlockEntityRepulsorImpl::new, CUBlocksImpl.REPULSOR.get()).build(null));
+        MODULAR_FRAME = BLOCK_ENTITIES.register(CUIds.Str.DISPENSER, () -> BlockEntityType.Builder.<BlockEntityModularFrame>create(BlockEntityModularFrameImpl::new, CUBlocksImpl.OMNI_DISPENSER.get()).build(null));
 
         CURegister.register(BLOCK_ENTITIES);
     }

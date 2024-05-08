@@ -1,15 +1,9 @@
 package com.LubieKakao1212.opencu.forge.event;
 
-import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
-import com.LubieKakao1212.opencu.forge.registry.CUCapabilities;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraftforge.common.util.LazyOptional;
+import com.LubieKakao1212.opencu.common.dispenser.DispenserTooltip;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.List;
 
 @Mod.EventBusSubscriber
 public class TooltipEventHandler {
@@ -23,29 +17,16 @@ public class TooltipEventHandler {
 
     @SubscribeEvent
     public static void addTooltip(ItemTooltipEvent event) {
-        ItemStack stack = event.getItemStack();
+        /*ItemStack stack = event.getItemStack();
 
         //if(stack.getItem() instanceof CUMultiItem) {
         List<Text> tooltip = event.getToolTip();
         LazyOptional<IDispenser> dispenser = stack.getCapability(CUCapabilities.DISPENSER, null);
 
         dispenser.ifPresent((dis) -> {
-            if(dis.getAlignmentSpeed() >= (180 - 0.1)) {
-                tooltip.add(Text.translatable(speedKey + instantSuffix));
-            } else {
-                tooltip.add(Text.translatable(speedKey, dis.getAlignmentSpeed()));
-            }
-            tooltip.add(getProperty(dis.hasConfigurableSpread(), spreadKey, dis.getMinSpread(), dis.getMaxSpread()));
-            tooltip.add(getProperty(dis.hasConfigurableForce(), forceKey, dis.getMinForce(), dis.getMaxForce()));
-        });
-    }
+        });*/
 
-    private static Text getProperty(boolean configurable, String translationKey, double min, double max) {
-        if(configurable) {
-            return Text.translatable(translationKey + configurableSuffix, min, max);
-        }else {
-            return Text.translatable(translationKey + constantSuffix, min);
-        }
+        DispenserTooltip.addTooltip(event.getItemStack(), event.getFlags(), event.getToolTip());
     }
 
 }

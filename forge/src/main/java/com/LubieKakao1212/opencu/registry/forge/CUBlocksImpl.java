@@ -11,9 +11,9 @@ import net.minecraft.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
-public class CUBlocks {
-
+public class CUBlocksImpl {
     public static RegistryObject<Block> REPULSOR;
 
     public static RegistryObject<Block> OMNI_DISPENSER;
@@ -36,6 +36,16 @@ public class CUBlocks {
     public static RegistryObject<Block> blockItem(RegistryObject<Block> obj) {
         CUItems.register(obj.getId().getPath(), () -> new BlockItem(obj.get(), new Item.Settings()));
         return obj;
+    }
+
+    @NotNull
+    public static Block repulsor() {
+        return REPULSOR.get();
+    }
+
+    @NotNull
+    public static Block modularFrame() {
+        return OMNI_DISPENSER.get();
     }
 
     public static class ID {

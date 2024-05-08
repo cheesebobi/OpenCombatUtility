@@ -1,17 +1,19 @@
 package com.LubieKakao1212.opencu.fabric;
 
-import com.LubieKakao1212.opencu.CUPeripheral;
-import com.LubieKakao1212.opencu.NetworkUtil;
+import com.LubieKakao1212.opencu.common.gui.ModularFrameScreen;
+import com.LubieKakao1212.opencu.fabric.apilookup.APILookupPeripheral;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
-import com.LubieKakao1212.opencu.registry.CUBlockEntities;
+import com.LubieKakao1212.opencu.fabric.apilookup.APILookupIDispenser;
+import com.LubieKakao1212.opencu.fabric.event.TooltipHandler;
+import com.LubieKakao1212.opencu.registry.CUMenu;
 import com.LubieKakao1212.opencu.registry.fabric.CUBlockEntitiesImpl;
-import com.LubieKakao1212.opencu.registry.fabric.CUBlocks;
+import com.LubieKakao1212.opencu.registry.fabric.CUBlocksImpl;
+import com.LubieKakao1212.opencu.registry.fabric.CUMenuImpl;
 import com.LubieKakao1212.opencu.registry.fabric.CUPulseImpl;
-import dan200.computercraft.api.peripheral.PeripheralLookup;
 import io.wispforest.owo.registration.reflect.FieldRegistrationHandler;
-import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
 
 public class OpenCUModFabric implements ModInitializer {
 
@@ -22,14 +24,17 @@ public class OpenCUModFabric implements ModInitializer {
     public void onInitialize() {
         NetworkUtilImpl.init();
 
-        FieldRegistrationHandler.register(CUBlocks.class, OpenCUModCommon.MODID, false);
+        FieldRegistrationHandler.register(CUBlocksImpl.class, OpenCUModCommon.MODID, false);
         FieldRegistrationHandler.register(CUPulseImpl.class, OpenCUModCommon.MODID, false);
         FieldRegistrationHandler.register(CUBlockEntitiesImpl.class, OpenCUModCommon.MODID, false);
+        FieldRegistrationHandler.register(CUMenuImpl.class, OpenCUModCommon.MODID, false);
 
         if(FabricLoader.getInstance().isModLoaded("computercraft")) {
-            CUPeripheral.register();
+            APILookupPeripheral.register();
         }
-    }
 
+        APILookupIDispenser.init();
+        TooltipHandler.init();
+    }
 
 }

@@ -15,6 +15,7 @@ public class CUIds {
     public static final Identifier DISPENSER_MAPPINGS = new Identifier(OpenCUModCommon.MODID, Str.DISPENSER);
     public static final Identifier DROPPER_MAPPINGS = new Identifier(OpenCUModCommon.MODID, Str.DROPPER);
 
+    public static final Identifier DISPENSER_API = new Identifier(OpenCUModCommon.MODID, Str.DISPENSER_API);
 
     public static final Identifier PULSE_REPULSOR = new Identifier(OpenCUModCommon.MODID, Str.REPULSOR);
     public static final Identifier PULSE_VECTOR = new Identifier(OpenCUModCommon.MODID, Str.VECTOR);
@@ -28,6 +29,7 @@ public class CUIds {
         public static final String REPULSOR = "repulsor";
 
         public static final String DISPENSER = "dispenser";
+        public static final String DISPENSER_API = "dispenser";
         public static final String DROPPER = "dropper";
 
         public static final String VECTOR = "vector";

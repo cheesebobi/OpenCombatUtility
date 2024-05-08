@@ -16,7 +16,7 @@ public class CURegister {
     }
 
     public static void init() {
-        CUBlocks.init();
+        CUBlocksImpl.init();
         CUBlockEntitiesImpl.init();
         CUMenuImpl.init();
         CUItems.init();

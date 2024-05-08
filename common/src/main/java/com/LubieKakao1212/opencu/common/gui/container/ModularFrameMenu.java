@@ -1,11 +1,13 @@
 package com.LubieKakao1212.opencu.common.gui.container;
 
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.registry.CUBlocks;
 import com.LubieKakao1212.opencu.registry.CUMenu;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -22,24 +24,26 @@ public class ModularFrameMenu extends ScreenHandler {
 
 
     private static final int slotSize = 18;
-
-
     private final int slotCount;
 
-    BlockEntityModularFrame blockEntity;
+    private final ScreenHandlerContext context;
 
-    public ModularFrameMenu(int id, PlayerInventory playerInventory, World world, BlockPos pos) {
+    public ModularFrameMenu(int id, PlayerInventory playerInventory) {
+        this(id, playerInventory, SlotProvider.dummy(dispenserSlotCount), ScreenHandlerContext.EMPTY);
+    }
+
+    public ModularFrameMenu(int id, PlayerInventory playerInventory, SlotProvider modularFrameSlots, ScreenHandlerContext context) {
         super(CUMenu.modularFrame(), id);
 
-        this.blockEntity = (BlockEntityModularFrame) world.getBlockEntity(pos);
-        assert blockEntity != null;
-        this.addSlot(blockEntity.createSlot( 0, 43, 33));
+        this.addSlot(modularFrameSlots.createSlot( 0, 43, 33));
+
+        this.context = context;
 
         int startX = 80;
         int startY = 15;
         final int[] index = {1};
 
-        AddSlotBlock(startX, startY, 3, 3, slotSize, (int x, int y) -> blockEntity.createSlot(index[0]++, x, y));
+        AddSlotBlock(startX, startY, 3, 3, slotSize, (int x, int y) -> modularFrameSlots.createSlot(index[0]++, x, y));
 
         index[0] = 0;
 
@@ -108,6 +112,6 @@ public class ModularFrameMenu extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity pPlayer) {
-        return blockEntity.isUsableBy(pPlayer);
+        return ScreenHandler.canUse(this.context, pPlayer, CUBlocks.modularFrame());
     }
 }

@@ -31,7 +31,7 @@ public abstract class DispenserBase implements IDispenser {
     public DispenseResult shoot(BlockEntityModularFrame shooter, World level, ItemStack shotItem, BlockPos pos, Quaterniond aim) {
         DispenseEntry entry = getMappings().getDispenseResult(shotItem);
 
-        DispenseResult result = new DispenseResult(shotItem);
+        DispenseResult result;// = new DispenseResult(shotItem);
 
         //TODO energy
         //shooter.getCapability(ForgeCapabilities.ENERGY).ifPresent((energy) -> {
@@ -73,7 +73,7 @@ public abstract class DispenserBase implements IDispenser {
 
             entry.getPostSpawnAction().Execute(entity, forward, velocity);
 
-            result.leftover = entry.getLeftover();
+            result = new DispenseResult(true, entry.getLeftover());//.leftover = entry.getLeftover();
             //endregion
         //});
 
