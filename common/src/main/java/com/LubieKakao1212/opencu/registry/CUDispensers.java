@@ -15,13 +15,19 @@ public class CUDispensers {
     public static final DispenserMappings VANILLA_DROPPER = new VanillaDropperMappings();
 
     private static final Map<Identifier, DispenserMappings> MAPPINGS = new HashMap<>();
-    static {
+
+    public static void init() {
+        MAPPINGS.clear();
+
         MAPPINGS.put(CUIds.DISPENSER_MAPPINGS, VANILLA_DISPENSER);
         MAPPINGS.put(CUIds.DROPPER_MAPPINGS, VANILLA_DROPPER);
+
+        VANILLA_DISPENSER.init();
+        VANILLA_DROPPER.init();
     }
+
     public static DispenserMappings getDispenser(Identifier identifier) {
         return MAPPINGS.get(identifier);
     }
-
 
 }

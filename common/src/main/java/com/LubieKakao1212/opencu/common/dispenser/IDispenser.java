@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.common.dispenser;
 
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.lubiekakao1212.qulib.math.Aim;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
@@ -13,7 +14,7 @@ public interface IDispenser {
      * @param shotItem always singe item
      * @return energy usage multiplier
      */
-    DispenseResult shoot(BlockEntityModularFrame shooter, World level, ItemStack shotItem, BlockPos pos, Quaterniond aim);
+    DispenseResult shoot(BlockEntityModularFrame shooter, World level, ItemStack shotItem, BlockPos pos, Aim aim);
 
     /**
      * @param spread spread value that would be set

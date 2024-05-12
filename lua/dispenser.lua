@@ -1,4 +1,4 @@
-dis = peripheral.find("opencu:adv_dispenser")
+dis = peripheral.find("opencu:modular_frame")
 function circle(count, p)
     p = p or 0
     local pi2 = math.pi * 2

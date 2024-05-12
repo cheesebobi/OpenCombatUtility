@@ -9,10 +9,9 @@ import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerReq
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
 import com.LubieKakao1212.opencu.PlatformUtil;
-import com.lubiekakao1212.qulib.math.AimUtilKt;
+import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.Constants;
 import com.lubiekakao1212.qulib.math.MathUtilKt;
-import com.lubiekakao1212.qulib.math.extensions.QuaterniondExtensionsKt;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,27 +28,19 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Quaterniond;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import static com.lubiekakao1212.qulib.math.extensions.QuaterniondExtensionsKt.smallAngle;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class BlockEntityModularFrame extends BlockEntity implements NamedScreenHandlerFactory {
 
     public static final double aimIdenticalityEpsilon = Constants.degToRad * 0.1;
 
-    private final ConcurrentLinkedQueue<DispenseAction> actionQueue = new ConcurrentLinkedQueue<>();
+    private final AtomicInteger actionsToPerform = new AtomicInteger(0);
 
-    //private final IItemStorage inventory;
-    //private final LazyOptional<ItemStackHandler> inventoryCap;
-    //private final LazyOptional<InternalEnergyStorage> energyCap;
-
-    private DispenseAction currentAction;
-    private Quaterniond targetAim;
+    private Aim currentAim;
+    private Aim targetAim;
 
     private IDispenser currentDispenser;
 
@@ -59,31 +50,31 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
     private ItemStack currentDispenserItem = null;
 
-    private DispenseAction lastAction = null;
+    private boolean lockedOn;
+
+    private Aim lastAim = null;
 
     public long clientAge;
     public long clientPrevFrameAge;
     public float clientPrevFramePartialTick;
-    public double deltaAngle;
+
+    public double deltaAnglePitch;
+    public double deltaAngleYaw;
 
     public BlockEntityModularFrame(BlockPos pos, BlockState blockState) {
         super(CUBlockEntities.modularFrame(), pos, blockState);
-        currentAction = new DispenseAction(new Quaterniond());
+        lastAim = new Aim(0, 0);
+        setCurrentAim(new Aim(0, 0));
 
-        lastAction = new DispenseAction(new Quaterniond().identity());
-        setCurrentAction(new Quaterniond());
-
-        targetAim = new Quaterniond().identity();
-        //energyCap = OpenCUConfigCommon.DISPENSER.energyConfig.createCapFromConfig();
+        targetAim = new Aim(0 ,0);
     }
 
     protected void updateDispenser() {
         ItemStack dispenserStack = getCurrentDispenserItem();
-        currentDispenser = PlatformUtil.getDispenser(dispenserStack);//dispenserStack.getCapability(DispenserCapability.DISPENSER_CAPABILITY).resolve().orElseGet(() -> null);
+        currentDispenser = PlatformUtil.getDispenser(dispenserStack);
         if(world != null && !world.isClient) {
             BlockPos pos = getPos();
             NetworkUtil.sendToAllTracking(new PacketClientUpdateDispenser(pos, dispenserStack), (ServerWorld) world, pos);
-            //NetworkHandler.sendToServer(new UpdateDispenserPacket.FromClient(position, dispenserStack));
         } else
         {
             //TODO Mark for update
@@ -92,7 +83,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
     private void sendDispenserAimUpdate() {
         NetworkUtil.sendToAllTracking(
-                PacketClientUpdateDispenserAim.create(pos, currentAction.aim, false),
+                PacketClientUpdateDispenserAim.create(pos, currentAim, false),
                 (ServerWorld) world, pos);
     }
 
@@ -104,31 +95,34 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                 dispenser.sendDispenserAimUpdate();
             }
             if(dispenser.currentDispenser != null) {
-                if(QuaterniondExtensionsKt.smallAngle(dispenser.targetAim, dispenser.currentAction.aim) > aimIdenticalityEpsilon) {
-                    dispenser.currentAction.aim = QuaterniondExtensionsKt.step(
-                            dispenser.currentAction.aim,
-                            dispenser.targetAim,
-                            dispenser.currentDispenser.getAlignmentSpeed() * Constants.degToRad, new Quaterniond());
+                if(!dispenser.currentAim.equals(dispenser.targetAim, aimIdenticalityEpsilon)) {
+                    dispenser.currentAim.stepPerAxis(dispenser.targetAim,
+                            dispenser.currentDispenser.getAlignmentSpeed() * Constants.degToRad * 0.25,
+                            dispenser.currentDispenser.getAlignmentSpeed() * Constants.degToRad,
+                            dispenser.currentAim);
+
                     dispenser.sendDispenserAimUpdate();
+                    dispenser.markDirty();
                 } else {
-                    dispenser.currentAction.aim = dispenser.targetAim;
-                    if(!dispenser.currentAction.lockedOn)
+                    dispenser.setTargetAim(new Aim(dispenser.targetAim.getPitch(), dispenser.targetAim.getYaw()));
+                    if(!dispenser.lockedOn)
                     {
+                        dispenser.markDirty();
                         dispenser.sendDispenserAimUpdate();
-                        dispenser.currentAction.lockedOn = true;
+                        dispenser.lockedOn = true;
                     }
                 }
             }
-            while(!dispenser.actionQueue.isEmpty())
+            while(dispenser.actionsToPerform.get() > 0)
             {
-                dispenser.actionQueue.poll();
-                dispenser.shoot(dispenser.currentAction);
+                dispenser.actionsToPerform.getAndDecrement();
+                dispenser.shoot(dispenser.currentAim);
             }
         }else
         {
             if(!dispenser.isInitialised) {
                 dispenser.isInitialised = true;
-                dispenser.setCurrentAction(dispenser.targetAim);
+                dispenser.setCurrentAim(dispenser.targetAim);
                 dispenser.requestDispenserUpdate();
             }
             dispenser.clientAge++;
@@ -136,21 +130,20 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     }
 
     public void dispense() {
-        actionQueue.add(currentAction);
+        actionsToPerform.getAndIncrement();
     }
 
     public void aim(double pitch, double yaw) {
-        //TODO add pi to yaw if |pitch| > piHalf
-        setAim(AimUtilKt.aimRad(new Quaterniond(), MathUtilKt.loop(pitch, -Constants.piHalf, Constants.piHalf), MathUtilKt.loop(yaw, -Constants.pi, Constants.pi), Direction.EAST, Direction.UP));
+        setTargetAim(new Aim(pitch, yaw));
     }
 
     public boolean isAligned() {
-        return smallAngle(targetAim, currentAction.aim) < aimIdenticalityEpsilon;
+        return targetAim.equals(currentAim, aimIdenticalityEpsilon);
     }
 
-    public double aimingStatus() {
+    /*public double aimingStatus() {
         return smallAngle(targetAim, currentAction.aim());
-    }
+    }*/
 
     public String setForce(double force) {
         return currentDispenser.trySetForce(force);
@@ -168,18 +161,18 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         return currentDispenser.getMaxSpread();
     }
 
-    public void setAim(Quaterniond aim) {
-        targetAim = aim.normalize();
-        currentAction.lockedOn = false;
+    public void setTargetAim(Aim aim) {
+        targetAim = aim;
+        markDirty();
     }
 
-    private void shoot(DispenseAction action) {
+    private void shoot(Aim action) {
         assert world != null;
         if(currentDispenser != null) {
             try(ActionContext ctx = getNewContext()) {
                 var ammo = useAmmo(ctx);
                 if (ammo != null) {
-                    DispenseResult result = currentDispenser.shoot(this, world, ammo, pos, action.aim);
+                    DispenseResult result = currentDispenser.shoot(this, world, ammo, pos, action);
                     if(result.wasSuccessful()) {
                         var leftover = result.leftover();
                         if(!(leftover = handleLeftover(ctx, leftover)).isEmpty()){
@@ -210,13 +203,10 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
     @Override
     public void writeNbt(@NotNull NbtCompound compound) {
-        //Inventory
-        //compound.put("inventory", inventory.serialize());
-
-        //Energy
-        //energyCap.ifPresent(energyStorage -> compound.put("energy", energyStorage.serializeNBT()));
-
-        compound.put("aim", QuaterniondExtensionsKt.serializeNBT(currentAction.aim));
+        compound.putDouble("pitch", currentAim.getPitch());
+        compound.putDouble("yaw", currentAim.getYaw());
+        compound.putDouble("targetPitch", targetAim.getYaw());
+        compound.putDouble("targetYaw", targetAim.getYaw());
         compound.put("dispenser", currentDispenser != null ? currentDispenser.serialize() : new NbtCompound());
 
         super.writeNbt(compound);
@@ -226,21 +216,13 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     public void readNbt(@NotNull NbtCompound compound) {
         super.readNbt(compound);
 
-        //Inventory
-        /*NbtCompound inventoryTag = compound.getCompound("inventory");
-        if(inventory != null) {
-            inventory.deserialize(inventoryTag);
-        }*/
+        var pitch = compound.getDouble("pitch");
+        var yaw = compound.getDouble("yaw");
+        var targetPitch = compound.getDouble("targetPitch");
+        var targetYaw = compound.getDouble("targetYaw");
 
-        //TODO Energy
-        /*NbtElement energyTag = compound.get("energy");
-        if(energyTag != null) {
-            energyCap.ifPresent((energy) -> energy.deserializeNBT(energyTag));
-        }*/
-
-        if(compound.contains("aim", NbtElement.LIST_TYPE)) {
-            setAim(QuaterniondExtensionsKt.deserializeNBT(new Quaterniond(), compound.getList("aim", NbtElement.DOUBLE_TYPE)));
-        }
+        setTargetAim(new Aim(targetPitch, targetYaw));
+        currentAim = new Aim(pitch, yaw);
 
         if(currentDispenser != null && compound.contains("dispenser", NbtElement.COMPOUND_TYPE)) {
             currentDispenser.deserialize(compound.getCompound("dispenser"));
@@ -249,7 +231,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
     public void sendDispenserUpdateTo(ServerPlayerEntity player) {
         NetworkUtil.sendToPlayer(new PacketClientUpdateDispenser(pos, getCurrentDispenserItem()), player);
-        NetworkUtil.sendToPlayer(PacketClientUpdateDispenserAim.create(pos, currentAction.aim, true), player);
+        NetworkUtil.sendToPlayer(PacketClientUpdateDispenserAim.create(pos, currentAim, true), player);
     }
 
     @Override
@@ -279,31 +261,34 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     /**
      * Client method
      */
-    public DispenseAction getCurrentAction() {
-        return currentAction;
+    public Aim getCurrentAim() {
+        return currentAim;
     }
 
     /**
      * Client method
      */
-    public DispenseAction getLastAction() {
-        return lastAction;
+    public Aim getLastAim() {
+        return lastAim;
     }
 
     /**
      * Client method
      */
-    public void setLastAction(Quaterniond aim) {
-        lastAction.aim = aim;
+    public void setLastAim(Aim aim) {
+        lastAim = aim;
     }
 
     /**
      * Client method
      */
-    public void setCurrentAction(Quaterniond newAction) {
+    public void setCurrentAim(Aim newAim) {
         //this.lastAction = currentAction;
-        this.currentAction = new DispenseAction(newAction);
-        this.deltaAngle = QuaterniondExtensionsKt.smallAngle(lastAction.aim(), currentAction.aim());
+        this.currentAim = newAim;
+
+        this.deltaAnglePitch = Math.abs(newAim.getPitch() - lastAim.getPitch());
+        this.deltaAngleYaw = MathUtilKt.angleDistance(lastAim.getYaw(), newAim.getYaw());
+        //QuaterniondExtensionsKt.smallAngle(lastAction.aim(), currentAction.aim());
     }
 
     /**
@@ -320,20 +305,6 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         NetworkUtil.sendToServer(new PacketServerRequestDispenserUpdate(pos));
     }
     //endregion
-
-    public static class DispenseAction {
-        private Quaterniond aim;
-
-        private boolean lockedOn;
-
-        public DispenseAction(Quaterniond aim) {
-            this.aim = aim;
-        }
-
-        public Quaterniond aim() {
-            return aim;
-        }
-    }
 
     public interface ActionContext extends AutoCloseable {
         @Override

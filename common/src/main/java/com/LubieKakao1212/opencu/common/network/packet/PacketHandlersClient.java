@@ -6,13 +6,13 @@ import com.LubieKakao1212.opencu.common.block.entity.BlockEntityRepulsor;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
 import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
+import com.lubiekakao1212.qulib.math.Aim;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractFireballEntity;
 import net.minecraft.world.World;
-import org.joml.Quaterniond;
 
 public class PacketHandlersClient {
 
@@ -72,13 +72,13 @@ public class PacketHandlersClient {
 
         BlockEntity te = world.getBlockEntity(packet.position());
 
-        var aim = new Quaterniond(packet.qx(), packet.qy(), packet.qz(), packet.qw());
+        var aim = new Aim(packet.pitch(), packet.yaw());
 
         if (te instanceof BlockEntityModularFrame) {
-            ((BlockEntityModularFrame) te).setCurrentAction(aim);
+            ((BlockEntityModularFrame) te).setCurrentAim(aim);
             if(packet.hard()) {
                 //Sets last aim to aim
-                ((BlockEntityModularFrame) te).setCurrentAction(aim);
+                ((BlockEntityModularFrame) te).setCurrentAim(aim);
             }
         }
     }

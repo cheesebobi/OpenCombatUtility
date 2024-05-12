@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.common.dispenser;
 
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.AimUtilKt;
 import com.lubiekakao1212.qulib.math.Constants;
 import com.lubiekakao1212.qulib.math.extensions.Vector3dExtensions;
@@ -9,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.joml.Quaterniond;
 import org.joml.Vector3d;
@@ -28,7 +30,7 @@ public abstract class DispenserBase implements IDispenser {
     }
 
     @Override
-    public DispenseResult shoot(BlockEntityModularFrame shooter, World level, ItemStack shotItem, BlockPos pos, Quaterniond aim) {
+    public DispenseResult shoot(BlockEntityModularFrame shooter, World level, ItemStack shotItem, BlockPos pos, Aim aim) {
         DispenseEntry entry = getMappings().getDispenseResult(shotItem);
 
         DispenseResult result;// = new DispenseResult(shotItem);
@@ -57,7 +59,7 @@ public abstract class DispenserBase implements IDispenser {
             //region Shooting
             Entity entity = entry.getEntity(shotItem, level);
 
-            Vector3d forward = AimUtilKt.randomSpread(random, aim, (getSpread() * entry.getSpreadMultiplier() * Constants.degToRad), Vector3dExtensions.INSTANCE.getSOUTH());
+            Vector3d forward = AimUtilKt.randomSpread(random, aim.toQuaternion(Direction.EAST, Direction.UP), (getSpread() * entry.getSpreadMultiplier() * Constants.degToRad), Vector3dExtensions.INSTANCE.getSOUTH());
 
             entity.setPosition(pos.getX() + 0.5 + forward.x, pos.getY() + 0.5 + forward.y, pos.getZ() + 0.5 + forward.z);
             entity.setPitch(0f);

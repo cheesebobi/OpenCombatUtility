@@ -69,14 +69,16 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
 
     @Override
     protected ItemStack handleLeftover(ActionContext ctx, ItemStack leftover) {
-        var transactionCtx = (TransactionActionContext) ctx;
-        try(var inner = Transaction.openNested(transactionCtx.transaction)) {
-            if(ammoStorage.insert(ItemVariant.of(leftover), leftover.getCount(), inner) == leftover.getCount()) {
-                inner.commit();
-                return ItemStack.EMPTY;
+        if(!leftover.isEmpty()){
+            var transactionCtx = (TransactionActionContext) ctx;
+            try(var inner = Transaction.openNested(transactionCtx.transaction)) {
+                if(ammoStorage.insert(ItemVariant.of(leftover), leftover.getCount(), inner) == leftover.getCount()) {
+                    inner.commit();
+                    return ItemStack.EMPTY;
+                }
             }
-            return leftover;
         }
+        return leftover;
     }
 
     /**

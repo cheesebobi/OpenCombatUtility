@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.common.block.entity.renderer;
 
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.extensions.QuaterniondExtensionsKt;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -9,6 +10,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Direction;
 import org.joml.Quaterniond;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
@@ -41,24 +43,24 @@ public class RendererModularFrame implements BlockEntityRenderer<BlockEntityModu
             blockEntity.clientPrevFramePartialTick = partialTick;
             blockEntity.clientPrevFrameAge = blockEntity.clientAge;
 
-            Quaterniond current = blockEntity.getCurrentAction().aim();
-            Quaterniond last = blockEntity.getLastAction().aim();
+            Aim current = blockEntity.getCurrentAim();
+            Aim last = blockEntity.getLastAim();
 
-            Quaterniond partial = new Quaterniond(current);
+            Aim partial = new Aim(0, 0).set(last);
 
-            if(blockEntity.deltaAngle > 0) {
+            if(!blockEntity.isAligned()) {
                 //Quaterniond partial = last.slerp(current, partialTick, new Quaterniond());
-                partial = QuaterniondExtensionsKt.step(last, current, blockEntity.deltaAngle * step, new Quaterniond());
-                blockEntity.setLastAction(new Quaterniond(partial));
+                partial.stepPerAxis(current, blockEntity.deltaAnglePitch * step, blockEntity.deltaAngleYaw * step, partial);
+                blockEntity.setLastAim(new Aim(0,0).set(partial));
             }
 
-            partial.y = -partial.y;
-            partial.w = -partial.w;
+            /*partial.y = -partial.y;
+            partial.w = -partial.w;*/
 
             poseStack.push();
             poseStack.translate(0.5, 0.5, 0.5);
             poseStack.multiply(y180);
-            poseStack.multiply(new Quaternionf().set(partial));
+            poseStack.multiply(new Quaternionf().set(partial.toQuaternion()));
             MinecraftClient.getInstance().getItemRenderer().renderItem(displayStack, ModelTransformationMode.FIXED, packedLight, packedOverlay, poseStack, bufferSource, blockEntity.getWorld(), 0);
             poseStack.pop();
         }

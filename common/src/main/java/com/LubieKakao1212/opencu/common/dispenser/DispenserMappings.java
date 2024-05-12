@@ -58,8 +58,7 @@ public abstract class DispenserMappings {
         for(MappingRedirection redirector : redirections) {
             redirector.get(stack).ifPresent((i) -> item[0] = i);
         }
-        DispenseEntry mapping = mappings.getOrDefault(item[0], getDefaultEntry());
-        return mapping;
+        return mappings.getOrDefault(item[0], getDefaultEntry());
     }
 
     public abstract void init();

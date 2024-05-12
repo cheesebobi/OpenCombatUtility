@@ -66,7 +66,8 @@ public class DispenserPeripheral implements IPeripheral {
 
     @LuaFunction
     public final double aimingStatus() {
-        return target.aimingStatus();
+        //TODO restore
+        return 0;
     }
 
     @LuaFunction
