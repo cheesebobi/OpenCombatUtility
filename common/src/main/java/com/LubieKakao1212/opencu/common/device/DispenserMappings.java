@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.common.dispenser;
+package com.LubieKakao1212.opencu.common.device;
 
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import net.minecraft.block.Block;

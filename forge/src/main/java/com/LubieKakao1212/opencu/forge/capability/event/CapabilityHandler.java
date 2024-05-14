@@ -1,7 +1,7 @@
 package com.LubieKakao1212.opencu.forge.capability.event;
 
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
-import com.LubieKakao1212.opencu.common.peripheral.DispenserPeripheral;
+import com.LubieKakao1212.opencu.common.peripheral.ModularFramePeripheral;
 import com.LubieKakao1212.opencu.common.peripheral.RepulsorPeripheral;
 import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityModularFrameImpl;
 import com.LubieKakao1212.opencu.forge.block.entity.BlockEntityRepulsorImpl;
@@ -29,7 +29,7 @@ public class CapabilityHandler {
 
         if(event.getObject() instanceof BlockEntityModularFrameImpl) {
             BlockEntityModularFrameImpl dispenser = (BlockEntityModularFrameImpl) event.getObject();
-            event.addCapability(new Identifier(OpenCUModCommon.MODID, "peripheral"), new PeripheralCapabilityProvider(() -> new DispenserPeripheral(dispenser)));
+            event.addCapability(new Identifier(OpenCUModCommon.MODID, "peripheral"), new PeripheralCapabilityProvider(() -> new ModularFramePeripheral(dispenser)));
         }
 
     }

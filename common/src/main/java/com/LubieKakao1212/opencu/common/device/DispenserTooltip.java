@@ -1,4 +1,4 @@
-package com.LubieKakao1212.opencu.common.dispenser;
+package com.LubieKakao1212.opencu.common.device;
 
 import com.LubieKakao1212.opencu.PlatformUtil;
 import net.minecraft.client.item.TooltipContext;
@@ -9,10 +9,15 @@ import java.util.List;
 
 public class DispenserTooltip {
 
+    private static final String degPerTickKey = "info.opencu.generic.dt";
+    private static final String instantKey = "§aInstant";
+
+    private static final String speedKey = "info.opencu.frame.speed";
+    private static final String pitchSuffix = ".pitch";
+    private static final String yawSuffix = ".yaw";
+
     private static final String forceKey = "info.opencu.dispenser.force";
-    private static final String speedKey = "info.opencu.dispenser.speed";
     private static final String spreadKey = "info.opencu.dispenser.spread";
-    private static final String instantSuffix = ".instant";
     private static final String constantSuffix = ".constant";
     private static final String configurableSuffix = ".configurable";
 
@@ -24,13 +29,20 @@ public class DispenserTooltip {
             return;
         }
 
-        if (dis.getAlignmentSpeed() >= (180 - 0.1)) {
-            tooltip.add(Text.translatable(speedKey + instantSuffix));
+        tooltip.add(getSpeed(dis.getPitchAlignmentSpeed(), pitchSuffix));
+        tooltip.add(getSpeed(dis.getYawAlignmentSpeed(), yawSuffix));
+
+        /*tooltip.add(getProperty(false, spreadKey));
+        tooltip.add(getProperty(false, forceKey));*/
+    }
+
+    private static Text getSpeed(double value, String suffix) {
+        var text = Text.translatable(speedKey + suffix);
+        if (value >= (180 - 0.1)) {
+            return text.append(Text.translatable(instantKey));
         } else {
-            tooltip.add(Text.translatable(speedKey, dis.getAlignmentSpeed()));
+            return text.append(Text.translatable(degPerTickKey, value));
         }
-        tooltip.add(getProperty(dis.hasConfigurableSpread(), spreadKey, dis.getMinSpread(), dis.getMaxSpread()));
-        tooltip.add(getProperty(dis.hasConfigurableForce(), forceKey, dis.getMinForce(), dis.getMaxForce()));
     }
 
     private static Text getProperty(boolean configurable, String translationKey, double min, double max) {

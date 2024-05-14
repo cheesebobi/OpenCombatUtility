@@ -2,7 +2,6 @@ package com.LubieKakao1212.opencu.common.block.entity.renderer;
 
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.lubiekakao1212.qulib.math.Aim;
-import com.lubiekakao1212.qulib.math.extensions.QuaterniondExtensionsKt;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -10,10 +9,8 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Direction;
 import org.joml.Quaterniond;
 import org.joml.Quaternionf;
-import org.joml.Vector3d;
 
 public class RendererModularFrame implements BlockEntityRenderer<BlockEntityModularFrame> {
 
@@ -33,7 +30,7 @@ public class RendererModularFrame implements BlockEntityRenderer<BlockEntityModu
     public void render(BlockEntityModularFrame blockEntity, float partialTick, MatrixStack poseStack, VertexConsumerProvider bufferSource, int packedLight, int packedOverlay) {
         //super.render(te, x, y, z, partialTicks, destroyStage, alpha);
 
-        ItemStack displayStack = blockEntity.getCurrentDispenserItem();
+        ItemStack displayStack = blockEntity.getCurrentDeviceItem();
         if(displayStack != null && !displayStack.isEmpty()) {
 
             float step = partialTick;

@@ -6,8 +6,11 @@
   "item.opencu.dispenser_tier2": "§eDispenser(Tier2)",
   "item.opencu.dispenser_tier3": "§bDispenser(Tier3)",
 
-  "info.opencu.dispenser.speed": "Alignment Speed: %s°/t",
-  "info.opencu.dispenser.speed.instant": "Alignment Speed: §aInstant",
+  "info.opencu.generic.dt": "%s°/t",
+  "info.opencu.generic.instant": "§aInstant",
+
+  "info.opencu.frame.speed.pitch": "Alignment Speed (pitch): ",
+  "info.opencu.frame.speed.yaw": "Alignment Speed (yaw): ",
 
   "info.opencu.dispenser.force.constant": "Constant Force: %.1f",
   "info.opencu.dispenser.force.configurable": "Configurable Force: %.1f-%.1f",

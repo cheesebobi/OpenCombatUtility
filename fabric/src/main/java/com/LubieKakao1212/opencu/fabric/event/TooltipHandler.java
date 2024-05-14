@@ -1,12 +1,11 @@
 package com.LubieKakao1212.opencu.fabric.event;
 
-import com.LubieKakao1212.opencu.common.dispenser.DispenserTooltip;
+import com.LubieKakao1212.opencu.common.device.DispenserTooltip;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-
-import java.util.List;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 
 public class TooltipHandler {
 

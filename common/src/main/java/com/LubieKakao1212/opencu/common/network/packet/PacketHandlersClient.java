@@ -61,7 +61,7 @@ public class PacketHandlersClient {
         BlockEntity te = level.getBlockEntity(packet.position());
 
         if(te instanceof BlockEntityModularFrame) {
-            ((BlockEntityModularFrame) te).setCurrentDispenserItem(packet.newDispenser());
+            ((BlockEntityModularFrame) te).setCurrentDeviceItem(packet.newDispenser());
         }
     }
 

@@ -2,10 +2,10 @@ package com.LubieKakao1212.opencu.forge.event;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
-import com.LubieKakao1212.opencu.common.dispenser.DispenserConfigurable;
-import com.LubieKakao1212.opencu.common.dispenser.DispenserConstant;
-import com.LubieKakao1212.opencu.common.dispenser.DispenserMappings;
-import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.common.device.DispenserConfigurable;
+import com.LubieKakao1212.opencu.common.device.DispenserConstant;
+import com.LubieKakao1212.opencu.common.device.DispenserMappings;
+import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.forge.capability.provider.DispenserProvider;
 import com.LubieKakao1212.opencu.registry.CUDispensers;
 import com.LubieKakao1212.opencu.registry.forge.CUItems;
@@ -102,7 +102,7 @@ public class CapabilityHandler {
                     alignmentSpeed = dispenserTag.getDouble("Speed");
                 }
 
-                IDispenser dispenser;
+                IFramedDevice dispenser;
 
                 //TODO Energy
                 if(configurable) {

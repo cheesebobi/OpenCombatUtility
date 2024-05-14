@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.fabric.apilookup;
 
-import com.LubieKakao1212.opencu.common.peripheral.DispenserPeripheral;
+import com.LubieKakao1212.opencu.common.peripheral.ModularFramePeripheral;
 import com.LubieKakao1212.opencu.common.peripheral.RepulsorPeripheral;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import com.LubieKakao1212.opencu.registry.fabric.CUBlockEntitiesImpl;
@@ -10,6 +10,6 @@ public class APILookupPeripheral {
 
     public static void register() {
         PeripheralLookup.get().registerForBlockEntity((be, dir) -> new RepulsorPeripheral(be), CUBlockEntitiesImpl.repulsor());
-        PeripheralLookup.get().registerForBlockEntity((be, dir) -> new DispenserPeripheral(be), CUBlockEntities.modularFrame());
+        PeripheralLookup.get().registerForBlockEntity((be, dir) -> new ModularFramePeripheral(be), CUBlockEntities.modularFrame());
     }
 }

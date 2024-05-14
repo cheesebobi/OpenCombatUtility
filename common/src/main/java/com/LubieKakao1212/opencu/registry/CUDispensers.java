@@ -1,8 +1,8 @@
 package com.LubieKakao1212.opencu.registry;
 
-import com.LubieKakao1212.opencu.common.dispenser.DispenserMappings;
-import com.LubieKakao1212.opencu.common.dispenser.vanilla.VanillaDispenserMappings;
-import com.LubieKakao1212.opencu.common.dispenser.vanilla.VanillaDropperMappings;
+import com.LubieKakao1212.opencu.common.device.DispenserMappings;
+import com.LubieKakao1212.opencu.common.device.vanilla.VanillaDispenserMappings;
+import com.LubieKakao1212.opencu.common.device.vanilla.VanillaDropperMappings;
 import net.minecraft.util.Identifier;
 
 import java.util.HashMap;

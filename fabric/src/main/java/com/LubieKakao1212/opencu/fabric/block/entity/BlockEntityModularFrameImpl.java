@@ -107,7 +107,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
     }
 
     @Override
-    protected ItemStack getCurrentDispenserItemServer() {
+    protected ItemStack getCurrentDeviceItemServer() {
         return inventory.getStack(0);
     }
 

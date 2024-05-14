@@ -1,9 +1,11 @@
 package com.LubieKakao1212.opencu.common.block.entity;
 
 import com.LubieKakao1212.opencu.NetworkUtil;
-import com.LubieKakao1212.opencu.common.dispenser.DispenseResult;
-import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.common.device.DispenseResult;
+import com.LubieKakao1212.opencu.common.device.IFramedDevice;
+import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
+import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
@@ -41,25 +43,32 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
     private Aim currentAim;
     private Aim targetAim;
+    private boolean lockedOn;
+    //Client
+    private Aim lastAim = null;
 
-    private IDispenser currentDispenser;
+
+    private IFramedDevice currentDevice;
+    private IDeviceState currentDeviceState;
+    //Client
+    private ItemStack currentDeviceItem = null;
 
     private long initialiseDelay = 3;
 
     private boolean isInitialised = false;
 
-    private ItemStack currentDispenserItem = null;
-
-    private boolean lockedOn;
-
-    private Aim lastAim = null;
-
+    //Client
     public long clientAge;
+    //Client
     public long clientPrevFrameAge;
+    //Client
     public float clientPrevFramePartialTick;
 
+    //Client
     public double deltaAnglePitch;
+    //Client
     public double deltaAngleYaw;
+
 
     public BlockEntityModularFrame(BlockPos pos, BlockState blockState) {
         super(CUBlockEntities.modularFrame(), pos, blockState);
@@ -70,13 +79,18 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     }
 
     protected void updateDispenser() {
-        ItemStack dispenserStack = getCurrentDispenserItem();
-        currentDispenser = PlatformUtil.getDispenser(dispenserStack);
+        ItemStack dispenserStack = getCurrentDeviceItem();
+        currentDevice = PlatformUtil.getDispenser(dispenserStack);
+        if(currentDevice != null) {
+            currentDeviceState = currentDevice.getNewState();
+        } else {
+            currentDeviceState = null;
+        }
+
         if(world != null && !world.isClient) {
             BlockPos pos = getPos();
             NetworkUtil.sendToAllTracking(new PacketClientUpdateDispenser(pos, dispenserStack), (ServerWorld) world, pos);
-        } else
-        {
+        } else {
             //TODO Mark for update
         }
     }
@@ -94,11 +108,11 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                 dispenser.updateDispenser();
                 dispenser.sendDispenserAimUpdate();
             }
-            if(dispenser.currentDispenser != null) {
+            if(dispenser.currentDevice != null) {
                 if(!dispenser.currentAim.equals(dispenser.targetAim, aimIdenticalityEpsilon)) {
                     dispenser.currentAim.stepPerAxis(dispenser.targetAim,
-                            dispenser.currentDispenser.getAlignmentSpeed() * Constants.degToRad * 0.25,
-                            dispenser.currentDispenser.getAlignmentSpeed() * Constants.degToRad,
+                            dispenser.currentDevice.getPitchAlignmentSpeed() * Constants.degToRad,
+                            dispenser.currentDevice.getYawAlignmentSpeed() * Constants.degToRad,
                             dispenser.currentAim);
 
                     dispenser.sendDispenserAimUpdate();
@@ -141,26 +155,6 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         return targetAim.equals(currentAim, aimIdenticalityEpsilon);
     }
 
-    /*public double aimingStatus() {
-        return smallAngle(targetAim, currentAction.aim());
-    }*/
-
-    public String setForce(double force) {
-        return currentDispenser.trySetForce(force);
-    }
-
-    public String setSpread(double spread) {
-        return currentDispenser.trySetSpread(spread);
-    }
-
-    public double getMinSpread() {
-        return currentDispenser.getMaxSpread();
-    }
-
-    public double getMaxSpread() {
-        return currentDispenser.getMaxSpread();
-    }
-
     public void setTargetAim(Aim aim) {
         targetAim = aim;
         markDirty();
@@ -168,11 +162,11 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
     private void shoot(Aim action) {
         assert world != null;
-        if(currentDispenser != null) {
+        if(currentDevice != null) {
             try(ActionContext ctx = getNewContext()) {
                 var ammo = useAmmo(ctx);
                 if (ammo != null) {
-                    DispenseResult result = currentDispenser.shoot(this, world, ammo, pos, action);
+                    DispenseResult result = currentDevice.activate(this, currentDeviceState, world, ammo, pos, action);
                     if(result.wasSuccessful()) {
                         var leftover = result.leftover();
                         if(!(leftover = handleLeftover(ctx, leftover)).isEmpty()){
@@ -195,7 +189,6 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
      */
     public abstract Slot createSlot(int idx, int x, int y);
 
-
     public boolean isUsableBy(PlayerEntity player) {
         assert world != null;
         return player.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) <= 64D && world.getBlockEntity(pos) == this;
@@ -207,7 +200,8 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         compound.putDouble("yaw", currentAim.getYaw());
         compound.putDouble("targetPitch", targetAim.getYaw());
         compound.putDouble("targetYaw", targetAim.getYaw());
-        compound.put("dispenser", currentDispenser != null ? currentDispenser.serialize() : new NbtCompound());
+
+        compound.put("dispenser", currentDevice != null ? currentDevice.getNewState().serialize() : new NbtCompound());
 
         super.writeNbt(compound);
     }
@@ -224,13 +218,13 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         setTargetAim(new Aim(targetPitch, targetYaw));
         currentAim = new Aim(pitch, yaw);
 
-        if(currentDispenser != null && compound.contains("dispenser", NbtElement.COMPOUND_TYPE)) {
-            currentDispenser.deserialize(compound.getCompound("dispenser"));
+        if(currentDevice != null && compound.contains("dispenser", NbtElement.COMPOUND_TYPE)) {
+            currentDevice.getNewState().deserialize(compound.getCompound("dispenser"));
         }
     }
 
     public void sendDispenserUpdateTo(ServerPlayerEntity player) {
-        NetworkUtil.sendToPlayer(new PacketClientUpdateDispenser(pos, getCurrentDispenserItem()), player);
+        NetworkUtil.sendToPlayer(new PacketClientUpdateDispenser(pos, getCurrentDeviceItem()), player);
         NetworkUtil.sendToPlayer(PacketClientUpdateDispenserAim.create(pos, currentAim, true), player);
     }
 
@@ -246,15 +240,19 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         return new ModularFrameMenu(containerId, inventory, this::createSlot, ScreenHandlerContext.create(world, pos));
     }
 
-    public ItemStack getCurrentDispenserItem() {
+    public ItemStack getCurrentDeviceItem() {
         assert this.world != null;
         if(this.world.isClient) {
-            return currentDispenserItem;
+            return currentDeviceItem;
         }
-        return getCurrentDispenserItemServer();
+        return getCurrentDeviceItemServer();
     }
 
-    protected abstract ItemStack getCurrentDispenserItemServer();
+    public IDeviceApi getCurrentDeviceApi() {
+        return currentDevice.getNewState().getApi();
+    }
+
+    protected abstract ItemStack getCurrentDeviceItemServer();
 
     //region Clinet Methods
 
@@ -294,14 +292,14 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     /**
      * Client method
      */
-    public void setCurrentDispenserItem(ItemStack currentDispenserItem) {
-        this.currentDispenserItem = currentDispenserItem;
+    public void setCurrentDeviceItem(ItemStack currentDeviceItem) {
+        this.currentDeviceItem = currentDeviceItem;
     }
 
     /**
      * Client method
      */
-    private void requestDispenserUpdate() {
+    public void requestDispenserUpdate() {
         NetworkUtil.sendToServer(new PacketServerRequestDispenserUpdate(pos));
     }
     //endregion

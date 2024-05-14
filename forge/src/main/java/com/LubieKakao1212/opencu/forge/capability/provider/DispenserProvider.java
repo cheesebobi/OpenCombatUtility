@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.forge.capability.provider;
 
-import com.LubieKakao1212.opencu.common.dispenser.IDispenser;
+import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.forge.registry.CUCapabilities;
 import net.minecraft.util.math.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -12,9 +12,9 @@ import javax.annotation.Nullable;
 
 public class DispenserProvider implements ICapabilityProvider {
 
-    private LazyOptional<IDispenser> dispenser;
+    private LazyOptional<IFramedDevice> dispenser;
 
-    public DispenserProvider(IDispenser dispenser) {
+    public DispenserProvider(IFramedDevice dispenser) {
         this.dispenser = LazyOptional.of(() -> dispenser);
     }
 

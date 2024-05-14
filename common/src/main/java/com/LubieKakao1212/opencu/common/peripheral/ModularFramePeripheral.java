@@ -1,20 +1,23 @@
 package com.LubieKakao1212.opencu.common.peripheral;
 
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
 import com.LubieKakao1212.opencu.registry.CUIds;
-import dan200.computercraft.api.lua.LuaFunction;
+import dan200.computercraft.api.lua.*;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DispenserPeripheral implements IPeripheral {
+public class ModularFramePeripheral implements IPeripheral {
 
     public static final String TYPE = CUIds.MODULAR_FRAME.toString();
 
     private BlockEntityModularFrame target;
 
-    public DispenserPeripheral(BlockEntityModularFrame dispenser) {
-        this.target = dispenser;
+    public ModularFramePeripheral(BlockEntityModularFrame modularFrame) {
+        this.target = modularFrame;
     }
 
     /**
@@ -40,8 +43,8 @@ public class DispenserPeripheral implements IPeripheral {
      */
     @Override
     public boolean equals(@Nullable IPeripheral other) {
-        if(other != null && other instanceof DispenserPeripheral) {
-            DispenserPeripheral otherDispenser = ((DispenserPeripheral) other);
+        if(other != null && other instanceof ModularFramePeripheral) {
+            ModularFramePeripheral otherDispenser = ((ModularFramePeripheral) other);
             return otherDispenser.target.getPos().equals(target.getPos());
         }
         return false;
@@ -65,41 +68,8 @@ public class DispenserPeripheral implements IPeripheral {
     }
 
     @LuaFunction
-    public final double aimingStatus() {
-        //TODO restore
-        return 0;
-    }
-
-    @LuaFunction
-    public final Object[] setForce(double force) {
-        String message = target.setForce(force);
-        if(message != null) {
-            return new Object[] { false, message };
-        }
-        else {
-            return new Object[] { true };
-        }
-    }
-
-    @LuaFunction
-    public final Object[] setSpread(double force) {
-        String message = target.setSpread(force);
-        if(message != null) {
-            return new Object[] { false, message };
-        }
-        else {
-            return new Object[] { true };
-        }
-    }
-
-    @LuaFunction
-    public final double getMinSpread() {
-        return target.getMinSpread();
-    }
-
-    @LuaFunction
-    public final double getMaxSpread() {
-        return target.getMaxSpread();
+    public final IDeviceApi getDeviceApi() {
+        return target.getCurrentDeviceApi();
     }
 
     @LuaFunction
@@ -107,5 +77,4 @@ public class DispenserPeripheral implements IPeripheral {
         target.dispense();
         return true;
     }
-
 }

@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.forge.event;
 
-import com.LubieKakao1212.opencu.common.dispenser.DispenserTooltip;
+import com.LubieKakao1212.opencu.common.device.DispenserTooltip;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
