@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.fabric.block;
 
+import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.fabric.block.entity.BlockEntityModularFrameImpl;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import net.minecraft.block.*;
@@ -8,6 +9,7 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -29,6 +31,13 @@ public class BlockModularFrame extends BlockWithEntity {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if(!world.isClient) {
+            //region debud
+            if(player.isSneaking()) {
+                var be = (BlockEntityModularFrameImpl)world.getBlockEntity(pos);
+                player.sendMessage(Text.of(be.exposedEnegyStorage.getAmount() + "/" + OpenCUConfigCommon.capacitor().energyCapacity()));
+            }
+            //endregion
+
             NamedScreenHandlerFactory factory = state.createScreenHandlerFactory(world, pos);
 
             if(factory != null) {

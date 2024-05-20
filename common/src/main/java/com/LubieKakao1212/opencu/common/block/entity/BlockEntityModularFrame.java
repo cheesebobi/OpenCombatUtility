@@ -1,11 +1,12 @@
 package com.LubieKakao1212.opencu.common.block.entity;
 
 import com.LubieKakao1212.opencu.NetworkUtil;
-import com.LubieKakao1212.opencu.common.device.DispenseResult;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
 import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
+import com.LubieKakao1212.opencu.common.transaction.IEnergyContext;
+import com.LubieKakao1212.opencu.common.transaction.IScopedContext;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
@@ -28,7 +29,6 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
-import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
@@ -160,11 +160,11 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         markDirty();
     }
 
-    private void shoot(Aim action) {
+    private void shoot(Aim aim) {
         assert world != null;
         if(currentDevice != null) {
-            try(ActionContext ctx = getNewContext()) {
-                var ammo = useAmmo(ctx);
+            try(IModularFrameContext ctx = getNewContext()) {
+                /*var ammo = useAmmo(ctx);
                 if (ammo != null) {
                     DispenseResult result = currentDevice.activate(this, currentDeviceState, world, ammo, pos, action);
                     if(result.wasSuccessful()) {
@@ -174,14 +174,13 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                         }
                         ctx.commit();
                     }
-                }
+                }*/
+                currentDevice.activate(this, currentDeviceState, world, pos, aim, ctx);
             }
         }
     }
 
-    protected abstract ActionContext getNewContext();
-    protected abstract ItemStack useAmmo(ActionContext ctx);
-    protected abstract ItemStack handleLeftover(ActionContext ctx, ItemStack leftover);
+    protected abstract IModularFrameContext getNewContext();
 
     /**
      * Creates a slot for gui
@@ -304,10 +303,12 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     }
     //endregion
 
-    public interface ActionContext extends AutoCloseable {
-        @Override
-        void close();
+    public interface IModularFrameContext extends IScopedContext, IEnergyContext {
 
-        void commit();
+        ItemStack useAmmoFirst();
+
+        ItemStack useAmmoRandom();
+
+        void handleLeftover(ItemStack stack);
     }
 }

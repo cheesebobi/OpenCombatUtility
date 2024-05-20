@@ -9,7 +9,7 @@ public class DispenserConstant extends ShooterBase {
     private final double constantForce;
     private final double baseEnergy;
 
-    public DispenserConstant(DispenserMappings mappings, float alignmentSpeed, double constantSpread, double constantForce, double baseEnergy) {
+    public DispenserConstant(ShotMappings mappings, float alignmentSpeed, double constantSpread, double constantForce, double baseEnergy) {
         super(mappings, alignmentSpeed);
         this.constantForce = constantForce;
         this.constantSpread = constantSpread;

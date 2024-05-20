@@ -1,8 +1,8 @@
 package com.LubieKakao1212.opencu.common.device.vanilla;
 
 import com.LubieKakao1212.opencu.NetworkUtil;
-import com.LubieKakao1212.opencu.common.device.DispenseEntry;
-import com.LubieKakao1212.opencu.common.device.DispenserMappings;
+import com.LubieKakao1212.opencu.common.device.ShotEntry;
+import com.LubieKakao1212.opencu.common.device.ShotMappings;
 import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -20,22 +20,24 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import java.util.Optional;
 
-public class VanillaDispenserMappings extends DispenserMappings {
+public class VanillaDispenserMappings extends ShotMappings {
 
     public void init() {
         //region Mappings
         EntityMapping arrowMapping = (stack, level) -> {
             //TODO find a way to stop using bob
             LivingEntity bob = new PigEntity(EntityType.PIG, level);
+            bob.setCustomName(Text.of("Bob"));
             PersistentProjectileEntity arrow = ((ArrowItem)stack.getItem()).createArrow(level, stack, bob);
             arrow.setOwner(null);
             arrow.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
             return arrow;
         };
-        register(Items.ARROW, new DispenseEntry((stack, level) -> {
+        register(Items.ARROW, new ShotEntry((stack, level) -> {
             Entity result = arrowMapping.get(stack, level);
             ArrowEntity arrow = (ArrowEntity)result;
 
@@ -47,15 +49,15 @@ public class VanillaDispenserMappings extends DispenserMappings {
             arrow.readNbt(tag);
             return arrow;
         }, ItemStack.EMPTY, 1., 1., 1.));
-        register(Items.TIPPED_ARROW, new DispenseEntry(arrowMapping, ItemStack.EMPTY, 1.,1., 1.));
+        register(Items.TIPPED_ARROW, new ShotEntry(arrowMapping, ItemStack.EMPTY, 1.,1., 1.));
         //register(Items.SPECTRAL_ARROW, new DispenseEntry(arrowMapping, ItemStack.EMPTY, 1., 1.,1.));
 
-        register(Items.TNT, new DispenseEntry((stack, level) -> {
+        register(Items.TNT, new ShotEntry((stack, level) -> {
             TntEntity tnt = new TntEntity(EntityType.TNT, level);
             return tnt;
         }, ItemStack.EMPTY, 3., 0.5, 1.));
 
-        register(Items.FIRE_CHARGE, new DispenseEntry((stack, level) -> {
+        register(Items.FIRE_CHARGE, new ShotEntry((stack, level) -> {
                 SmallFireballEntity fireball = new SmallFireballEntity(level, 0, 0, 0, 1, 0, 0);
                 fireball.setOwner(null);
                 fireball.powerX = 0;
@@ -76,7 +78,7 @@ public class VanillaDispenserMappings extends DispenserMappings {
                 NetworkUtil.enqueueEntityPacket(new PacketClientUpdateFireball(fireball.getId(), (float)fireball.powerX, (float)fireball.powerY, (float)fireball.powerZ), fireball, 1);
             }));
 
-        DispenseEntry potionMapping = new DispenseEntry((stack, level) -> {
+        ShotEntry potionMapping = new ShotEntry((stack, level) -> {
             PotionEntity potion = new PotionEntity(EntityType.POTION, level);
             potion.setItem(stack);
             return potion;
@@ -85,12 +87,12 @@ public class VanillaDispenserMappings extends DispenserMappings {
         register(Items.SPLASH_POTION, potionMapping);
         register(Items.LINGERING_POTION, potionMapping);
 
-        register(Items.EXPERIENCE_BOTTLE, new DispenseEntry((stack, level) -> {
+        register(Items.EXPERIENCE_BOTTLE, new ShotEntry((stack, level) -> {
             ExperienceBottleEntity bottle = new ExperienceBottleEntity(EntityType.EXPERIENCE_BOTTLE, level);
             return bottle;
         }, ItemStack.EMPTY, 3., 1.5, 1.));
 
-        register(Items.FIREWORK_ROCKET, new DispenseEntry((stack, level) -> {
+        register(Items.FIREWORK_ROCKET, new ShotEntry((stack, level) -> {
             FireworkRocketEntity firework = new FireworkRocketEntity(level, 0, 0, 0, stack);
             //TODO FireworkRocketEntity firework = new FireworkRocketEntity(level, stack, 0, 0, 0, true);
             return firework;
@@ -110,7 +112,7 @@ public class VanillaDispenserMappings extends DispenserMappings {
     }
 
     @Override
-    protected DispenseEntry getDefaultEntry() {
+    protected ShotEntry getDefaultEntry() {
         return super.getDefaultEntry();
     }
 }

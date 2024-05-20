@@ -91,17 +91,17 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
     }
 
     @Override
-    protected ActionContext getNewContext() {
+    protected IModularFrameContext getNewContext() {
         return new ActionContextImpl();
     }
 
     @Override
-    protected ItemStack useAmmo(ActionContext ctx) {
+    protected ItemStack useAmmo(IModularFrameContext ctx) {
         return null;
     }
 
     @Override
-    protected ItemStack handleLeftover(ActionContext ctx, ItemStack leftover) {
+    protected ItemStack handleLeftover(IModularFrameContext ctx, ItemStack leftover) {
         return ItemStack.EMPTY;
     }
 
@@ -159,7 +159,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         inventoryCapability.invalidate();
     }
 
-    protected class ActionContextImpl implements ActionContext {
+    protected class ActionContextImpl implements IModularFrameContext {
 
         public int slot;
         private boolean commited = false;
@@ -172,9 +172,33 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         }
 
         @Override
+        public void push() {
+
+        }
+
+        @Override
+        public void pop() {
+
+        }
+
+        @Override
         public void commit() {
             commited = true;
         }
 
+        @Override
+        public ItemStack useAmmoFirst() {
+            return null;
+        }
+
+        @Override
+        public ItemStack useAmmoRandom() {
+            return null;
+        }
+
+        @Override
+        public void handleLeftover(ItemStack stack) {
+
+        }
     }
 }

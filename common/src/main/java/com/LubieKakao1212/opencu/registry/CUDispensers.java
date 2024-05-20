@@ -1,6 +1,6 @@
 package com.LubieKakao1212.opencu.registry;
 
-import com.LubieKakao1212.opencu.common.device.DispenserMappings;
+import com.LubieKakao1212.opencu.common.device.ShotMappings;
 import com.LubieKakao1212.opencu.common.device.vanilla.VanillaDispenserMappings;
 import com.LubieKakao1212.opencu.common.device.vanilla.VanillaDropperMappings;
 import net.minecraft.util.Identifier;
@@ -11,10 +11,10 @@ import java.util.Map;
 //TODO Convert to datapack
 public class CUDispensers {
 
-    public static final DispenserMappings VANILLA_DISPENSER = new VanillaDispenserMappings();
-    public static final DispenserMappings VANILLA_DROPPER = new VanillaDropperMappings();
+    public static final ShotMappings VANILLA_DISPENSER = new VanillaDispenserMappings();
+    public static final ShotMappings VANILLA_DROPPER = new VanillaDropperMappings();
 
-    private static final Map<Identifier, DispenserMappings> MAPPINGS = new HashMap<>();
+    private static final Map<Identifier, ShotMappings> MAPPINGS = new HashMap<>();
 
     public static void init() {
         MAPPINGS.clear();
@@ -26,7 +26,7 @@ public class CUDispensers {
         VANILLA_DROPPER.init();
     }
 
-    public static DispenserMappings getDispenser(Identifier identifier) {
+    public static ShotMappings getDispenser(Identifier identifier) {
         return MAPPINGS.get(identifier);
     }
 

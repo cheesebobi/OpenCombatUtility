@@ -4,7 +4,7 @@ import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.device.DispenserConfigurable;
 import com.LubieKakao1212.opencu.common.device.DispenserConstant;
-import com.LubieKakao1212.opencu.common.device.DispenserMappings;
+import com.LubieKakao1212.opencu.common.device.ShotMappings;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.forge.capability.provider.DispenserProvider;
 import com.LubieKakao1212.opencu.registry.CUDispensers;
@@ -70,7 +70,7 @@ public class CapabilityHandler {
 
             Identifier mappingLocation = new Identifier(dispenserTag.getString("Mapping"));
 
-            DispenserMappings mappings = CUDispensers.getDispenser(mappingLocation);//CUDispensers.getRegistry().getValue(mappingLocation);
+            ShotMappings mappings = CUDispensers.getDispenser(mappingLocation);//CUDispensers.getRegistry().getValue(mappingLocation);
 
             if(mappings != null) {
                 boolean configurable = false;

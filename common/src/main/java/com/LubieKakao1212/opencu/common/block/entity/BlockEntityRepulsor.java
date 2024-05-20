@@ -3,6 +3,7 @@ package com.LubieKakao1212.opencu.common.block.entity;
 import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.network.packet.PacketClientRepulsorPulse;
+import com.LubieKakao1212.opencu.common.transaction.IEnergyContext;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import com.LubieKakao1212.opencu.common.pulse.EntityPulseType;
 import com.LubieKakao1212.opencu.common.pulse.PulseData;
@@ -111,24 +112,29 @@ public abstract class BlockEntityRepulsor extends BlockEntity {
         }*/
         //});
 
+        try(var ctx = getNewContext())
+        {
+            if(ctx.useEnergy(energyUsage) == energyUsage) {
+                pulseType.executePulse(world, pulseOrigin, pulseData);
+                ctx.commit();
+            } else {
+              result[0] = new PulseExecutionResult("Not enough energy stored!!!");
+            }
+        }
+
         if(result[0] != null) {
             //Something went wrong during energy calculations
             return result[0];
         }
 
-        pulseType.executePulse(world, pulseOrigin, pulseData);
-        //pulseTicksLeft = pulseTicks;
-
         markDirty();
-
-        /*assert world != null;
-        BlockState state = world.getBlockState(pos);
-        world.updateListeners(pos, state, state, 3);*/
 
         NetworkUtil.sendToAllTracking(new PacketClientRepulsorPulse(pos), (ServerWorld) world, pos);
 
         return new PulseExecutionResult();
     }
+
+    protected abstract IRepulsorContext getNewContext();
 
     @Override
     public void writeNbt(@NotNull NbtCompound compound) {
@@ -189,5 +195,9 @@ public abstract class BlockEntityRepulsor extends BlockEntity {
             this.errorDescription = errorDescription;
             this.wasSuccessfull = false;
         }
+    }
+
+    public interface IRepulsorContext extends IEnergyContext {
+
     }
 }

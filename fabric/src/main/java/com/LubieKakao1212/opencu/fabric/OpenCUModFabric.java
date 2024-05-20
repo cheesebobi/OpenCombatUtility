@@ -4,6 +4,7 @@ import com.LubieKakao1212.opencu.common.gui.ModularFrameScreen;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupPeripheral;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupIDispenser;
+import com.LubieKakao1212.opencu.fabric.apilookup.APILookupRebornEnergy;
 import com.LubieKakao1212.opencu.fabric.event.TooltipHandler;
 import com.LubieKakao1212.opencu.registry.CUDispensers;
 import com.LubieKakao1212.opencu.registry.CUMenu;
@@ -35,6 +36,7 @@ public class OpenCUModFabric implements ModInitializer {
             APILookupPeripheral.register();
         }
 
+        APILookupRebornEnergy.register();
         APILookupIDispenser.init();
         TooltipHandler.init();
 

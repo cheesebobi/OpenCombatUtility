@@ -10,7 +10,7 @@ public class DispenserConfigurable extends ShooterBase {
     private final double maxForce;
     private final double baseEnergy;
 
-    public DispenserConfigurable(DispenserMappings mappings, float alignmentSpeed, double minSpread, double maxSpread, double maxForce, double baseEnergy) {
+    public DispenserConfigurable(ShotMappings mappings, float alignmentSpeed, double minSpread, double maxSpread, double maxForce, double baseEnergy) {
         super(mappings, alignmentSpeed);
         this.minSpread = minSpread;
         this.maxSpread = maxSpread;

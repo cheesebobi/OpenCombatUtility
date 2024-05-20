@@ -1,10 +1,22 @@
+>> #### Implemented Reborn Energy on fabric
+> #### Common
+> - Removed ArchitecturyAPI from dependencies
+> - Restored Energy logic for both ModularFrame Devices and Repulsor
+> - Added IContext, IEnergyContext, IScopedContext, IRepulsorContext, IModularFrameContext
+> - Moved ammo handling from TileEntityModularFrame to Device instances via IModularFrameContext
+> #### Fabric
+> - Added TeamRebornEnergy dependency
+> - Implemented energy storage and handling in ModularFrame and Repulsor
+> #### Forge
+> Nothing, still broken
+>> 
+
 >> #### Added COMMITS.md
 >
 > Added COMMITS.md for more involved commit descriptions in the future 
->> 
+>> 89fc7cc3 [14.05.2024 at 17:16]
 
-
-> > #### ModularFrame rework pt2 - Device/State/API separation
+>> #### ModularFrame rework pt2 - Device/State/API separation
 > #### Common
 > - Renamed IDispenser to IFramedDevice  
 > - Removed state related methods from IFramedDevice and introduced IDeviceState
