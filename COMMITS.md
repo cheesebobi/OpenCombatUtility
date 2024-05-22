@@ -1,3 +1,15 @@
+>> #### Reworked Contexts (again) + Implemented TrackerBase + Added AimTool Item
+> #### Common
+> - Made Contexts more modular
+> - Added TrackerBase for ModularFrame
+> - Added methods aimAt() and aimAtWorld() to BlockEntityModularFrame (not yet present in CC api)
+> - Added AimTool Item
+> #### Fabric
+> - Added AimTool registration
+> #### Forge
+> Nothing, still broken
+>>
+
 >> #### Implemented Reborn Energy on fabric
 > #### Common
 > - Removed ArchitecturyAPI from dependencies
@@ -9,7 +21,7 @@
 > - Implemented energy storage and handling in ModularFrame and Repulsor
 > #### Forge
 > Nothing, still broken
->> 
+>> 6f4e722b [20.05.2024 at 21:31]
 
 >> #### Added COMMITS.md
 >

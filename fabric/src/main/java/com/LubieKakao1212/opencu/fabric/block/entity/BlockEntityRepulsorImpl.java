@@ -2,6 +2,8 @@ package com.LubieKakao1212.opencu.fabric.block.entity;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityRepulsor;
+import com.LubieKakao1212.opencu.fabric.transaction.RebornEnergyContext;
+import com.LubieKakao1212.opencu.fabric.transaction.SimpleContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -33,32 +35,11 @@ public class BlockEntityRepulsorImpl extends BlockEntityRepulsor {
     }
 
     @Override
-    protected IRepulsorContext getNewContext() {
-        return new TransactionRepulsorContext();
-    }
-
-    private class TransactionRepulsorContext implements  IRepulsorContext {
-
-        private Transaction transaction;
-
-        public TransactionRepulsorContext() {
-            this.transaction = Transaction.openOuter();
-        }
-
-        @Override
-        public void commit() {
-            transaction.commit();
-        }
-
-        @Override
-        public void close() {
-            transaction.close();
-        }
-
-        @Override
-        public long useEnergy(long amount) {
-            return energyStorage.extract(amount, transaction);
-        }
+    protected RepulsorContext getNewContext() {
+        return new RepulsorContext(
+                new SimpleContext(),
+                new RebornEnergyContext(energyStorage)
+        );
     }
 
 }

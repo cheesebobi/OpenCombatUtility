@@ -1,7 +1,7 @@
 package com.LubieKakao1212.opencu.common.transaction;
 
-public interface IEnergyContext extends IContext {
+public interface IEnergyContext {
 
-    long useEnergy(long amount);
+    long useEnergy(long amount, IContext ctx);
 
 }

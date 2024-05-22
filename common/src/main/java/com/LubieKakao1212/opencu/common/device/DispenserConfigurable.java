@@ -22,4 +22,5 @@ public class DispenserConfigurable extends ShooterBase {
     public IDeviceState getNewState() {
         return new ShooterDeviceState(maxForce, minSpread, baseEnergy);
     }
+
 }

@@ -10,9 +10,10 @@ public interface IFramedDevice {
 
     /**
      * @param ctx used to fetch ammo, use energy, and add leftovers
-     * @return energy usage multiplier
      */
-    void activate(BlockEntityModularFrame shooter, IDeviceState state, World level, BlockPos pos, Aim aim, BlockEntityModularFrame.IModularFrameContext ctx);
+    void activate(BlockEntityModularFrame shooter, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx);
+
+    void tick(BlockEntityModularFrame shooter, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx);
 
     /*
      * @param spread spread value that would be set
@@ -26,10 +27,10 @@ public interface IFramedDevice {
 
     String trySetForce(double force);*/
 
-    //Rad angle per tick
+    //Deg angle per tick
     double getPitchAlignmentSpeed();
 
-    //Rad angle per tick
+    //Deg angle per tick
     double getYawAlignmentSpeed();
 
     IDeviceState getNewState();

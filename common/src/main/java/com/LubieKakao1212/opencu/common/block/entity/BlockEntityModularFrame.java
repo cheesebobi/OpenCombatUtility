@@ -5,7 +5,9 @@ import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
 import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
+import com.LubieKakao1212.opencu.common.transaction.IAmmoContext;
 import com.LubieKakao1212.opencu.common.transaction.IEnergyContext;
+import com.LubieKakao1212.opencu.common.transaction.ILeftoverItemContext;
 import com.LubieKakao1212.opencu.common.transaction.IScopedContext;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
@@ -15,6 +17,7 @@ import com.LubieKakao1212.opencu.PlatformUtil;
 import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.Constants;
 import com.lubiekakao1212.qulib.math.MathUtilKt;
+import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,7 +35,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2d;
+import org.joml.Vector3d;
 
+import java.io.Closeable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class BlockEntityModularFrame extends BlockEntity implements NamedScreenHandlerFactory {
@@ -46,7 +52,6 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     private boolean lockedOn;
     //Client
     private Aim lastAim = null;
-
 
     private IFramedDevice currentDevice;
     private IDeviceState currentDeviceState;
@@ -68,7 +73,6 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     public double deltaAnglePitch;
     //Client
     public double deltaAngleYaw;
-
 
     public BlockEntityModularFrame(BlockPos pos, BlockState blockState) {
         super(CUBlockEntities.modularFrame(), pos, blockState);
@@ -101,45 +105,53 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                 (ServerWorld) world, pos);
     }
 
-    public static <T> void tick(World level, BlockPos pos, BlockState state, T blockEntity) {
-        BlockEntityModularFrame dispenser = (BlockEntityModularFrame)blockEntity;
-        if (!level.isClient) {
-            if(dispenser.initialiseDelay-- == 0) {
-                dispenser.updateDispenser();
-                dispenser.sendDispenserAimUpdate();
+    public static <T> void tick(World world, BlockPos pos, BlockState state, T blockEntity) {
+        BlockEntityModularFrame be = (BlockEntityModularFrame)blockEntity;
+        if (!world.isClient) {
+            if(be.initialiseDelay-- == 0) {
+                be.updateDispenser();
+                be.sendDispenserAimUpdate();
             }
-            if(dispenser.currentDevice != null) {
-                if(!dispenser.currentAim.equals(dispenser.targetAim, aimIdenticalityEpsilon)) {
-                    dispenser.currentAim.stepPerAxis(dispenser.targetAim,
-                            dispenser.currentDevice.getPitchAlignmentSpeed() * Constants.degToRad,
-                            dispenser.currentDevice.getYawAlignmentSpeed() * Constants.degToRad,
-                            dispenser.currentAim);
+            if(be.currentDevice != null) {
+                var device = be.currentDevice;
+                var deviceState = be.currentDeviceState;
+                var currentAim = be.currentAim;
+                var targetAim = be.targetAim;
+                if(!currentAim.equals(targetAim, aimIdenticalityEpsilon)) {
+                    currentAim.stepPerAxis(targetAim,
+                            device.getPitchAlignmentSpeed() * Constants.degToRad,
+                            device.getYawAlignmentSpeed() * Constants.degToRad,
+                            be.currentAim);
 
-                    dispenser.sendDispenserAimUpdate();
-                    dispenser.markDirty();
+                    be.sendDispenserAimUpdate();
+                    be.markDirty();
                 } else {
-                    dispenser.setTargetAim(new Aim(dispenser.targetAim.getPitch(), dispenser.targetAim.getYaw()));
-                    if(!dispenser.lockedOn)
+                    be.setTargetAim(new Aim(targetAim.getPitch(), targetAim.getYaw()));
+                    if(!be.lockedOn)
                     {
-                        dispenser.markDirty();
-                        dispenser.sendDispenserAimUpdate();
-                        dispenser.lockedOn = true;
+                        be.markDirty();
+                        be.sendDispenserAimUpdate();
+                        be.lockedOn = true;
                     }
                 }
+
+                try(var ctx = be.getNewContext()) {
+                    device.tick(be, deviceState, world, pos, currentAim, ctx);
+                }
             }
-            while(dispenser.actionsToPerform.get() > 0)
+            while(be.actionsToPerform.get() > 0)
             {
-                dispenser.actionsToPerform.getAndDecrement();
-                dispenser.shoot(dispenser.currentAim);
+                be.actionsToPerform.getAndDecrement();
+                be.shoot(be.currentAim);
             }
         }else
         {
-            if(!dispenser.isInitialised) {
-                dispenser.isInitialised = true;
-                dispenser.setCurrentAim(dispenser.targetAim);
-                dispenser.requestDispenserUpdate();
+            if(!be.isInitialised) {
+                be.isInitialised = true;
+                be.setCurrentAim(be.targetAim);
+                be.requestDispenserUpdate();
             }
-            dispenser.clientAge++;
+            be.clientAge++;
         }
     }
 
@@ -149,6 +161,18 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
     public void aim(double pitch, double yaw) {
         setTargetAim(new Aim(pitch, yaw));
+    }
+
+    public void aimAt(Vector3d relativePos) {
+        relativePos.negate();
+        var yaw = Math.atan2(relativePos.x, -relativePos.z);
+        var pitch = Math.atan2(-relativePos.y, new Vector2d(relativePos.x, relativePos.z).length());
+
+        setTargetAim(new Aim(pitch, yaw));
+    }
+
+    public void aimAtWorld(Vector3d worldPos) {
+        aimAt(worldPos.sub(new Vector3m(pos.toCenterPos())));
     }
 
     public boolean isAligned() {
@@ -163,24 +187,13 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     private void shoot(Aim aim) {
         assert world != null;
         if(currentDevice != null) {
-            try(IModularFrameContext ctx = getNewContext()) {
-                /*var ammo = useAmmo(ctx);
-                if (ammo != null) {
-                    DispenseResult result = currentDevice.activate(this, currentDeviceState, world, ammo, pos, action);
-                    if(result.wasSuccessful()) {
-                        var leftover = result.leftover();
-                        if(!(leftover = handleLeftover(ctx, leftover)).isEmpty()){
-                            ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), leftover);
-                        }
-                        ctx.commit();
-                    }
-                }*/
+            try(ModularFrameContext ctx = getNewContext()) {
                 currentDevice.activate(this, currentDeviceState, world, pos, aim, ctx);
             }
         }
     }
 
-    protected abstract IModularFrameContext getNewContext();
+    protected abstract ModularFrameContext getNewContext();
 
     /**
      * Creates a slot for gui
@@ -303,12 +316,12 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     }
     //endregion
 
-    public interface IModularFrameContext extends IScopedContext, IEnergyContext {
+    public record ModularFrameContext(IScopedContext ctx, IEnergyContext energy, IAmmoContext ammo, ILeftoverItemContext leftover) implements AutoCloseable {
 
-        ItemStack useAmmoFirst();
-
-        ItemStack useAmmoRandom();
-
-        void handleLeftover(ItemStack stack);
+        @Override
+        public void close() {
+            ctx.close();
+            leftover.close();
+        }
     }
 }

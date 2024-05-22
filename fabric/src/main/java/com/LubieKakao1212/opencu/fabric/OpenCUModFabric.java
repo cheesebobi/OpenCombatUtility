@@ -8,10 +8,7 @@ import com.LubieKakao1212.opencu.fabric.apilookup.APILookupRebornEnergy;
 import com.LubieKakao1212.opencu.fabric.event.TooltipHandler;
 import com.LubieKakao1212.opencu.registry.CUDispensers;
 import com.LubieKakao1212.opencu.registry.CUMenu;
-import com.LubieKakao1212.opencu.registry.fabric.CUBlockEntitiesImpl;
-import com.LubieKakao1212.opencu.registry.fabric.CUBlocksImpl;
-import com.LubieKakao1212.opencu.registry.fabric.CUMenuImpl;
-import com.LubieKakao1212.opencu.registry.fabric.CUPulseImpl;
+import com.LubieKakao1212.opencu.registry.fabric.*;
 import io.wispforest.owo.registration.reflect.FieldRegistrationHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -31,6 +28,7 @@ public class OpenCUModFabric implements ModInitializer {
         FieldRegistrationHandler.register(CUPulseImpl.class, OpenCUModCommon.MODID, false);
         FieldRegistrationHandler.register(CUBlockEntitiesImpl.class, OpenCUModCommon.MODID, false);
         FieldRegistrationHandler.register(CUMenuImpl.class, OpenCUModCommon.MODID, false);
+        FieldRegistrationHandler.register(CUItems.class, OpenCUModCommon.MODID, false);
 
         if(FabricLoader.getInstance().isModLoaded("computercraft")) {
             APILookupPeripheral.register();
@@ -42,5 +40,4 @@ public class OpenCUModFabric implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTING.register((server) -> CUDispensers.init());
     }
-
 }

@@ -29,8 +29,8 @@ public class DispenserTooltip {
             return;
         }
 
-        tooltip.add(getSpeed(dis.getPitchAlignmentSpeed(), pitchSuffix));
-        tooltip.add(getSpeed(dis.getYawAlignmentSpeed(), yawSuffix));
+        /*tooltip.add(getSpeed(dis.getPitchAlignmentSpeed(), pitchSuffix));
+        tooltip.add(getSpeed(dis.getYawAlignmentSpeed(), yawSuffix));*/
 
         /*tooltip.add(getProperty(false, spreadKey));
         tooltip.add(getProperty(false, forceKey));*/

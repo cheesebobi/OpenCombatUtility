@@ -3,6 +3,10 @@ package com.LubieKakao1212.opencu.fabric.block.entity;
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.fabric.inventory.SlottedInventory;
+import com.LubieKakao1212.opencu.fabric.transaction.AmmoContext;
+import com.LubieKakao1212.opencu.fabric.transaction.RebornEnergyContext;
+import com.LubieKakao1212.opencu.fabric.transaction.ScopedContext;
+import com.LubieKakao1212.opencu.fabric.transaction.SimpleLeftoverContext;
 import com.google.common.collect.Lists;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -75,28 +79,14 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
     }
 
     @Override
-    protected IModularFrameContext getNewContext() {
-        return new TransactionModularFrameContext();
+    protected ModularFrameContext getNewContext() {
+        return new ModularFrameContext(
+                new ScopedContext(),
+                new RebornEnergyContext(energyStorage),
+                new AmmoContext(ammoStorage),
+                new SimpleLeftoverContext(ammoStorage, world, pos)
+        );
     }
-
-    /*@Override
-    protected ItemStack useAmmo(ActionContext ctx) {
-
-    }
-
-    @Override
-    protected ItemStack handleLeftover(ActionContext ctx, ItemStack leftover) {
-        if(!leftover.isEmpty()){
-            var transactionCtx = (TransactionActionContext) ctx;
-            try(var inner = Transaction.openNested(transactionCtx.transaction)) {
-                if(ammoStorage.insert(ItemVariant.of(leftover), leftover.getCount(), inner) == leftover.getCount()) {
-                    inner.commit();
-                    return ItemStack.EMPTY;
-                }
-            }
-        }
-        return leftover;
-    }*/
 
     /**
      * Creates a slot for gui
@@ -142,99 +132,6 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         var invTag = compound.getList("inventory", NbtElement.COMPOUND_TYPE);
         if(!invTag.isEmpty()) {
             inventory.readNbt(invTag);
-        }
-    }
-
-    private class TransactionModularFrameContext implements IModularFrameContext {
-
-        private final Stack<Transaction> transactions = new Stack<>();
-
-        private final SimpleInventory scatterInventory;
-        private final InventoryStorage scatterStorage;
-
-        public TransactionModularFrameContext() {
-            transactions.push(Transaction.openOuter());
-
-            //TODO Expose slot count to config
-            scatterInventory = new SimpleInventory(1024);
-
-            scatterStorage = InventoryStorage.of(scatterInventory, null);
-        }
-
-        @Override
-        public long useEnergy(long amount) {
-            return energyStorage.extract(amount, transactions.peek());
-        }
-
-        @Override
-        public ItemStack useAmmoFirst() {
-            for(var view : ammoStorage.nonEmptyViews()) {
-                var res = view.getResource();
-                if(view.extract(res, 1, transactions.peek()) != 1) {
-                    return ItemStack.EMPTY;
-                }
-                return res.toStack();
-            }
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public ItemStack useAmmoRandom() {
-            var list = Lists.newArrayList(ammoStorage.nonEmptyViews());
-            if(list.size() > 0) {
-                var i = world.getRandom().nextInt(list.size());
-                var view = list.get(i);
-                var res = view.getResource();
-                if(view.extract(res, 1, transactions.peek()) != 1) {
-                    return ItemStack.EMPTY;
-                }
-                return res.toStack();
-            }
-
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public void handleLeftover(ItemStack stack) {
-            var res = ItemVariant.of(stack);
-            var transaction = transactions.peek();
-            var inserted = ammoStorage.insert(res, stack.getCount(), transaction);
-            var leftoverAmount = stack.getCount() - inserted;
-            if(leftoverAmount > 0) {
-                if(scatterStorage.insert(res, leftoverAmount, transaction) < leftoverAmount) {
-                    throw new IllegalStateException("Cannot insert to scatter inventory");
-                }
-            }
-        }
-
-        @Override
-        public void push() {
-            var t = transactions.peek().openNested();
-            transactions.push(t);
-        }
-
-        @Override
-        public void pop() {
-            if(transactions.size() <= 1) {
-                throw new IllegalStateException("push < pop");
-            }
-            transactions.pop().close();
-        }
-
-        @Override
-        public void close() {
-            if(transactions.size() != 1) {
-                throw new IllegalStateException("push > pop");
-            }
-
-            ItemScatterer.spawn(world, pos, scatterInventory);
-            transactions.peek().close();
-            transactions.clear();
-        }
-
-        @Override
-        public void commit() {
-            transactions.peek().commit();
         }
     }
 }

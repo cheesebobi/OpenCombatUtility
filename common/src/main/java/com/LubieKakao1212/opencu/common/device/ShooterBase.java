@@ -27,10 +27,11 @@ public abstract class ShooterBase implements IFramedDevice {
     }
 
     @Override
-    public void activate(BlockEntityModularFrame shooter, IDeviceState stateIn, World level, BlockPos pos, Aim aim, BlockEntityModularFrame.IModularFrameContext ctx) {
-        var shotItem = ctx.useAmmoFirst();
+    public void activate(BlockEntityModularFrame shooter, IDeviceState stateIn, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
+        var shotItem = ctx.ammo().useAmmoFirst(ctx.ctx());
 
-        if(shotItem == null) {
+        //TODO proper empty item handling
+        if(shotItem == null || shotItem.isEmpty()) {
             return;
         }
 
@@ -39,9 +40,9 @@ public abstract class ShooterBase implements IFramedDevice {
         var state = (ShooterDeviceState) stateIn;
 
         var energyUsage = (long)(state.getBaseEnergyUsage() * entry.getEnergyMultiplier());
-        if(ctx.useEnergy(energyUsage) == energyUsage) {
+        if(ctx.energy().useEnergy(energyUsage, ctx.ctx()) == energyUsage) {
             //region Shooting
-            Entity entity = entry.getEntity(shotItem, level);
+            Entity entity = entry.getEntity(shotItem, world);
 
             Vector3d forward = AimUtilKt.randomSpread(random, aim.toQuaternion(Direction.EAST, Direction.UP), (state.getSpread() * entry.getSpreadMultiplier() * Constants.degToRad), Vector3dExtensions.INSTANCE.getSOUTH());
 
@@ -55,33 +56,18 @@ public abstract class ShooterBase implements IFramedDevice {
 
             entry.getPostShootAction().Execute(entity, forward, velocity);
 
-            level.spawnEntity(entity);
+            world.spawnEntity(entity);
 
             entry.getPostSpawnAction().Execute(entity, forward, velocity);
             //endregion
 
-            ctx.commit();
+            ctx.ctx().commit();
         }
-        //TODO energy
-        //shooter.getCapability(ForgeCapabilities.ENERGY).ifPresent((energy) -> {
+    }
 
-            //region Energy Handling
-            /*
-            if(!(energy instanceof InternalEnergyStorage)) {
-                return;
-            }
-            InternalEnergyStorage energyStorage = (InternalEnergyStorage) energy;
+    @Override
+    public void tick(BlockEntityModularFrame shooter, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
 
-            int energyRequired = (int)(entry.getEnergyMultiplier() * energyConsumption);
-
-            if(energyStorage.getEnergyStored() < energyRequired) {
-                return;
-            }
-
-            energyStorage.extractEnergyInternal(energyRequired, false);
-            */
-            //endregion
-        //});
     }
 
     @Override
