@@ -1,3 +1,21 @@
+
+>> #### Implemented ActivateOnlyWhenAligned feature to ModularFrame
+> #### Common
+> - Added Responsive toggle GUI widget
+> - Added lock button to ModularFrameGUI and its tooltip translations
+> - Added PacketServerToggleRequiresLock and its handler
+> - Fixed TrackerDevice still working without energy
+> - ModularFrame API
+>   - Added isRequiresLock()
+>   - Added setRequiresLock(requiresLock: boolean)
+> #### Fabric
+> - Registered PacketServerToggleRequiresLock
+> #### Forge
+> Nothing, still broken
+> #### Lua
+> - added lock tests to dispenser.lua
+>> 
+
 >> #### Reworked Contexts (again) + Implemented TrackerBase + Added AimTool Item
 > #### Common
 > - Made Contexts more modular
@@ -8,7 +26,7 @@
 > - Added AimTool registration
 > #### Forge
 > Nothing, still broken
->>
+>> 799b1c88 [22.05.2024 at 16:15]
 
 >> #### Implemented Reborn Energy on fabric
 > #### Common

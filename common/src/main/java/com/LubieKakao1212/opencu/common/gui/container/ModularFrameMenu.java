@@ -6,11 +6,12 @@ import com.LubieKakao1212.opencu.registry.CUMenu;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ArrayPropertyDelegate;
+import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 public class ModularFrameMenu extends ScreenHandler {
 
@@ -22,17 +23,17 @@ public class ModularFrameMenu extends ScreenHandler {
     private static final int playerSlotCount = 36;
     private static final int playerSlotsEnd = playerSlotsStart + playerSlotCount;
 
-
     private static final int slotSize = 18;
     private final int slotCount;
 
     private final ScreenHandlerContext context;
+    private final PropertyDelegate properties;
 
     public ModularFrameMenu(int id, PlayerInventory playerInventory) {
-        this(id, playerInventory, SlotProvider.dummy(dispenserSlotCount), ScreenHandlerContext.EMPTY);
+        this(id, playerInventory, SlotProvider.dummy(dispenserSlotCount), ScreenHandlerContext.EMPTY, new ArrayPropertyDelegate(BlockEntityModularFrame.screenPropertyCount));
     }
 
-    public ModularFrameMenu(int id, PlayerInventory playerInventory, SlotProvider modularFrameSlots, ScreenHandlerContext context) {
+    public ModularFrameMenu(int id, PlayerInventory playerInventory, SlotProvider modularFrameSlots, ScreenHandlerContext context, PropertyDelegate properties) {
         super(CUMenu.modularFrame(), id);
 
         this.addSlot(modularFrameSlots.createSlot( 0, 43, 33));
@@ -56,6 +57,9 @@ public class ModularFrameMenu extends ScreenHandler {
         AddSlotBlock(8, 84, 9, 3, slotSize, playerSlotFactory);
 
         this.slotCount = this.slots.size();
+
+        this.properties = properties;
+        this.addProperties(properties);
     }
 
     public void AddSlotBlock(int startX, int startY, int blockWidth, int blockHeight, int slotSize, SlotFactory slotFactory) {
@@ -113,5 +117,17 @@ public class ModularFrameMenu extends ScreenHandler {
     @Override
     public boolean canUse(PlayerEntity pPlayer) {
         return ScreenHandler.canUse(this.context, pPlayer, CUBlocks.modularFrame());
+    }
+
+    public boolean isRequiresLock() {
+        return properties.get(BlockEntityModularFrame.requiresLockPropertyIndex) > 0;
+    }
+
+    public BlockPos targetPosition() {
+        return new BlockPos(
+                properties.get(BlockEntityModularFrame.xPropertyIndex),
+                properties.get(BlockEntityModularFrame.yPropertyIndex),
+                properties.get(BlockEntityModularFrame.zPropertyIndex)
+        );
     }
 }

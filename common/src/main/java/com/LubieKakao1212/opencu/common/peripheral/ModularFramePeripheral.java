@@ -4,8 +4,6 @@ import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
 import com.LubieKakao1212.opencu.registry.CUIds;
 import dan200.computercraft.api.lua.*;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +41,7 @@ public class ModularFramePeripheral implements IPeripheral {
      */
     @Override
     public boolean equals(@Nullable IPeripheral other) {
-        if(other != null && other instanceof ModularFramePeripheral) {
+        if(other instanceof ModularFramePeripheral) {
             ModularFramePeripheral otherDispenser = ((ModularFramePeripheral) other);
             return otherDispenser.target.getPos().equals(target.getPos());
         }
@@ -68,13 +66,25 @@ public class ModularFramePeripheral implements IPeripheral {
     }
 
     @LuaFunction
+    public final boolean isRequiresLock() {
+        return target.isRequiresLock();
+    }
+
+    @LuaFunction
+    public final void setRequiresLock(boolean requiresLock) {
+        target.setRequiresLock(requiresLock);
+    }
+
+
+    @LuaFunction
     public final IDeviceApi getDeviceApi() {
         return target.getCurrentDeviceApi();
     }
 
     @LuaFunction
-    public final boolean dispense() {
-        target.dispense();
+    public final boolean activate() {
+        target.activate();
         return true;
     }
+
 }

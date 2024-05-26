@@ -18,5 +18,8 @@
   "info.opencu.dispenser.spread.constant": "Constant Spread: %.0f°",
   "info.opencu.dispenser.spread.configurable": "Configurable Spread: %.0f°-%.0f°",
 
+  "info.opencu.frame.gui.lock.active": "Shoot only when aligned: §aOn",
+  "info.opencu.frame.gui.lock.inactive": "Shoot only when aligned: §cOff",
+
   "itemGroup.ocu":"Open Combat Utility"
 }

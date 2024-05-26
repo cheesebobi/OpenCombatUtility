@@ -10,6 +10,4 @@ public class AdvancedTrackerDeviceState extends TrackerDeviceState {
         super(trackingRange, energyPerTick);
     }
 
-
-
 }

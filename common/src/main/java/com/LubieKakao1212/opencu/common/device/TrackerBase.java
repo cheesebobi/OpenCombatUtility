@@ -8,7 +8,6 @@ import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralTextContent;
 import net.minecraft.text.Text;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.BlockPos;
@@ -40,7 +39,10 @@ public class TrackerBase implements IFramedDevice {
             return;
         }
         if(ctx.energy().useEnergy(energyToUse, ctx.ctx()) != energyToUse) {
+            trackerState.noEnergy = true;
             return;
+        } else {
+            trackerState.noEnergy = false;
         }
 
         ctx.ctx().commit();

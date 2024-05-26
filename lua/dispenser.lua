@@ -58,3 +58,18 @@ function shoot(c)
         dis.dispense()
     end
 end
+
+function lock_test(shot_count)
+    dis.aim(math.pi/2, -math.pi)
+    while true do
+        if dis.isAligned() then
+            break
+        end
+    end
+    dis.aim(-math.pi/2, math.pi)
+
+    for i=0, shot_count, 1 do
+        dis.dispense()
+        os.sleep(0.2)
+    end
+end

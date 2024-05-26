@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
@@ -38,30 +39,40 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
-import java.io.Closeable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class BlockEntityModularFrame extends BlockEntity implements NamedScreenHandlerFactory {
 
+    public static final int screenPropertyCount = 4;
+    public static final int xPropertyIndex = 0;
+    public static final int yPropertyIndex = 1;
+    public static final int zPropertyIndex = 2;
+    public static final int requiresLockPropertyIndex = 3;
+
     public static final double aimIdenticalityEpsilon = Constants.degToRad * 0.1;
 
     private final AtomicInteger actionsToPerform = new AtomicInteger(0);
+    private boolean requiresLock;
 
+    //region Aim
     private Aim currentAim;
     private Aim targetAim;
     private boolean lockedOn;
     //Client
     private Aim lastAim = null;
+    //endregion
 
+    //region Device
     private IFramedDevice currentDevice;
     private IDeviceState currentDeviceState;
     //Client
     private ItemStack currentDeviceItem = null;
+    //endregion
 
     private long initialiseDelay = 3;
-
     private boolean isInitialised = false;
 
+    //region Renderer
     //Client
     public long clientAge;
     //Client
@@ -73,6 +84,9 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     public double deltaAnglePitch;
     //Client
     public double deltaAngleYaw;
+    //endregion
+
+    private PropertyDelegate screenProperties;
 
     public BlockEntityModularFrame(BlockPos pos, BlockState blockState) {
         super(CUBlockEntities.modularFrame(), pos, blockState);
@@ -80,6 +94,30 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         setCurrentAim(new Aim(0, 0));
 
         targetAim = new Aim(0 ,0);
+        requiresLock = false;
+
+        screenProperties = new PropertyDelegate() {
+            @Override
+            public int get(int index) {
+                return switch (index) {
+                    case xPropertyIndex -> pos.getX();
+                    case yPropertyIndex -> pos.getY();
+                    case zPropertyIndex -> pos.getZ();
+                    case requiresLockPropertyIndex -> requiresLock ? 1 : 0;
+                    default -> -1;
+                };
+            }
+
+            @Override
+            public void set(int index, int value) {
+
+            }
+
+            @Override
+            public int size() {
+                return screenPropertyCount;
+            }
+        };
     }
 
     protected void updateDispenser() {
@@ -139,8 +177,10 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                     device.tick(be, deviceState, world, pos, currentAim, ctx);
                 }
             }
-            while(be.actionsToPerform.get() > 0)
-            {
+            if(be.requiresLock && !be.isAligned()) {
+                be.actionsToPerform.set(0);
+            }
+            else while(be.actionsToPerform.get() > 0) {
                 be.actionsToPerform.getAndDecrement();
                 be.shoot(be.currentAim);
             }
@@ -155,7 +195,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         }
     }
 
-    public void dispense() {
+    public void activate() {
         actionsToPerform.getAndIncrement();
     }
 
@@ -206,12 +246,22 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         return player.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) <= 64D && world.getBlockEntity(pos) == this;
     }
 
+    public boolean isRequiresLock() {
+        return requiresLock;
+    }
+
+    public void setRequiresLock(boolean requiresLock) {
+        this.requiresLock = requiresLock;
+    }
+
+
     @Override
     public void writeNbt(@NotNull NbtCompound compound) {
         compound.putDouble("pitch", currentAim.getPitch());
         compound.putDouble("yaw", currentAim.getYaw());
         compound.putDouble("targetPitch", targetAim.getYaw());
         compound.putDouble("targetYaw", targetAim.getYaw());
+        compound.putBoolean("requiresLock", requiresLock);
 
         compound.put("dispenser", currentDevice != null ? currentDevice.getNewState().serialize() : new NbtCompound());
 
@@ -229,6 +279,8 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
         setTargetAim(new Aim(targetPitch, targetYaw));
         currentAim = new Aim(pitch, yaw);
+
+        requiresLock = compound.getBoolean("requiresLock");
 
         if(currentDevice != null && compound.contains("dispenser", NbtElement.COMPOUND_TYPE)) {
             currentDevice.getNewState().deserialize(compound.getCompound("dispenser"));
@@ -249,7 +301,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     @Override
     public ScreenHandler createMenu(int containerId, @NotNull PlayerInventory inventory, @NotNull PlayerEntity player) {
         assert world != null;
-        return new ModularFrameMenu(containerId, inventory, this::createSlot, ScreenHandlerContext.create(world, pos));
+        return new ModularFrameMenu(containerId, inventory, this::createSlot, ScreenHandlerContext.create(world, pos), screenProperties);
     }
 
     public ItemStack getCurrentDeviceItem() {

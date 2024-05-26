@@ -7,6 +7,7 @@ import com.LubieKakao1212.opencu.common.network.packet.PacketHandlersServer;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
+import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerToggleRequiresLock;
 import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
 import com.LubieKakao1212.opencu.registry.CUIds;
 import io.wispforest.owo.network.OwoNetChannel;
@@ -33,6 +34,7 @@ public class NetworkUtilImpl {
         CHANNEL.registerClientboundDeferred(PacketClientRepulsorPulse.class);
 
         CHANNEL.registerServerbound(PacketServerRequestDispenserUpdate.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
+        CHANNEL.registerServerbound(PacketServerToggleRequiresLock.class, (pkt, acc) -> PacketHandlersServer.handle(pkt, acc.player()));
     }
 
     public static void clientInit() {
