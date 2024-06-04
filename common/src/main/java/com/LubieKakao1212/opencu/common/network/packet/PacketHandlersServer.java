@@ -2,9 +2,11 @@ package com.LubieKakao1212.opencu.common.network.packet;
 
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.block.entity.IRedstoneControlled;
 import com.LubieKakao1212.opencu.common.compat.valkyrienskies.VS2SoftUtil;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerToggleRequiresLock;
+import com.LubieKakao1212.opencu.common.network.packet.generic.PacketServerCycleRedstoneControl;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -45,7 +47,22 @@ public class PacketHandlersServer {
         else {
             OpenCUModCommon.LOGGER.warn("Potentially malicious packet received, skipping");
         }
-
     }
 
+    public static void handle(PacketServerCycleRedstoneControl packetIn, ServerPlayerEntity sender) {
+        var world = sender.getWorld();
+
+        var position = packetIn.position();
+
+        if(VS2SoftUtil.getDistanceSqr(world, new Vector3m(sender.getPos()), new Vector3m(position)) < (64 * 64)) {
+            BlockEntity be = world.getBlockEntity(position);
+
+            if(be instanceof IRedstoneControlled rsControlled) {
+                rsControlled.cycleRedstoneControl();
+            }
+        }
+        else {
+            OpenCUModCommon.LOGGER.warn("Potentially malicious packet received, skipping");
+        }
+    }
 }

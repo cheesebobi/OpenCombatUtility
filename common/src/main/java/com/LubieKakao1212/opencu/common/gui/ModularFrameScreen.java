@@ -5,20 +5,16 @@ import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.gui.widget.ResponsiveToggle;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerToggleRequiresLock;
+import com.LubieKakao1212.opencu.common.network.packet.generic.PacketServerCycleRedstoneControl;
+import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.CheckboxWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-
-import java.awt.*;
 
 public class ModularFrameScreen extends HandledScreen<ModularFrameMenu> {
 
@@ -36,10 +32,30 @@ public class ModularFrameScreen extends HandledScreen<ModularFrameMenu> {
         //var aimLockToggle = new ToggleButtonWidget(161, 7, 10, 10, false);
         //aimLockToggle.setTextureUV(178, 69, 12,12, mainTexture);
         //aimLockToggle.onClick();
-        var lockButton = new ResponsiveToggle(x + 160, y + 6, 10, 10, 188, 68, -11,11, Text.empty(), handler::isRequiresLock, (state) -> {
-            NetworkUtil.sendToServer(new PacketServerToggleRequiresLock(handler.targetPosition()));
-        }, "info.opencu.frame.gui.lock");
+        var lockButton = ResponsiveToggle.dualState(
+                x + 149, y + 6,
+                10, 10,
+                188, 68,
+                -11,11,
+                handler::isRequiresLock,
+                (state) -> NetworkUtil.sendToServer(new PacketServerToggleRequiresLock(handler.targetPosition())),
+                "info.opencu.frame.gui.lock");
         addDrawableChild(lockButton);
+
+        var redstoneControlButton = ResponsiveToggle.multiState(
+                x + 160, y + 6,
+                10, 10,
+                177, 90,
+                11, 11,
+                handler::getRedstoneControlTypeIndex,
+                (state) -> NetworkUtil.sendToServer(new PacketServerCycleRedstoneControl(handler.targetPosition())),
+                Tooltip.of(Text.empty()),
+                Tooltip.of(RedstoneControlType.LOW.tooltip),
+                Tooltip.of(RedstoneControlType.HIGH.tooltip),
+                Tooltip.of(RedstoneControlType.PULSE.tooltip),
+                Tooltip.of(RedstoneControlType.DISABLED.tooltip)
+        );
+        addDrawableChild(redstoneControlButton);
     }
 
     @Override

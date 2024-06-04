@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.common.gui.widget;
 
+import com.mojang.datafixers.types.Func;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -18,15 +19,36 @@ public class ResponsiveToggle extends ClickableWidget {
     private static final String activeSuffix = ".active";
     private static final String inactiveSuffix = ".inactive";
 
-    private final Supplier<Boolean> state;
-    private final Consumer<Boolean> onPressed;
+    private final Supplier<Integer> state;
+    private final Consumer<Integer> onPressed;
 
     private final int spriteU, spriteV, toggleOffsetU, hoverOffsetV;
 
-    private final Tooltip activeTooltip;
-    private final Tooltip inactiveTooltip;
+    private final Tooltip[] stateTooltips;
+    private final Tooltip defaultTooltip;
 
-    public ResponsiveToggle(int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Text message, Supplier<Boolean> state, Consumer<Boolean> onPressed, String tooltipKey) {
+    //private final Tooltip defaultTooltip;
+
+    public static ResponsiveToggle dualState(int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Supplier<Boolean> state, Consumer<Boolean> onPressed, String tooltipKey) {
+        return new ResponsiveToggle(x, y, width, height, spriteU, spriteV, toggleOffsetU, hoverOffsetV,
+                Text.empty(),
+                () -> state.get() ? 1 : 0,
+                (s) -> onPressed.accept(s > 0),
+                Tooltip.of(Text.empty()),
+                Tooltip.of(Text.translatable(tooltipKey + inactiveSuffix)),
+                Tooltip.of(Text.translatable(tooltipKey + activeSuffix)));
+    }
+
+    public static ResponsiveToggle multiState(int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Supplier<Integer> state, Consumer<Integer> onPressed, Tooltip defaultTooltip, Tooltip... tooltips) {
+        return new ResponsiveToggle(x, y, width, height, spriteU, spriteV, toggleOffsetU, hoverOffsetV,
+                Text.empty(),
+                state,
+                onPressed,
+                defaultTooltip != null ? defaultTooltip : Tooltip.of(Text.empty()),
+                tooltips);
+    }
+
+    private ResponsiveToggle(int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Text message, Supplier<Integer> state, Consumer<Integer> onPressed, Tooltip defaultTooltip, Tooltip... tooltips) {
         super(x, y, width, height, message);
         this.state = state;
         this.onPressed = onPressed;
@@ -35,8 +57,8 @@ public class ResponsiveToggle extends ClickableWidget {
         this.toggleOffsetU = toggleOffsetU;
         this.hoverOffsetV = hoverOffsetV;
 
-        activeTooltip = Tooltip.of(Text.translatable(tooltipKey + activeSuffix));
-        inactiveTooltip = Tooltip.of(Text.translatable(tooltipKey + inactiveSuffix));
+        this.defaultTooltip = defaultTooltip;
+        this.stateTooltips = tooltips;
     }
 
     @Override
@@ -49,19 +71,23 @@ public class ResponsiveToggle extends ClickableWidget {
         var u = spriteU;
         var v = spriteV;
 
-        var active = this.state.get();
+        var state = this.state.get();
 
-        if(active)
-        {
-            u += toggleOffsetU;
-        }
+        u += toggleOffsetU * state;
+
         if(hovered) {
             v += hoverOffsetV;
         }
 
         drawTexture(matrices, getX(), getY(), u, v, getWidth(), getHeight());
 
-        setTooltip((active ? activeTooltip : inactiveTooltip));
+        var tooltip = defaultTooltip;
+
+        if(state >= 0 && state < stateTooltips.length) {
+            tooltip = stateTooltips[state];
+        }
+
+        setTooltip(tooltip);
     }
 
     @Override

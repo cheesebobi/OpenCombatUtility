@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.fabric.block;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.fabric.block.entity.BlockEntityModularFrameImpl;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import net.minecraft.block.*;
@@ -14,6 +15,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,5 +69,27 @@ public class BlockModularFrame extends BlockWithEntity {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
         return BlockEntityModularFrameImpl::tick;
+    }
+
+    @Override
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
+        if(world.isClient) {
+            OpenCUModCommon.LOGGER.info("client");
+        } else {
+            OpenCUModCommon.LOGGER.info("server");
+        }
+
+        var frame = CUBlockEntities.modularFrame().get(world, pos);
+
+        if(frame == null) {
+            OpenCUModCommon.LOGGER.warn("wrong BlockEntity at: " + pos);
+        }
+
+        var delta = sourcePos.subtract(pos);
+        var dir = Direction.fromVector(delta);
+
+        var power = world.isEmittingRedstonePower(sourcePos, dir);
+
+        frame.pulseActivate(dir, power);
     }
 }

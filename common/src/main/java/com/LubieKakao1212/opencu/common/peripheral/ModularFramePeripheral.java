@@ -2,6 +2,7 @@ package com.LubieKakao1212.opencu.common.peripheral;
 
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
+import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.LubieKakao1212.opencu.registry.CUIds;
 import dan200.computercraft.api.lua.*;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -75,6 +76,21 @@ public class ModularFramePeripheral implements IPeripheral {
         target.setRequiresLock(requiresLock);
     }
 
+    @LuaFunction
+    public final void setRedstoneControl(String type) throws LuaException{
+        try {
+            var rsct = RedstoneControlType.valueOf(type);
+            target.setRedstoneControlType(rsct);
+        }
+        catch (IllegalArgumentException e) {
+            throw new LuaException(e.getMessage());
+        }
+    }
+
+    @LuaFunction
+    public final String setRedstoneControl() {
+        return target.getRedstoneControlType().toString();
+    }
 
     @LuaFunction
     public final IDeviceApi getDeviceApi() {

@@ -9,6 +9,7 @@ import com.LubieKakao1212.opencu.common.transaction.IAmmoContext;
 import com.LubieKakao1212.opencu.common.transaction.IEnergyContext;
 import com.LubieKakao1212.opencu.common.transaction.ILeftoverItemContext;
 import com.LubieKakao1212.opencu.common.transaction.IScopedContext;
+import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerRequestDispenserUpdate;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;
@@ -34,25 +35,34 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class BlockEntityModularFrame extends BlockEntity implements NamedScreenHandlerFactory {
+public abstract class BlockEntityModularFrame extends BlockEntity implements NamedScreenHandlerFactory, IRedstoneControlled {
 
-    public static final int screenPropertyCount = 4;
+    public static final int screenPropertyCount = 5;
     public static final int xPropertyIndex = 0;
     public static final int yPropertyIndex = 1;
     public static final int zPropertyIndex = 2;
     public static final int requiresLockPropertyIndex = 3;
+    public static final int redstoneControlPropertyIndex = 4;
 
     public static final double aimIdenticalityEpsilon = Constants.degToRad * 0.1;
 
+    public static final int autoShootInterval = 10;
+
     private final AtomicInteger actionsToPerform = new AtomicInteger(0);
     private boolean requiresLock;
+    private RedstoneControlType redstoneControlType;
+    private long redstoneActivationTimer = 0;
+    private Set<Direction> pulseState = EnumSet.noneOf(Direction.class);
 
     //region Aim
     private Aim currentAim;
@@ -95,6 +105,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
         targetAim = new Aim(0 ,0);
         requiresLock = false;
+        redstoneControlType = RedstoneControlType.PULSE;
 
         screenProperties = new PropertyDelegate() {
             @Override
@@ -104,6 +115,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                     case yPropertyIndex -> pos.getY();
                     case zPropertyIndex -> pos.getZ();
                     case requiresLockPropertyIndex -> requiresLock ? 1 : 0;
+                    case redstoneControlPropertyIndex -> redstoneControlType.order;
                     default -> -1;
                 };
             }
@@ -177,6 +189,17 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                     device.tick(be, deviceState, world, pos, currentAim, ctx);
                 }
             }
+
+            if(++be.redstoneActivationTimer % autoShootInterval == 0) {
+                var power = world.isReceivingRedstonePower(pos);
+                if(power && be.redstoneControlType == RedstoneControlType.HIGH) {
+                    be.actionsToPerform.getAndIncrement();
+                }
+                else if(!power && be.redstoneControlType == RedstoneControlType.LOW) {
+                    be.actionsToPerform.getAndIncrement();
+                }
+            }
+
             if(be.requiresLock && !be.isAligned()) {
                 be.actionsToPerform.set(0);
             }
@@ -198,6 +221,22 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     public void activate() {
         actionsToPerform.getAndIncrement();
     }
+
+    public void pulseActivate(Direction direction, boolean state) {
+        var lastState = pulseState.contains(direction);
+
+        if(state) {
+            pulseState.add(direction);
+        }
+        else {
+            pulseState.remove(direction);
+        }
+
+        if(redstoneControlType == RedstoneControlType.PULSE && !lastState && state) {
+            activate();
+        }
+    }
+
 
     public void aim(double pitch, double yaw) {
         setTargetAim(new Aim(pitch, yaw));
@@ -254,6 +293,18 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         this.requiresLock = requiresLock;
     }
 
+    public RedstoneControlType getRedstoneControlType() {
+        return redstoneControlType;
+    }
+
+    @Override
+    public void cycleRedstoneControl() {
+        redstoneControlType = redstoneControlType.cycleNext();
+    }
+
+    public void setRedstoneControlType(RedstoneControlType type) {
+        this.redstoneControlType = type;
+    }
 
     @Override
     public void writeNbt(@NotNull NbtCompound compound) {
@@ -262,6 +313,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         compound.putDouble("targetPitch", targetAim.getYaw());
         compound.putDouble("targetYaw", targetAim.getYaw());
         compound.putBoolean("requiresLock", requiresLock);
+        compound.putInt("redstoneControl", redstoneControlType.order);
 
         compound.put("dispenser", currentDevice != null ? currentDevice.getNewState().serialize() : new NbtCompound());
 
@@ -280,6 +332,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         setTargetAim(new Aim(targetPitch, targetYaw));
         currentAim = new Aim(pitch, yaw);
 
+        redstoneControlType = RedstoneControlType.fromIndex(compound.getInt("redstoneControl"));
         requiresLock = compound.getBoolean("requiresLock");
 
         if(currentDevice != null && compound.contains("dispenser", NbtElement.COMPOUND_TYPE)) {

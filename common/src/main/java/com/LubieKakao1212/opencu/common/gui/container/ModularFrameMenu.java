@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.common.gui.container;
 
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.LubieKakao1212.opencu.registry.CUBlocks;
 import com.LubieKakao1212.opencu.registry.CUMenu;
 import net.minecraft.entity.player.PlayerEntity;
@@ -121,6 +122,10 @@ public class ModularFrameMenu extends ScreenHandler {
 
     public boolean isRequiresLock() {
         return properties.get(BlockEntityModularFrame.requiresLockPropertyIndex) > 0;
+    }
+
+    public int getRedstoneControlTypeIndex() {
+        return properties.get(BlockEntityModularFrame.redstoneControlPropertyIndex);
     }
 
     public BlockPos targetPosition() {

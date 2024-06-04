@@ -1,3 +1,16 @@
+>> Added redstone control to Modular Frame
+> #### Common
+> - Added IRedstoneControlled interface
+> - Added PacketServerCycleRedstoneControl which cycles redstone control on BlockEntities with IRedstoneControlled
+> - Implemented redstone control for ModuluarFrame
+> - Tweaked ResponsiveToggle widget to support multiple states
+> - Added get and set methods for RedstoneControl to ModularFramePeripheral
+> #### Fabric
+> - Implemented redstone change notification from ModularFrame Block to its BlockEntity
+> #### Forge
+> Nothing, still broken
+>>
+
 
 >> #### Implemented ActivateOnlyWhenAligned feature to ModularFrame
 > #### Common
@@ -14,7 +27,7 @@
 > Nothing, still broken
 > #### Lua
 > - added lock tests to dispenser.lua
->> 
+>> 131ce2e8 [26.05.2024 at 16:09]
 
 >> #### Reworked Contexts (again) + Implemented TrackerBase + Added AimTool Item
 > #### Common
