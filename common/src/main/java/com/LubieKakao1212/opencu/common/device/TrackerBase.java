@@ -1,8 +1,10 @@
 package com.LubieKakao1212.opencu.common.device;
 
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.device.event.LookAtEvent;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.TrackerDeviceState;
+import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.entity.Entity;
@@ -14,38 +16,31 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TrackerBase implements IFramedDevice {
+
+
 
     /**
      * @param ctx used to fetch ammo, use energy, and add leftovers
      */
     @Override
-    public void activate(BlockEntityModularFrame shooter, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
+    public void activate(BlockEntityModularFrame frame, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
 
     }
 
     @Override
-    public void tick(BlockEntityModularFrame shooter, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
+    public void tick(BlockEntityModularFrame frame, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
         var trackerState = (TrackerDeviceState) state;
 
-        trackerState.energyLeftover += trackerState.getEnergyPerTick();
-
-        var energyToUse = (long)trackerState.energyLeftover;
-        trackerState.energyLeftover = trackerState.energyLeftover - energyToUse;
-
-        if(trackerState.noEnergy && energyToUse == 0) {
+        ctx.ctx().push();
+        if(!drainEnergy(ctx, trackerState, trackerState.getEnergyPerTick())) {
+            ctx.ctx().pop();
             return;
         }
-        if(ctx.energy().useEnergy(energyToUse, ctx.ctx()) != energyToUse) {
-            trackerState.noEnergy = true;
-            return;
-        } else {
-            trackerState.noEnergy = false;
-        }
-
-        ctx.ctx().commit();
+        ctx.ctx().pop();
 
         var ammo = ctx.ammo();
         var filters = ammo.availableAmmo().stream().map(ItemStack::getName).map(Text::getString).collect(Collectors.toSet());
@@ -55,22 +50,22 @@ public class TrackerBase implements IFramedDevice {
 
         var entities = world.getEntitiesByType(TypeFilter.instanceOf(LivingEntity.class), new Box(pos).expand(trackerState.getTrackingRange()), (e) -> true);
 
-        if(entities.isEmpty()) {
+        if (entities.isEmpty()) {
             return;
         }
 
         var nearestDistSq = Double.POSITIVE_INFINITY;
         Entity nearestEntity = null;
 
-        for(var entity : entities) {
+        for (var entity : entities) {
             var distSq = entity.getPos().squaredDistanceTo(pos.toCenterPos());
-            if(distSq > nearestDistSq) {
+            if (distSq > nearestDistSq) {
                 continue;
             }
-            if(distSq > rangeSq){
+            if (distSq > rangeSq) {
                 continue;
             }
-            if(filters.contains(entity.getName().getString())) {
+            if (filters.contains(entity.getName().getString())) {
                 continue;
             }
 
@@ -78,9 +73,30 @@ public class TrackerBase implements IFramedDevice {
             nearestEntity = entity;
         }
 
-        if(nearestEntity != null) {
+        if (nearestEntity != null) {
+            var energyUsage = ((TrackerDeviceState) state).getEnergyPerActiveConnectionPerTick();
+
+            var eventDistributor = frame.getEventDistributor();
+
+            energyUsage *= eventDistributor.recipientCount();
+
+            ctx.ctx().push();
+            if(!drainEnergy(ctx, trackerState, energyUsage)) {
+                ctx.ctx().pop();
+                return;
+            }
+            ctx.ctx().pop();
+
             //var delta = new Vector3m(pos.toCenterPos().subtract(nearestEntity.getBoundingBox().getCenter()));
-            shooter.aimAtWorld(new Vector3m(nearestEntity.getBoundingBox().getCenter()));
+            var target = new Vector3m(nearestEntity.getBoundingBox().getCenter());
+            frame.aimAtWorld(target);
+
+            var lookAt = new LookAtEvent(target, true);
+
+            eventDistributor.handleEvent(lookAt);
+
+            //Commit th outer context
+            ctx.ctx().commit();
         }
     }
 
@@ -96,6 +112,28 @@ public class TrackerBase implements IFramedDevice {
 
     @Override
     public IDeviceState getNewState() {
-        return new TrackerDeviceState(5, 0.75);
+        return new TrackerDeviceState(5.0, 0.75, 5.0);
     }
+
+    private boolean drainEnergy(BlockEntityModularFrame.ModularFrameContext ctx, TrackerDeviceState state, double amount) {
+        state.energyLeftover += amount;
+
+        var energyToUse = (long) state.energyLeftover;
+        state.energyLeftover = state.energyLeftover - energyToUse;
+
+        if (state.noEnergy && energyToUse == 0) {
+            return false;
+        }
+        var used = ctx.energy().useEnergy(energyToUse, ctx.ctx());
+        if (used != energyToUse) {
+            state.noEnergy = true;
+            return false;
+        }
+        else {
+            state.noEnergy = false;
+            ctx.ctx().commit();
+            return true;
+        }
+    }
+
 }

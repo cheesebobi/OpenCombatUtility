@@ -2,6 +2,7 @@ package com.LubieKakao1212.opencu.common.block.entity;
 
 import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
+import com.LubieKakao1212.opencu.common.device.event.*;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
 import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
@@ -45,7 +46,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class BlockEntityModularFrame extends BlockEntity implements NamedScreenHandlerFactory, IRedstoneControlled {
+public abstract class BlockEntityModularFrame extends BlockEntity implements NamedScreenHandlerFactory, IRedstoneControlled, IEventNode {
 
     public static final int screenPropertyCount = 5;
     public static final int xPropertyIndex = 0;
@@ -58,18 +59,24 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
     public static final int autoShootInterval = 10;
 
+    private static final long lateInitServerDelay = 3;
+
     private final AtomicInteger actionsToPerform = new AtomicInteger(0);
     private boolean requiresLock;
     private RedstoneControlType redstoneControlType;
     private long redstoneActivationTimer = 0;
-    private Set<Direction> pulseState = EnumSet.noneOf(Direction.class);
+    private final Set<Direction> rsState = EnumSet.noneOf(Direction.class);
+
+    //region Events
+    private DistributingWorldEventNode eventDistributor;
+    //endregion
 
     //region Aim
     private Aim currentAim;
     private Aim targetAim;
     private boolean lockedOn;
     //Client
-    private Aim lastAim = null;
+    private Aim lastAim;
     //endregion
 
     //region Device
@@ -79,8 +86,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     private ItemStack currentDeviceItem = null;
     //endregion
 
-    private long initialiseDelay = 3;
-    private boolean isInitialised = false;
+    private long age = 0;
 
     //region Renderer
     //Client
@@ -96,7 +102,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     public double deltaAngleYaw;
     //endregion
 
-    private PropertyDelegate screenProperties;
+    private final PropertyDelegate screenProperties;
 
     public BlockEntityModularFrame(BlockPos pos, BlockState blockState) {
         super(CUBlockEntities.modularFrame(), pos, blockState);
@@ -106,6 +112,8 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         targetAim = new Aim(0 ,0);
         requiresLock = false;
         redstoneControlType = RedstoneControlType.PULSE;
+
+        eventDistributor = new DistributingWorldEventNode(pos);
 
         screenProperties = new PropertyDelegate() {
             @Override
@@ -158,10 +166,8 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     public static <T> void tick(World world, BlockPos pos, BlockState state, T blockEntity) {
         BlockEntityModularFrame be = (BlockEntityModularFrame)blockEntity;
         if (!world.isClient) {
-            if(be.initialiseDelay-- == 0) {
-                be.updateDispenser();
-                be.sendDispenserAimUpdate();
-            }
+            be.doInit(be::initServer);
+            be.doAgedInit(be::lateInitServer, lateInitServerDelay);
             if(be.currentDevice != null) {
                 var device = be.currentDevice;
                 var deviceState = be.currentDeviceState;
@@ -209,27 +215,80 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
             }
         }else
         {
-            if(!be.isInitialised) {
-                be.isInitialised = true;
-                be.setCurrentAim(be.targetAim);
-                be.requestDispenserUpdate();
-            }
+            be.doInit(be::initClient);
             be.clientAge++;
         }
     }
+
+    //region init
+    public void doInit(Runnable init) {
+        doAgedInit(init, 0);
+    }
+
+    public void doAgedInit(Runnable lateInit, long targetAge) {
+        if(age++ == targetAge) {
+            lateInit.run();
+        }
+    }
+
+    public void initServer() {
+
+    }
+
+    public void lateInitServer() {
+        updateDispenser();
+        sendDispenserAimUpdate();
+    }
+
+    public void initClient() {
+        setCurrentAim(targetAim);
+        requestDispenserUpdate();
+    }
+
+    @Override
+    public void setWorld(World world) {
+        super.setWorld(world);
+        eventDistributor.setWorld(world);
+    }
+
+    //endregion
+
+    @Override
+    public void handleEvent(IEventData data) {
+        if(data instanceof SetAimEvent event) {
+            setTargetAim(event.aim);
+        }
+        else if(data instanceof LookAtEvent event) {
+            if(event.isWorldSpace) {
+                aimAtWorld(event.target);
+            }
+            else
+            {
+                aimAt(event.target);
+            }
+        }
+        else {
+            currentDevice.handleEvent(data);
+        }
+    }
+
+    public DistributingWorldEventNode getEventDistributor() {
+        return eventDistributor;
+    }
+
 
     public void activate() {
         actionsToPerform.getAndIncrement();
     }
 
     public void pulseActivate(Direction direction, boolean state) {
-        var lastState = pulseState.contains(direction);
+        var lastState = rsState.contains(direction);
 
         if(state) {
-            pulseState.add(direction);
+            rsState.add(direction);
         }
         else {
-            pulseState.remove(direction);
+            rsState.remove(direction);
         }
 
         if(redstoneControlType == RedstoneControlType.PULSE && !lastState && state) {
@@ -251,7 +310,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     }
 
     public void aimAtWorld(Vector3d worldPos) {
-        aimAt(worldPos.sub(new Vector3m(pos.toCenterPos())));
+        aimAt(new Vector3d(worldPos).sub(new Vector3m(pos.toCenterPos())));
     }
 
     public boolean isAligned() {
@@ -315,6 +374,8 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         compound.putBoolean("requiresLock", requiresLock);
         compound.putInt("redstoneControl", redstoneControlType.order);
 
+        compound.put("distributor", eventDistributor.serialize());
+
         compound.put("dispenser", currentDevice != null ? currentDevice.getNewState().serialize() : new NbtCompound());
 
         super.writeNbt(compound);
@@ -334,6 +395,8 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
         redstoneControlType = RedstoneControlType.fromIndex(compound.getInt("redstoneControl"));
         requiresLock = compound.getBoolean("requiresLock");
+
+        eventDistributor.deserialize(compound.getList("distributor", NbtElement.COMPOUND_TYPE));
 
         if(currentDevice != null && compound.contains("dispenser", NbtElement.COMPOUND_TYPE)) {
             currentDevice.getNewState().deserialize(compound.getCompound("dispenser"));

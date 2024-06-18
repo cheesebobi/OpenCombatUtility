@@ -6,6 +6,7 @@ import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupIDispenser;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupRebornEnergy;
 import com.LubieKakao1212.opencu.fabric.event.TooltipHandler;
+import com.LubieKakao1212.opencu.fabric.event.UseHandler;
 import com.LubieKakao1212.opencu.registry.CUDispensers;
 import com.LubieKakao1212.opencu.registry.CUMenu;
 import com.LubieKakao1212.opencu.registry.fabric.*;
@@ -36,7 +37,10 @@ public class OpenCUModFabric implements ModInitializer {
 
         APILookupRebornEnergy.register();
         APILookupIDispenser.init();
+
         TooltipHandler.init();
+        UseHandler.init();
+
 
         ServerLifecycleEvents.SERVER_STARTING.register((server) -> CUDispensers.init());
     }

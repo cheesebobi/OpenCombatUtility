@@ -27,7 +27,7 @@ public abstract class ShooterBase implements IFramedDevice {
     }
 
     @Override
-    public void activate(BlockEntityModularFrame shooter, IDeviceState stateIn, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
+    public void activate(BlockEntityModularFrame frame, IDeviceState stateIn, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
         var shotItem = ctx.ammo().useAmmoFirst(ctx.ctx());
 
         //TODO proper empty item handling
@@ -66,7 +66,7 @@ public abstract class ShooterBase implements IFramedDevice {
     }
 
     @Override
-    public void tick(BlockEntityModularFrame shooter, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
+    public void tick(BlockEntityModularFrame frame, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
 
     }
 

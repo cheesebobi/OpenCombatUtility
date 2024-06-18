@@ -1,25 +1,42 @@
 package com.LubieKakao1212.opencu.common.item;
 
+import com.LubieKakao1212.opencu.common.device.event.DistributingWorldEventNode;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.UseAction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.joml.Vector3d;
+import org.jetbrains.annotations.Nullable;
 
-public class ItemAimTool extends Item {
+import java.util.List;
 
-    private static final double maxDistance = 16;
-    private static final double maxDistanceSq = maxDistance * maxDistance;
+public class ItemLinkTool extends Item {
 
-    public ItemAimTool(Settings settings) {
+    public ItemLinkTool(Settings settings) {
         super(settings);
+    }
+
+
+    @Override
+    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+        var nbt = stack.getOrCreateNbt();
+
+        if(nbt.contains("ocu:boundPos", NbtElement.COMPOUND_TYPE)) {
+            var boundPos = NbtHelper.toBlockPos(nbt.getCompound("ocu:boundPos"));
+            tooltip.add(Text.translatable("info.opencu.tool.pos", boundPos.toShortString()));
+        }
     }
 
     @Override
@@ -30,7 +47,7 @@ public class ItemAimTool extends Item {
         var player = context.getPlayer();
 
         if(world.isClient) {
-            return ActionResult.PASS;
+            return ActionResult.SUCCESS;
         }
 
         var tag = stack.getOrCreateNbt();
@@ -42,21 +59,24 @@ public class ItemAimTool extends Item {
 
         if(tag.contains("ocu:boundPos", NbtElement.COMPOUND_TYPE)) {
             var boundPos = NbtHelper.toBlockPos(tag.getCompound("ocu:boundPos"));
-            var dstSq = pos.getSquaredDistance(boundPos);
-
-            if(boundPos.equals(pos) || dstSq > maxDistanceSq) {
+            var be = CUBlockEntities.modularFrame().get(world, boundPos);
+            if(be == null) {
                 return ActionResult.FAIL;
             }
 
-            var be = CUBlockEntities.modularFrame().get(world, boundPos);
+            var result = be.getEventDistributor().registerTarget(pos);
 
-            if(be != null) {
-                be.aimAt(new Vector3m(pos.subtract(boundPos)));
+            player.sendMessage(result.description(pos));
+
+            if(result == DistributingWorldEventNode.LinkResult.SUCCESS) {
                 return ActionResult.SUCCESS;
+            }
+            else {
+                return ActionResult.FAIL;
             }
         }
 
-        return ActionResult.CONSUME;
+        return ActionResult.PASS;
     }
 
     private void bind(NbtCompound data, World world, BlockPos targetPos) {

@@ -1,3 +1,27 @@
+>> Implemented linking
+> #### Common
+> - Added EventNode system
+>   - Added IEventNode
+>     - IFramedDevice now extends IEventNode
+>     - ModularFrame now implements IEventNode
+>     - Added some utility EventNodes:
+>       - Added DistributingEventNode (unused)
+>       - Added DistributingWorldEventNode
+>       - Added BlockPosEventNode (unused)
+>   - Added IEventData:
+>     - Added LookAtEvent (used by TrackerBase)
+>     - Added SetAimEvent
+> - Added ItemLinkTool
+> - Fixed name of getRedstoneControl() in ModularFramePeripheral 
+> #### Fabric
+> - Implemented UseHandler so that LinkTool and AimTool don't open guis
+> #### Forge
+> Nothing, still broken
+> #### Art
+> - Added LinkTool sprites  
+> - Added "eyetool" sprite [by ThePennitentOne]
+>> 
+
 >> Added redstone control to Modular Frame
 > #### Common
 > - Added IRedstoneControlled interface
@@ -9,7 +33,7 @@
 > - Implemented redstone change notification from ModularFrame Block to its BlockEntity
 > #### Forge
 > Nothing, still broken
->>
+>> fa873dd [04.06.2024 at 13:10]
 
 
 >> #### Implemented ActivateOnlyWhenAligned feature to ModularFrame

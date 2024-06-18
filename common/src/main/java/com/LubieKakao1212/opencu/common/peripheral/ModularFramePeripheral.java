@@ -88,7 +88,7 @@ public class ModularFramePeripheral implements IPeripheral {
     }
 
     @LuaFunction
-    public final String setRedstoneControl() {
+    public final String getRedstoneControl() {
         return target.getRedstoneControlType().toString();
     }
 

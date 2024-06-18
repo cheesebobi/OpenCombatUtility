@@ -1,19 +1,21 @@
 package com.LubieKakao1212.opencu.common.device;
 
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
+import com.LubieKakao1212.opencu.common.device.event.IEventData;
+import com.LubieKakao1212.opencu.common.device.event.IEventNode;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.lubiekakao1212.qulib.math.Aim;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public interface IFramedDevice {
+public interface IFramedDevice extends IEventNode {
 
     /**
      * @param ctx used to fetch ammo, use energy, and add leftovers
      */
-    void activate(BlockEntityModularFrame shooter, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx);
+    void activate(BlockEntityModularFrame frame, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx);
 
-    void tick(BlockEntityModularFrame shooter, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx);
+    void tick(BlockEntityModularFrame frame, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx);
 
     /*
      * @param spread spread value that would be set
@@ -34,4 +36,7 @@ public interface IFramedDevice {
     double getYawAlignmentSpeed();
 
     IDeviceState getNewState();
+
+    @Override
+    default void handleEvent(IEventData data) { }
 }
