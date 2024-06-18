@@ -1,3 +1,19 @@
+>> Redstone output from Tracker
+> #### Common
+> - Implemented Redstone output for ModularFrame
+> - Made Tracker device output redstone
+>   - Outputs if no entity is present when control mode is set to LOW
+>   - Outputs if entity is present when control mode is set to HIGH
+>   - Outputs for one tick after detecting and entity when control mode is set to PULSE
+>   - Does nothing when control mode is set to DISABLED
+> - Fixed PacketServerRequestDispenserUpdate distance calculation
+> - Fixed arrow ownership by discarding Bob
+> #### Fabric
+> Implemented redstone output to BlockModularFrame
+> #### Forge
+> Nothing, still broken
+>>
+
 >> Implemented linking
 > #### Common
 > - Added EventNode system
@@ -20,7 +36,7 @@
 > #### Art
 > - Added LinkTool sprites  
 > - Added "eyetool" sprite [by ThePennitentOne]
->> 
+>> 37d7c5c5 [18.06.2024 at 11:48]
 
 >> Added redstone control to Modular Frame
 > #### Common

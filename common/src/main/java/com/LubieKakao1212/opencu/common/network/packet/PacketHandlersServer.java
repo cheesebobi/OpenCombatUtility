@@ -20,7 +20,7 @@ public class PacketHandlersServer {
 
         var position = packetIn.position();
 
-        if(VS2SoftUtil.getDistanceSqr(world, new Vector3d(sender.getX(), sender.getY(), sender.getY()), new Vector3d(position.getX(), position.getY(), position.getZ())) < (64 * 64)) {
+        if(VS2SoftUtil.getDistanceSqr(world, new Vector3m(sender.getPos()), new Vector3m(position)) < (64 * 64)) {
             BlockEntity be = world.getBlockEntity(position);
 
             if(be instanceof BlockEntityModularFrame) {

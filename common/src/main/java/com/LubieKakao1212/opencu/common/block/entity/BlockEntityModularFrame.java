@@ -20,6 +20,7 @@ import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.Constants;
 import com.lubiekakao1212.qulib.math.MathUtilKt;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -68,7 +69,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     private final Set<Direction> rsState = EnumSet.noneOf(Direction.class);
 
     //region Events
-    private DistributingWorldEventNode eventDistributor;
+    private final DistributingWorldEventNode eventDistributor;
     //endregion
 
     //region Aim
@@ -123,7 +124,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                     case yPropertyIndex -> pos.getY();
                     case zPropertyIndex -> pos.getZ();
                     case requiresLockPropertyIndex -> requiresLock ? 1 : 0;
-                    case redstoneControlPropertyIndex -> redstoneControlType.order;
+                    case redstoneControlPropertyIndex -> getRedstoneControlTypeRaw().order;
                     default -> -1;
                 };
             }
@@ -198,10 +199,11 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
             if(++be.redstoneActivationTimer % autoShootInterval == 0) {
                 var power = world.isReceivingRedstonePower(pos);
-                if(power && be.redstoneControlType == RedstoneControlType.HIGH) {
+                var rsct = be.getRedstoneControlType();
+                if(power && rsct == RedstoneControlType.HIGH) {
                     be.actionsToPerform.getAndIncrement();
                 }
-                else if(!power && be.redstoneControlType == RedstoneControlType.LOW) {
+                else if(!power && rsct == RedstoneControlType.LOW) {
                     be.actionsToPerform.getAndIncrement();
                 }
             }
@@ -291,11 +293,10 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
             rsState.remove(direction);
         }
 
-        if(redstoneControlType == RedstoneControlType.PULSE && !lastState && state) {
+        if(getRedstoneControlType() == RedstoneControlType.PULSE && !lastState && state) {
             activate();
         }
     }
-
 
     public void aim(double pitch, double yaw) {
         setTargetAim(new Aim(pitch, yaw));
@@ -353,6 +354,10 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     }
 
     public RedstoneControlType getRedstoneControlType() {
+        return isEmittingRedstone() ? RedstoneControlType.DISABLED : redstoneControlType;
+    }
+
+    public RedstoneControlType getRedstoneControlTypeRaw() {
         return redstoneControlType;
     }
 
@@ -363,6 +368,18 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
     public void setRedstoneControlType(RedstoneControlType type) {
         this.redstoneControlType = type;
+    }
+
+    public boolean isEmittingRedstone() {
+        assert world != null;
+        return world.getBlockState(pos).get(BlockProperties.EMITS_REDSTONE_SIGNAL);
+    }
+
+    public void setEmittingRedstone(boolean value) {
+        assert world != null;
+        var state = world.getBlockState(pos);
+        state = state.with(BlockProperties.EMITS_REDSTONE_SIGNAL, value);
+        world.setBlockState(pos, state);
     }
 
     @Override

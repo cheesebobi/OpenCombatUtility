@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.common.device.state;
 
 import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
+import com.LubieKakao1212.opencu.common.util.Pulser;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
@@ -17,6 +18,7 @@ public class TrackerDeviceState implements IDeviceState {
     private double energyPerTick;
     private double energyPerActiveConnectionPerTick;
 
+    public final Pulser rsPulseTimer;
     public double energyLeftover;
     public boolean noEnergy;
 
@@ -26,6 +28,7 @@ public class TrackerDeviceState implements IDeviceState {
         this.energyPerActiveConnectionPerTick = energyPerActiveConnectionPerTick;
         this.energyLeftover = 0;
         this.noEnergy = false;
+        this.rsPulseTimer = new Pulser(2);
     }
 
     /**

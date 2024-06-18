@@ -31,9 +31,11 @@ public class VanillaDispenserMappings extends ShotMappings {
         EntityMapping arrowMapping = (stack, level) -> {
             //TODO find a way to stop using bob
             LivingEntity bob = new PigEntity(EntityType.PIG, level);
-            //bob.setCustomName(Text.of("Bob"));
+            bob.setCustomName(Text.of("Bob"));
             PersistentProjectileEntity arrow = ((ArrowItem)stack.getItem()).createArrow(level, stack, bob);
-            arrow.setOwner(null);
+
+            bob.remove(Entity.RemovalReason.DISCARDED);
+
             arrow.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
             return arrow;
         };
