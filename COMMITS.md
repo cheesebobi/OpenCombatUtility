@@ -1,3 +1,15 @@
+>> Added Energy Bar to ModularFrame GUI
+> #### Common
+> - Implemented FillableBarWidget
+> - Added Energy bar to ModularFrameScreen
+> #### Fabric
+> - Nothing 
+> #### Forge
+> Nothing, still broken
+> #### Project
+> Added TODO.md
+>>
+
 >> Redstone output from Tracker
 > #### Common
 > - Implemented Redstone output for ModularFrame
@@ -9,10 +21,10 @@
 > - Fixed PacketServerRequestDispenserUpdate distance calculation
 > - Fixed arrow ownership by discarding Bob
 > #### Fabric
-> Implemented redstone output to BlockModularFrame
+> - Implemented redstone output to BlockModularFrame
 > #### Forge
 > Nothing, still broken
->>
+>> 06bddd96 [18.06.2024 at 20:49]
 
 >> Implemented linking
 > #### Common

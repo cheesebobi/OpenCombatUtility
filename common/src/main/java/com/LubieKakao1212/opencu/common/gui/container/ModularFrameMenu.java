@@ -128,6 +128,20 @@ public class ModularFrameMenu extends ScreenHandler {
         return properties.get(BlockEntityModularFrame.redstoneControlPropertyIndex);
     }
 
+    public int getEnergy() {
+        return properties.get(BlockEntityModularFrame.energyPropertyIndex);
+    }
+
+    public int getMaxEnergy() {
+        return properties.get(BlockEntityModularFrame.maxEnergyPropertyIndex);
+    }
+
+    public float getEnergyRatio() {
+        return (float) getEnergy() / (float) getMaxEnergy();
+    }
+
+
+
     public BlockPos targetPosition() {
         return new BlockPos(
                 properties.get(BlockEntityModularFrame.xPropertyIndex),

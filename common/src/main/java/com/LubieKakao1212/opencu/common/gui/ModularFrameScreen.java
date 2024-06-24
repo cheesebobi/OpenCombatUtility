@@ -3,7 +3,8 @@ package com.LubieKakao1212.opencu.common.gui;
 import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
-import com.LubieKakao1212.opencu.common.gui.widget.ResponsiveToggle;
+import com.LubieKakao1212.opencu.common.gui.widget.FillableBarWidget;
+import com.LubieKakao1212.opencu.common.gui.widget.ResponsiveToggleWidget;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketServerToggleRequiresLock;
 import com.LubieKakao1212.opencu.common.network.packet.generic.PacketServerCycleRedstoneControl;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
@@ -18,7 +19,10 @@ import net.minecraft.util.Identifier;
 
 public class ModularFrameScreen extends HandledScreen<ModularFrameMenu> {
 
+    private static final String energyBarTooltipKey = "info.opencu.frame.gui.energy";
     private static final Identifier mainTexture = new Identifier(OpenCUModCommon.MODID, "textures/gui/omnidispenser_gui.png");
+
+    private FillableBarWidget energyWidget;
 
     public ModularFrameScreen(ModularFrameMenu container, PlayerInventory inv, Text titleIn) {
         super(container, inv, titleIn);
@@ -32,7 +36,7 @@ public class ModularFrameScreen extends HandledScreen<ModularFrameMenu> {
         //var aimLockToggle = new ToggleButtonWidget(161, 7, 10, 10, false);
         //aimLockToggle.setTextureUV(178, 69, 12,12, mainTexture);
         //aimLockToggle.onClick();
-        var lockButton = ResponsiveToggle.dualState(
+        var lockButton = ResponsiveToggleWidget.dualState(
                 x + 149, y + 6,
                 10, 10,
                 188, 68,
@@ -42,7 +46,7 @@ public class ModularFrameScreen extends HandledScreen<ModularFrameMenu> {
                 "info.opencu.frame.gui.lock");
         addDrawableChild(lockButton);
 
-        var redstoneControlButton = ResponsiveToggle.multiState(
+        var redstoneControlButton = ResponsiveToggleWidget.multiState(
                 x + 160, y + 6,
                 10, 10,
                 177, 90,
@@ -55,12 +59,23 @@ public class ModularFrameScreen extends HandledScreen<ModularFrameMenu> {
                 Tooltip.of(RedstoneControlType.PULSE.tooltip),
                 Tooltip.of(RedstoneControlType.DISABLED.tooltip)
         );
+
         addDrawableChild(redstoneControlButton);
+
+        energyWidget = new FillableBarWidget(x + 15, y + 33,
+                13,16,
+                226, 58,
+                FillableBarWidget.FillDirection.LEFT,
+                handler::getEnergyRatio);
+        addDrawableChild(energyWidget);
     }
 
     @Override
     public void render(MatrixStack poseStack, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(poseStack);
+
+        energyWidget.setTooltip(Tooltip.of(Text.translatable(energyBarTooltipKey, handler.getEnergy(), handler.getMaxEnergy())));
+
         //this.drawBackground(poseStack, partialTick, mouseX, mouseY);
         super.render(poseStack, mouseX, mouseY, partialTick);
         this.drawMouseoverTooltip(poseStack, mouseX, mouseY);

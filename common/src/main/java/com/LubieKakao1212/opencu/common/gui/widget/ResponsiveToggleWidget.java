@@ -1,20 +1,16 @@
 package com.LubieKakao1212.opencu.common.gui.widget;
 
-import com.mojang.datafixers.types.Func;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-import javax.tools.Tool;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class ResponsiveToggle extends ClickableWidget {
+public class ResponsiveToggleWidget extends ClickableWidget {
 
     private static final String activeSuffix = ".active";
     private static final String inactiveSuffix = ".inactive";
@@ -29,8 +25,8 @@ public class ResponsiveToggle extends ClickableWidget {
 
     //private final Tooltip defaultTooltip;
 
-    public static ResponsiveToggle dualState(int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Supplier<Boolean> state, Consumer<Boolean> onPressed, String tooltipKey) {
-        return new ResponsiveToggle(x, y, width, height, spriteU, spriteV, toggleOffsetU, hoverOffsetV,
+    public static ResponsiveToggleWidget dualState(int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Supplier<Boolean> state, Consumer<Boolean> onPressed, String tooltipKey) {
+        return new ResponsiveToggleWidget(x, y, width, height, spriteU, spriteV, toggleOffsetU, hoverOffsetV,
                 Text.empty(),
                 () -> state.get() ? 1 : 0,
                 (s) -> onPressed.accept(s > 0),
@@ -39,8 +35,8 @@ public class ResponsiveToggle extends ClickableWidget {
                 Tooltip.of(Text.translatable(tooltipKey + activeSuffix)));
     }
 
-    public static ResponsiveToggle multiState(int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Supplier<Integer> state, Consumer<Integer> onPressed, Tooltip defaultTooltip, Tooltip... tooltips) {
-        return new ResponsiveToggle(x, y, width, height, spriteU, spriteV, toggleOffsetU, hoverOffsetV,
+    public static ResponsiveToggleWidget multiState(int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Supplier<Integer> state, Consumer<Integer> onPressed, Tooltip defaultTooltip, Tooltip... tooltips) {
+        return new ResponsiveToggleWidget(x, y, width, height, spriteU, spriteV, toggleOffsetU, hoverOffsetV,
                 Text.empty(),
                 state,
                 onPressed,
@@ -48,7 +44,7 @@ public class ResponsiveToggle extends ClickableWidget {
                 tooltips);
     }
 
-    private ResponsiveToggle(int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Text message, Supplier<Integer> state, Consumer<Integer> onPressed, Tooltip defaultTooltip, Tooltip... tooltips) {
+    private ResponsiveToggleWidget(int x, int y, int width, int height, int spriteU, int spriteV, int toggleOffsetU, int hoverOffsetV, Text message, Supplier<Integer> state, Consumer<Integer> onPressed, Tooltip defaultTooltip, Tooltip... tooltips) {
         super(x, y, width, height, message);
         this.state = state;
         this.onPressed = onPressed;

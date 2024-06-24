@@ -21,6 +21,8 @@
   "info.opencu.frame.gui.lock.active": "Shoot only when aligned: §aOn",
   "info.opencu.frame.gui.lock.inactive": "Shoot only when aligned: §cOff",
 
+  "info.opencu.frame.gui.energy": "%s/%s",
+
   "info.opencu.tool.pos": "Bound to [%s]",
 
   "itemGroup.ocu":"Open Combat Utility"

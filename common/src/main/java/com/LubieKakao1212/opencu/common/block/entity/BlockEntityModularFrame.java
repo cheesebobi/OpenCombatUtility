@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.common.block.entity;
 
 import com.LubieKakao1212.opencu.NetworkUtil;
+import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.common.device.event.*;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
@@ -20,7 +21,6 @@ import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.Constants;
 import com.lubiekakao1212.qulib.math.MathUtilKt;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,13 +49,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class BlockEntityModularFrame extends BlockEntity implements NamedScreenHandlerFactory, IRedstoneControlled, IEventNode {
 
-    public static final int screenPropertyCount = 5;
+    public static final int screenPropertyCount = 7;
     public static final int xPropertyIndex = 0;
     public static final int yPropertyIndex = 1;
     public static final int zPropertyIndex = 2;
     public static final int requiresLockPropertyIndex = 3;
     public static final int redstoneControlPropertyIndex = 4;
-
+    public static final int energyPropertyIndex = 5;
+    public static final int maxEnergyPropertyIndex = 6;
     public static final double aimIdenticalityEpsilon = Constants.degToRad * 0.1;
 
     public static final int autoShootInterval = 10;
@@ -125,6 +126,8 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                     case zPropertyIndex -> pos.getZ();
                     case requiresLockPropertyIndex -> requiresLock ? 1 : 0;
                     case redstoneControlPropertyIndex -> getRedstoneControlTypeRaw().order;
+                    case energyPropertyIndex -> getCurrentEnergy();
+                    case maxEnergyPropertyIndex -> OpenCUConfigCommon.capacitor().energyCapacity();
                     default -> -1;
                 };
             }
@@ -353,6 +356,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         this.requiresLock = requiresLock;
     }
 
+    //region redstone
     public RedstoneControlType getRedstoneControlType() {
         return isEmittingRedstone() ? RedstoneControlType.DISABLED : redstoneControlType;
     }
@@ -381,6 +385,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         state = state.with(BlockProperties.EMITS_REDSTONE_SIGNAL, value);
         world.setBlockState(pos, state);
     }
+    //endregion
 
     @Override
     public void writeNbt(@NotNull NbtCompound compound) {
@@ -450,6 +455,8 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     }
 
     protected abstract ItemStack getCurrentDeviceItemServer();
+
+    protected abstract int getCurrentEnergy();
 
     //region Clinet Methods
 

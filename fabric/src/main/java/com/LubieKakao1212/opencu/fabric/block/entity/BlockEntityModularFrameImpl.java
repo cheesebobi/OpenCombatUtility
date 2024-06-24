@@ -119,6 +119,11 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
     }
 
     @Override
+    protected int getCurrentEnergy() {
+        return (int)energyStorage.getAmount();
+    }
+
+    @Override
     public void writeNbt(@NotNull NbtCompound compound) {
         super.writeNbt(compound);
 
