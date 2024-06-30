@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "opencu:adv_dispenser"
+          "name": "opencu:modular_frame"
         }
       ],
       "conditions": [

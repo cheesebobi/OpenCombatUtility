@@ -1,11 +1,11 @@
 package com.LubieKakao1212.opencu.common.device.event;
 
+import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 public class BlockPosEventNode implements IEventNode {

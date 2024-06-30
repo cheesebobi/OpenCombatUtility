@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.common.device.event;
 
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
 
 import java.util.HashSet;
 import java.util.Set;

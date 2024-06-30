@@ -4,6 +4,10 @@ import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.common.device.event.*;
+import com.LubieKakao1212.opencu.common.device.event.data.ActivateEvent;
+import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
+import com.LubieKakao1212.opencu.common.device.event.data.LookAtEvent;
+import com.LubieKakao1212.opencu.common.device.event.data.SetAimEvent;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.gui.container.ModularFrameMenu;
 import com.LubieKakao1212.opencu.common.peripheral.device.IDeviceApi;
@@ -172,6 +176,9 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
         if (!world.isClient) {
             be.doInit(be::initServer);
             be.doAgedInit(be::lateInitServer, lateInitServerDelay);
+
+            be.eventDistributor.validateRecipients();
+
             if(be.currentDevice != null) {
                 var device = be.currentDevice;
                 var deviceState = be.currentDeviceState;
@@ -211,12 +218,13 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                 }
             }
 
-            if(be.requiresLock && !be.isAligned()) {
-                be.actionsToPerform.set(0);
-            }
-            else while(be.actionsToPerform.get() > 0) {
-                be.actionsToPerform.getAndDecrement();
-                be.shoot(be.currentAim);
+            var atp = be.actionsToPerform.get();
+            be.actionsToPerform.set(0);
+            if(!(be.requiresLock && !be.isAligned())) {
+                while (atp > 0) {
+                    atp--;
+                    be.shoot(be.currentAim);
+                }
             }
         }else
         {
@@ -272,8 +280,13 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                 aimAt(event.target);
             }
         }
-        else {
-            currentDevice.handleEvent(data);
+        else if(data instanceof ActivateEvent event) {
+            activate();
+        }
+
+        if(currentDevice != null)
+        {
+            currentDevice.handleEvent(this, currentDeviceState, data);
         }
     }
 

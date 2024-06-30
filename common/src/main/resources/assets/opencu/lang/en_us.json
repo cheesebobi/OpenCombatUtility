@@ -1,6 +1,9 @@
 {
   "block.opencu.repulsor": "Repulsor",
-  "block.opencu.adv_dispenser": "Dispenser Frame",
+  "block.opencu.modular_frame": "Modular Frame",
+
+  "item.opencu.link_tool": "Linker",
+  "item.opencu.aim_tool": "Aim Tool",
 
   "item.opencu.vector_mesh": "Vector Mesh",
   "item.opencu.dispenser_tier2": "§eDispenser(Tier2)",
@@ -23,7 +26,18 @@
 
   "info.opencu.frame.gui.energy": "%s/%s",
 
-  "info.opencu.tool.pos": "Bound to [%s]",
+  "info.opencu.tool.pos": "§8Bound to §7[%s§7]",
 
-  "itemGroup.ocu":"Open Combat Utility"
+  "info.opencu.redstone.low": "§4Low",
+  "info.opencu.redstone.high": "§cHigh",
+  "info.opencu.redstone.pulse": "§4Pul§cse",
+  "info.opencu.redstone.disabled": "§7Disabled",
+
+  "message.opencu.link.success.link": "Successfully §2linked§r to %s",
+  "message.opencu.link.success.unlink": "Successfully §8unlinked§r %s",
+  "message.opencu.link.fail.distance": "Failed to link to %s\n§7Target is too far",
+  "message.opencu.link.fail.target": "Failed to link to %s\n§7Target is invalid",
+  "message.opencu.link.fail.target.self": "Failed to link to %s\n§7Cannot target self",
+
+  "itemGroup.opencu":"Open Combat Utility"
 }

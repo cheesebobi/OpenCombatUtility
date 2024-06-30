@@ -1,8 +1,11 @@
 package com.LubieKakao1212.opencu.common.gui.container;
 
+import com.LubieKakao1212.opencu.PlatformUtil;
+import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.util.RedstoneControlType;
 import com.LubieKakao1212.opencu.registry.CUBlocks;
+import com.LubieKakao1212.opencu.registry.CUDispensers;
 import com.LubieKakao1212.opencu.registry.CUMenu;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -15,6 +18,11 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
 
 public class ModularFrameMenu extends ScreenHandler {
+
+    private static final int deviceSlot = 0;
+    private static final int ammoSlotStart = 1;
+    private static final int ammoSlotCount = 9;
+    private static final int ammoSlotEnd = ammoSlotStart + ammoSlotCount;
 
     private static final int dispenserSlotsStart = 0;
     private static final int dispenserSlotCount = 10;
@@ -77,39 +85,47 @@ public class ModularFrameMenu extends ScreenHandler {
         ItemStack stack = ItemStack.EMPTY;
 
         if(slot.hasStack()) {
-            ItemStack stack1 = slot.getStack();
-            if (!stack1.isEmpty()) {
-                stack = stack1.copy();
+            ItemStack stackCpy = slot.getStack();
+            if (!stackCpy.isEmpty()) {
+                stack = stackCpy.copy();
                 //Is in dispenser inventory
                 if (slot.id < dispenserSlotsEnd) {
-                    if (!this.insertItem(stack1, playerSlotsStart, slotCount, false)) {
+                    if (!this.insertItem(stackCpy, playerSlotsStart, slotCount, false)) {
                         return ItemStack.EMPTY;
                     }
-
-                    //slot.onSlotChange(stack1, stack);
-
-                }else //Is in player inventory
+                }
+                else //Is in player inventory
                 {
-                    if(this.insertItem(stack1, dispenserSlotsStart, dispenserSlotsEnd, false)) {
+                    var flag = false;
+                    if(PlatformUtil.getDispenser(stackCpy) != null) {
+                        var deviceSlotSlot = slots.get(deviceSlot);
+                        var currentDevice = deviceSlotSlot.getStack();
+                        if(currentDevice.isEmpty()) {
+                            deviceSlotSlot.setStack(stackCpy.split(1));
+                            flag = true;
+                        }
+                    }
+                    if(!this.insertItem(stackCpy, ammoSlotStart, ammoSlotEnd, false) && !flag) {
                         return ItemStack.EMPTY;
                     }
                 }
 
-                if (stack1.isEmpty())
+                if (stackCpy.isEmpty())
                 {
-                    slot.setStackNoCallbacks(ItemStack.EMPTY);
+                    slot.setStack(ItemStack.EMPTY);
                 }
                 else
                 {
                     slot.markDirty();
                 }
 
-                if (stack1.getCount() == stack.getCount())
+                if (stackCpy.getCount() == stack.getCount())
                 {
+                    OpenCUModCommon.LOGGER.warn("Impossible situation detected (Probably)");
                     return ItemStack.EMPTY;
                 }
 
-                slot.onTakeItem(player, stack1);
+                slot.onTakeItem(player, stackCpy);
             }
         }
         return stack;
@@ -139,8 +155,6 @@ public class ModularFrameMenu extends ScreenHandler {
     public float getEnergyRatio() {
         return (float) getEnergy() / (float) getMaxEnergy();
     }
-
-
 
     public BlockPos targetPosition() {
         return new BlockPos(

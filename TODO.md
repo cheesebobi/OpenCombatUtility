@@ -4,8 +4,9 @@
 >   - [ ] Manual repulsor configuration ...
 >   - [ ] Repulsor redstone control
 >   - [ ] Sounds and particles
->   - [ ] Unlinking
->   - [ ] Lang and textures
+>   - [ ] Make a texture for Aim Tool
+>   - [x] Unlinking
+>   - [x] Lang and textures
 > - ### 2nd order
 >   - [ ] Repulsor as device
 >   - [ ] Dust Exciter

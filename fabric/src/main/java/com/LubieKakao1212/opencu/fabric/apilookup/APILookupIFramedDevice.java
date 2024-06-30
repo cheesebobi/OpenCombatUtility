@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.fabric.apilookup;
 
 import com.LubieKakao1212.opencu.OpenCUConfigCommon;
+import com.LubieKakao1212.opencu.common.device.ArrayControllerDevice;
 import com.LubieKakao1212.opencu.common.device.DispenserConstant;
 import com.LubieKakao1212.opencu.common.device.IFramedDevice;
 import com.LubieKakao1212.opencu.common.device.TrackerBase;
@@ -11,7 +12,7 @@ import net.minecraft.item.Items;
 
 import java.util.function.Supplier;
 
-public class APILookupIDispenser {
+public class APILookupIFramedDevice {
 
     public static final Supplier<IFramedDevice> VANILLA_DISPENSER = () -> new DispenserConstant(
             CUDispensers.VANILLA_DISPENSER,
@@ -33,6 +34,7 @@ public class APILookupIDispenser {
     private static final IFramedDevice vanilla_dropper = VANILLA_DROPPER.get();
 
     private static final IFramedDevice simple_tracker = new TrackerBase();
+    private static final IFramedDevice array_controller = new ArrayControllerDevice();
 
     public static ItemApiLookup<IFramedDevice, Void> DISPENSER = ItemApiLookup.get(CUIds.DISPENSER_API, IFramedDevice.class, Void.class);
 
@@ -41,6 +43,8 @@ public class APILookupIDispenser {
         DISPENSER.registerForItems((stack, ctx) -> vanilla_dropper, Items.DROPPER);
 
         DISPENSER.registerForItems((stack, ctx) -> simple_tracker, Items.ENDER_EYE);
+        //Broken
+        //DISPENSER.registerForItems((stack, ctx) -> array_controller, Items.ENDER_PEARL);
     }
 
 }

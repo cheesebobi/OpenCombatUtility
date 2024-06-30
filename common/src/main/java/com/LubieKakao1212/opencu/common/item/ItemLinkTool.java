@@ -64,11 +64,11 @@ public class ItemLinkTool extends Item {
                 return ActionResult.FAIL;
             }
 
-            var result = be.getEventDistributor().registerTarget(pos);
+            var result = be.getEventDistributor().toggleTarget(pos);
 
             player.sendMessage(result.description(pos));
 
-            if(result == DistributingWorldEventNode.LinkResult.SUCCESS) {
+            if(result.isSuccess) {
                 return ActionResult.SUCCESS;
             }
             else {

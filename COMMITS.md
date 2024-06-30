@@ -1,3 +1,20 @@
+>> Pre 2.0.0-preview-kmf polishing
+> #### Common
+> - Added missing translations
+> - Fixed shift click logic in modular frame gui
+> - Added ModularFrame unlinking
+> - Added (broken) Array Controller
+> - Added ActivateEvent
+> - Added Crafting recipes
+> - Fixed block drop loot tables
+> - "Fixed" fire charge dispense action
+> #### Fabric
+> - Nothing
+> - Set a limit of 1 item for device slot in modular frame
+> #### Forge
+> Nothing, still broken
+>> 
+
 >> Added Energy Bar to ModularFrame GUI
 > #### Common
 > - Implemented FillableBarWidget
@@ -8,7 +25,7 @@
 > Nothing, still broken
 > #### Project
 > Added TODO.md
->>
+>> cc615231 [24.06.2024 at 15:40]
 
 >> Redstone output from Tracker
 > #### Common

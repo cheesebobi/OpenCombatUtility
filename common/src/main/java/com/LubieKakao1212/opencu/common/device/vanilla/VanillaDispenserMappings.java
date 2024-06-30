@@ -4,10 +4,7 @@ import com.LubieKakao1212.opencu.NetworkUtil;
 import com.LubieKakao1212.opencu.common.device.ShotEntry;
 import com.LubieKakao1212.opencu.common.device.ShotMappings;
 import com.LubieKakao1212.opencu.common.network.packet.projectile.PacketClientUpdateFireball;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.TntEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.FireworkRocketEntity;
@@ -25,6 +22,14 @@ import net.minecraft.util.math.Vec3d;
 import java.util.Optional;
 
 public class VanillaDispenserMappings extends ShotMappings {
+
+    private static final EntityMapping LOCKED = (stack, level) -> {
+        var itemEntity = new ItemEntity(level, 0, 0, 0, stack, 0,0,0);
+        itemEntity.setCustomName(Text.of("Ah ah ah, you didn't say the magic word"));
+        itemEntity.setCustomNameVisible(true);
+        itemEntity.setPickupDelay(20);
+        return itemEntity;
+    };
 
     public void init() {
         //region Mappings
@@ -59,7 +64,8 @@ public class VanillaDispenserMappings extends ShotMappings {
             return tnt;
         }, ItemStack.EMPTY, 3., 0.5, 1.));
 
-        register(Items.FIRE_CHARGE, new ShotEntry((stack, level) -> {
+        register(Items.FIRE_CHARGE, new ShotEntry(LOCKED, ItemStack.EMPTY, 100., 1., 1.));
+        /*register(Items.FIRE_CHARGE, new ShotEntry((stack, level) -> {
                 SmallFireballEntity fireball = new SmallFireballEntity(level, 0, 0, 0, 1, 0, 0);
                 fireball.setOwner(null);
                 fireball.powerX = 0;
@@ -78,7 +84,7 @@ public class VanillaDispenserMappings extends ShotMappings {
             (entity, forward, velocity) -> {
                 SmallFireballEntity fireball = (SmallFireballEntity) entity;
                 NetworkUtil.enqueueEntityPacket(new PacketClientUpdateFireball(fireball.getId(), (float)fireball.powerX, (float)fireball.powerY, (float)fireball.powerZ), fireball, 1);
-            }));
+            }));*/
 
         ShotEntry potionMapping = new ShotEntry((stack, level) -> {
             PotionEntity potion = new PotionEntity(EntityType.POTION, level);
@@ -95,10 +101,10 @@ public class VanillaDispenserMappings extends ShotMappings {
         }, ItemStack.EMPTY, 3., 1.5, 1.));
 
         register(Items.FIREWORK_ROCKET, new ShotEntry((stack, level) -> {
-            FireworkRocketEntity firework = new FireworkRocketEntity(level, 0, 0, 0, stack);
-            //TODO FireworkRocketEntity firework = new FireworkRocketEntity(level, stack, 0, 0, 0, true);
+            //FireworkRocketEntity firework = new FireworkRocketEntity(level, 0, 0, 0, stack);
+            FireworkRocketEntity firework = new FireworkRocketEntity(level, stack, 0, 0, 0, true);
             return firework;
-        },ItemStack.EMPTY, 50., 1., 1.));
+        },ItemStack.EMPTY, 2.5, 2.5, 1.));
         //endregion
 
         //region Redirections

@@ -1,6 +1,6 @@
-package com.LubieKakao1212.opencu.common.device.event;
+package com.LubieKakao1212.opencu.common.device.event.data;
 
-import net.minecraft.entity.ai.goal.BreakDoorGoal;
+import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
 import org.joml.Vector3d;
 
 public class LookAtEvent implements IEventData {

@@ -104,6 +104,11 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
                     super.markDirty();
                     updateDispenser();
                 }
+
+                @Override
+                public int getMaxItemCount() {
+                    return 1;
+                }
             };
         }
         return new Slot(inventory, idx, x, y);

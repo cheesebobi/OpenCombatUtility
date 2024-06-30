@@ -2,16 +2,21 @@ package com.LubieKakao1212.opencu.common.item;
 
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
+
+import java.util.List;
 
 public class ItemAimTool extends Item {
 
@@ -23,6 +28,16 @@ public class ItemAimTool extends Item {
     }
 
     @Override
+    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+        var nbt = stack.getOrCreateNbt();
+
+        if(nbt.contains("ocu:boundPos", NbtElement.COMPOUND_TYPE)) {
+            var boundPos = NbtHelper.toBlockPos(nbt.getCompound("ocu:boundPos"));
+            tooltip.add(Text.translatable("info.opencu.tool.pos", boundPos.toShortString()));
+        }
+    }
+
+    @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
         var stack = context.getStack();
         var pos = context.getBlockPos();
@@ -30,7 +45,7 @@ public class ItemAimTool extends Item {
         var player = context.getPlayer();
 
         if(world.isClient) {
-            return ActionResult.PASS;
+            return ActionResult.SUCCESS;
         }
 
         var tag = stack.getOrCreateNbt();

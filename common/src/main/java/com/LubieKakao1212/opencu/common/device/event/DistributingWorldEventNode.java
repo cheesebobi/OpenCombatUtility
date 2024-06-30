@@ -1,7 +1,7 @@
 package com.LubieKakao1212.opencu.common.device.event;
 
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
-import com.LubieKakao1212.opencu.registry.CUBlockEntities;
+import com.LubieKakao1212.opencu.common.device.event.data.IEventData;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.text.Text;
@@ -10,9 +10,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class DistributingWorldEventNode implements IEventNode {
 
@@ -47,7 +45,21 @@ public class DistributingWorldEventNode implements IEventNode {
         lock = false;
     }
 
+    public LinkResult toggleTarget(BlockPos pos) {
+        if(recipients.contains(pos)) {
+            removeTarget(pos);
+            return LinkResult.SUCCESS_UNLINK;
+        }
+        else {
+            return registerTarget(pos);
+        }
+    }
+
+
     public LinkResult registerTarget(BlockPos node) {
+        if(pos.equals(node)) {
+            return LinkResult.TARGET_SELF;
+        }
         if(node.getSquaredDistance(pos) > maximumLinkDistanceSq) {
             return LinkResult.TOO_FAR;
         }
@@ -61,7 +73,7 @@ public class DistributingWorldEventNode implements IEventNode {
             //Continue for now, validate later
         }
         recipients.add(node);
-        return LinkResult.SUCCESS;
+        return LinkResult.SUCCESS_LINK;
     }
 
     public void removeTarget(BlockPos node) {
@@ -108,18 +120,22 @@ public class DistributingWorldEventNode implements IEventNode {
     }
 
     public enum LinkResult {
-        SUCCESS("message.opencu.link.success"),
-        TOO_FAR("message.opencu.link.fail.distance"),
-        INVALID_TARGET("message.opencu.link.fail.target");
+        SUCCESS_LINK("message.opencu.link.success.link", true),
+        SUCCESS_UNLINK("message.opencu.link.success.unlink", true),
+        TOO_FAR("message.opencu.link.fail.distance", false),
+        INVALID_TARGET("message.opencu.link.fail.target", false),
+        TARGET_SELF("message.opencu.link.fail.target.self", false);
 
         private final String langKey;
+        public final boolean isSuccess;
 
-        LinkResult(String langKey) {
+        LinkResult(String langKey, boolean isSuccess) {
             this.langKey = langKey;
+            this.isSuccess = isSuccess;
         }
 
         public Text description(BlockPos target) {
-            return Text.translatable(langKey, target.toString());
+            return Text.translatable(langKey, target.toShortString());
         }
     }
 
