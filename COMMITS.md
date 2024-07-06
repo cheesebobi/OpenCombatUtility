@@ -1,3 +1,20 @@
+>> 2.0.0-preview-1-kmf
+> #### Common
+> - Fixed energy bar fill direction in ModularFrameScreen
+> - Fixed name in ModularFrameScreen
+> - Abstracted ItemBindable from ItemAimTool and ItemLinkTool
+> - Added more verbose feedback to AimTool and LinkTool
+> - Added state argument to ShotMappings entries
+> - Added "power" property to ShooterDeviceState
+> - Added crafting recipes for new dispenser types
+> #### Fabric
+> - Added Golden, Diamond and Netherite Dispensers
+> #### Forge
+> Nothing, still broken
+> #### Art
+> - Added textures for new dispenser items
+>> 
+
 >> Pre 2.0.0-preview-kmf polishing
 > #### Common
 > - Added missing translations
@@ -13,7 +30,7 @@
 > - Set a limit of 1 item for device slot in modular frame
 > #### Forge
 > Nothing, still broken
->> 
+>> 74167022 [30.06.2024 at 20:11]
 
 >> Added Energy Bar to ModularFrame GUI
 > #### Common

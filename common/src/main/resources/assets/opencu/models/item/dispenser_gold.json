@@ -1,0 +1,9 @@
+{
+    "parent":"opencu:block/dispenser",
+    "textures": {
+		"back": "minecraft:block/gold_block",
+		"front": "opencu:block/dispenser/dispenser_gold_front",
+		"side": "opencu:block/dispenser/dispenser_gold_side",
+		"particle": "minecraft:block/gold_block"
+	}
+}

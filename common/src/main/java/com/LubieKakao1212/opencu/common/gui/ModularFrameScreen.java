@@ -65,7 +65,7 @@ public class ModularFrameScreen extends HandledScreen<ModularFrameMenu> {
         energyWidget = new FillableBarWidget(x + 15, y + 33,
                 13,16,
                 226, 58,
-                FillableBarWidget.FillDirection.LEFT,
+                FillableBarWidget.FillDirection.DOWN,
                 handler::getEnergyRatio);
         addDrawableChild(energyWidget);
     }

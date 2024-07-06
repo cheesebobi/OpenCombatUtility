@@ -1,6 +1,7 @@
 package com.LubieKakao1212.opencu.common.device;
 
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
+import com.LubieKakao1212.opencu.common.device.state.ShooterDeviceState;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.FallingBlockEntity;
@@ -18,12 +19,11 @@ import java.util.Optional;
 
 public abstract class ShotMappings {
 
-    public static final PostShootAction DEFAULT_SHOOT_ACTION = (entity, forward, velocity) -> { };
+    public static final PostShootAction DEFAULT_SHOOT_ACTION = (entity, forward, velocity, state) -> { };
 
-    public static final PostSpawnAction DEFAULT_SPAWN_ACTION = (entity, forward, velocity) -> { };
+    public static final PostSpawnAction DEFAULT_SPAWN_ACTION = (entity, forward, velocity, state) -> { };
 
-    public static final ShotEntry ITEM_ENTRY = new ShotEntry((stack, level) -> {
-
+    public static final ShotEntry ITEM_ENTRY = new ShotEntry((stack, level, state) -> {
         ItemEntity item = new ItemEntity(level, 0, 0 ,0, stack);
         return item;
     }, ItemStack.EMPTY, 1., 1., 1.);
@@ -31,7 +31,7 @@ public abstract class ShotMappings {
     /**
      * Experimental
      */
-    public static final ShotEntry BLOCK_ENTRY = new ShotEntry((stack, world) -> {
+    public static final ShotEntry BLOCK_ENTRY = new ShotEntry((stack, world, state) -> {
         //TODO make fake player place items
         BlockItem blockItem = (BlockItem)stack.getItem();
         Block block = blockItem.getBlock();
@@ -69,17 +69,17 @@ public abstract class ShotMappings {
 
     @FunctionalInterface
     public interface EntityMapping {
-        Entity get(ItemStack stack, World Level);
+        Entity get(ItemStack stack, World Level, ShooterDeviceState state);
     }
 
     @FunctionalInterface
     public interface PostShootAction {
-        void Execute(Entity entity, Vector3d forward, double velocity);
+        void Execute(Entity entity, Vector3d forward, double velocity, ShooterDeviceState state);
     }
 
     @FunctionalInterface
     public interface PostSpawnAction {
-        void Execute(Entity entity, Vector3d forward, double velocity);
+        void Execute(Entity entity, Vector3d forward, double velocity, ShooterDeviceState state);
     }
 
     @FunctionalInterface

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    " n ",
+    "bdb",
+    " n "
+  ],
+  "key":
+  {
+    "n":
+    {
+      "item": "minecraft:netherite_ingot"
+    },
+    "b":
+    {
+      "item": "minecraft:blaze_rod"
+    },
+    "d":
+    {
+      "item": "opencu:dispenser_diamond"
+    }
+  },
+  "result":
+  {
+    "item": "opencu:dispenser_netherite",
+    "count": 1
+  }
+}

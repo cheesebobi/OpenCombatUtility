@@ -31,4 +31,8 @@ public class OpenCUConfigCommonImpl {
     public static OpenCUConfigCommon.@NotNull DispenserDeviceConfig diamondDispenserDevice() {
         return OpenCUConfigCommon.Defaults.DIAMOND_DISPENSER_DEVICE;
     }
+
+    public static OpenCUConfigCommon.@NotNull DispenserDeviceConfig netheriteDispenserDevice() {
+        return OpenCUConfigCommon.Defaults.NETHERITE_DISPENSER_DEVICE;
+    }
 }

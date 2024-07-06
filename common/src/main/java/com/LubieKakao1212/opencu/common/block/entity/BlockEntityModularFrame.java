@@ -445,8 +445,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
 
     @Override
     public Text getDisplayName() {
-        //TODO Translation
-        return Text.of("dispenser");
+        return Text.translatable("block.opencu.modular_frame");
     }
 
     @Override

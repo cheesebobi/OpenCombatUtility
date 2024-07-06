@@ -42,6 +42,12 @@ public class OpenCUConfigCommon {
     public static DispenserDeviceConfig diamondDispenserDevice() {
         return Defaults.DIAMOND_DISPENSER_DEVICE;
     }
+    @NotNull
+    @ExpectPlatform
+    public static DispenserDeviceConfig netheriteDispenserDevice() {
+        return Defaults.DIAMOND_DISPENSER_DEVICE;
+    }
+
 
     public interface GeneralConfig {
         boolean energyEnabled();
@@ -68,6 +74,7 @@ public class OpenCUConfigCommon {
         double spread();
         double force();
         double baseEnergy();
+        double power();
 
         /**
          * Use only for configurable dispensers
@@ -85,9 +92,10 @@ public class OpenCUConfigCommon {
         public static final OpenCUConfigCommon.RepulsorDeviceConfig REPULSOR_DEVICE = new RepulsorDeviceConfig(5.0, 5.0, 1.0, 20000, 1000);
 
 
-        public static final OpenCUConfigCommon.DispenserDeviceConfig VANILLA_DISPENSER_DEVICE = new DispenserDeviceConfig(90, 5.0, 5.0, 1.0, 1000);
-        public static final OpenCUConfigCommon.DispenserDeviceConfig GOLDEN_DISPENSER_DEVICE = new DispenserDeviceConfig(180, 5.0, 360.0, 1.0, 1000);
-        public static final OpenCUConfigCommon.DispenserDeviceConfig DIAMOND_DISPENSER_DEVICE = new DispenserDeviceConfig(3600, 0.0, 360.0, 1.5, 1000);
+        public static final OpenCUConfigCommon.DispenserDeviceConfig VANILLA_DISPENSER_DEVICE = new DispenserDeviceConfig(90, 5.0, 5.0, 1.0, 500, 1.0);
+        public static final OpenCUConfigCommon.DispenserDeviceConfig GOLDEN_DISPENSER_DEVICE = new DispenserDeviceConfig(180, 10.0, 360.0, 1.0, 300, 1.0);
+        public static final OpenCUConfigCommon.DispenserDeviceConfig DIAMOND_DISPENSER_DEVICE = new DispenserDeviceConfig(120, 2.5, 360.0, 1.5, 750, 1.5);
+        public static final OpenCUConfigCommon.DispenserDeviceConfig NETHERITE_DISPENSER_DEVICE = new DispenserDeviceConfig(15, 1.5, 10.0, 2.0, 1500, 3.0);
 
 
         public record GeneralConfig(boolean energyEnabled) implements OpenCUConfigCommon.GeneralConfig { }
@@ -98,7 +106,7 @@ public class OpenCUConfigCommon {
 
         public record RepulsorDeviceConfig(double maxOffset, double maxRadius, double forceScale, double powerCost, double distanceCost) implements OpenCUConfigCommon.RepulsorDeviceConfig { }
 
-        public record DispenserDeviceConfig(double rotationSpeed, double spread, double maxSpread, double force, double baseEnergy) implements OpenCUConfigCommon.DispenserDeviceConfig {  }
+        public record DispenserDeviceConfig(double rotationSpeed, double spread, double maxSpread, double force, double baseEnergy, double power) implements OpenCUConfigCommon.DispenserDeviceConfig {  }
 
     }
 

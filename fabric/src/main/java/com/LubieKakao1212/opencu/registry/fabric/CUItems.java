@@ -12,4 +12,9 @@ public class CUItems implements ItemRegistryContainer {
 
     public static final Item LINK_TOOL = new ItemLinkTool(new FabricItemSettings().maxCount(1));
 
+    public static final Item DISPENSER_GOLD = new Item(new FabricItemSettings());
+    public static final Item DISPENSER_DIAMOND = new Item(new FabricItemSettings());
+    public static final Item DISPENSER_NETHERITE = new Item(new FabricItemSettings());
+
+
 }

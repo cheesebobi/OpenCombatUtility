@@ -1,8 +1,6 @@
 package com.LubieKakao1212.opencu.common.item;
 
-import com.LubieKakao1212.opencu.common.device.event.DistributingWorldEventNode;
 import com.LubieKakao1212.opencu.registry.CUBlockEntities;
-import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -15,14 +13,13 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.UseAction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ItemLinkTool extends Item {
+public class ItemLinkTool extends ItemBindable {
 
     public ItemLinkTool(Settings settings) {
         super(settings);
@@ -51,14 +48,19 @@ public class ItemLinkTool extends Item {
         }
 
         var tag = stack.getOrCreateNbt();
-
         if(player.isSneaking()) {
-            bind(tag, world, pos);
+            tryBind(stack, world, player, pos);
             return ActionResult.SUCCESS;
         }
 
-        if(tag.contains("ocu:boundPos", NbtElement.COMPOUND_TYPE)) {
+        if(isBound(stack)) {
+
+            if(world.getDimensionKey().toString().equals(tag.getString("ocu:boundWorld"))) {
+                player.sendMessage(Text.translatable("message.opencu.link.fail.interdimensional", pos.toShortString()));
+            }
+
             var boundPos = NbtHelper.toBlockPos(tag.getCompound("ocu:boundPos"));
+
             var be = CUBlockEntities.modularFrame().get(world, boundPos);
             if(be == null) {
                 return ActionResult.FAIL;
@@ -79,18 +81,9 @@ public class ItemLinkTool extends Item {
         return ActionResult.PASS;
     }
 
-    private void bind(NbtCompound data, World world, BlockPos targetPos) {
+    @Override
+    protected boolean shouldBind(ItemStack stack, World world, PlayerEntity player, BlockPos targetPos)  {
         var be = CUBlockEntities.modularFrame().get(world, targetPos);
-
-        if(be != null) {
-            data.put("ocu:boundPos", NbtHelper.fromBlockPos(targetPos));
-        } else {
-            unbind(data);
-        }
+        return be != null;
     }
-
-    private void unbind(NbtCompound data) {
-        data.remove("ocu:boundPos");
-    }
-
 }

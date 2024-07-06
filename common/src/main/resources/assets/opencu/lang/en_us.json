@@ -2,6 +2,10 @@
   "block.opencu.repulsor": "Repulsor",
   "block.opencu.modular_frame": "Modular Frame",
 
+  "item.opencu.dispenser_gold": "Golden Dispenser",
+  "item.opencu.dispenser_diamond": "Diamond Dispenser",
+  "item.opencu.dispenser_netherite": "Netherite Dispenser",
+
   "item.opencu.link_tool": "Linker",
   "item.opencu.aim_tool": "Aim Tool",
 
@@ -38,6 +42,12 @@
   "message.opencu.link.fail.distance": "Failed to link to %s\n§7Target is too far",
   "message.opencu.link.fail.target": "Failed to link to %s\n§7Target is invalid",
   "message.opencu.link.fail.target.self": "Failed to link to %s\n§7Cannot target self",
+  "message.opencu.link.fail.interdimensional": "Failed to link to %s\n§7Wrong Dimension",
 
-  "itemGroup.opencu":"Open Combat Utility"
+  "message.opencu.aim.fail.interdimensional": "Failed to aim at %s\n§7Wrong Dimension",
+
+  "message.opencu.bind.bind": "Bound to target: §7[%s§7]",
+  "message.opencu.bind.unbind": "Unbound",
+
+  "itemGroup.opencu": "Open Combat Utility"
 }

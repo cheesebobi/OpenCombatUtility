@@ -18,9 +18,10 @@ public class DispenserConfigurable extends ShooterBase {
         this.baseEnergy = baseEnergy;
     }
 
+    //TODO Not working
     @Override
     public IDeviceState getNewState() {
-        return new ShooterDeviceState(maxForce, minSpread, baseEnergy);
+        return new ShooterDeviceState(maxForce, minSpread, baseEnergy, -1.0);
     }
 
 }

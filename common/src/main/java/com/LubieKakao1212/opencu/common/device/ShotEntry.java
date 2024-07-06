@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.common.device;
 
+import com.LubieKakao1212.opencu.common.device.state.ShooterDeviceState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -33,8 +34,8 @@ public class ShotEntry {
         this(entity, leftover, mass, spreadMultiplier, energyMultiplier, ShotMappings.DEFAULT_SHOOT_ACTION);
     }
 
-    public Entity getEntity(ItemStack stack, World level) {
-        return entity.get(stack, level);
+    public Entity getEntity(ItemStack stack, World level, ShooterDeviceState state) {
+        return entity.get(stack, level, state);
     }
 
     public double getMass() {

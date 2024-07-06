@@ -23,7 +23,7 @@ import java.util.Optional;
 
 public class VanillaDispenserMappings extends ShotMappings {
 
-    private static final EntityMapping LOCKED = (stack, level) -> {
+    private static final EntityMapping LOCKED = (stack, level, state) -> {
         var itemEntity = new ItemEntity(level, 0, 0, 0, stack, 0,0,0);
         itemEntity.setCustomName(Text.of("Ah ah ah, you didn't say the magic word"));
         itemEntity.setCustomNameVisible(true);
@@ -33,7 +33,7 @@ public class VanillaDispenserMappings extends ShotMappings {
 
     public void init() {
         //region Mappings
-        EntityMapping arrowMapping = (stack, level) -> {
+        EntityMapping arrowMapping = (stack, level, state) -> {
             //TODO find a way to stop using bob
             LivingEntity bob = new PigEntity(EntityType.PIG, level);
             bob.setCustomName(Text.of("Bob"));
@@ -41,11 +41,12 @@ public class VanillaDispenserMappings extends ShotMappings {
 
             bob.remove(Entity.RemovalReason.DISCARDED);
 
+            arrow.setDamage(arrow.getDamage() * state.getPower());
             arrow.pickupType = PersistentProjectileEntity.PickupPermission.ALLOWED;
             return arrow;
         };
-        register(Items.ARROW, new ShotEntry((stack, level) -> {
-            Entity result = arrowMapping.get(stack, level);
+        register(Items.ARROW, new ShotEntry((stack, level, state) -> {
+            Entity result = arrowMapping.get(stack, level, state);
             ArrowEntity arrow = (ArrowEntity)result;
 
             //Is this necessary?
@@ -59,7 +60,7 @@ public class VanillaDispenserMappings extends ShotMappings {
         register(Items.TIPPED_ARROW, new ShotEntry(arrowMapping, ItemStack.EMPTY, 1.,1., 1.));
         //register(Items.SPECTRAL_ARROW, new DispenseEntry(arrowMapping, ItemStack.EMPTY, 1., 1.,1.));
 
-        register(Items.TNT, new ShotEntry((stack, level) -> {
+        register(Items.TNT, new ShotEntry((stack, level, state) -> {
             TntEntity tnt = new TntEntity(EntityType.TNT, level);
             return tnt;
         }, ItemStack.EMPTY, 3., 0.5, 1.));
@@ -86,7 +87,7 @@ public class VanillaDispenserMappings extends ShotMappings {
                 NetworkUtil.enqueueEntityPacket(new PacketClientUpdateFireball(fireball.getId(), (float)fireball.powerX, (float)fireball.powerY, (float)fireball.powerZ), fireball, 1);
             }));*/
 
-        ShotEntry potionMapping = new ShotEntry((stack, level) -> {
+        ShotEntry potionMapping = new ShotEntry((stack, level, state) -> {
             PotionEntity potion = new PotionEntity(EntityType.POTION, level);
             potion.setItem(stack);
             return potion;
@@ -95,12 +96,12 @@ public class VanillaDispenserMappings extends ShotMappings {
         register(Items.SPLASH_POTION, potionMapping);
         register(Items.LINGERING_POTION, potionMapping);
 
-        register(Items.EXPERIENCE_BOTTLE, new ShotEntry((stack, level) -> {
+        register(Items.EXPERIENCE_BOTTLE, new ShotEntry((stack, level, state) -> {
             ExperienceBottleEntity bottle = new ExperienceBottleEntity(EntityType.EXPERIENCE_BOTTLE, level);
             return bottle;
         }, ItemStack.EMPTY, 3., 1.5, 1.));
 
-        register(Items.FIREWORK_ROCKET, new ShotEntry((stack, level) -> {
+        register(Items.FIREWORK_ROCKET, new ShotEntry((stack, level, state) -> {
             //FireworkRocketEntity firework = new FireworkRocketEntity(level, 0, 0, 0, stack);
             FireworkRocketEntity firework = new FireworkRocketEntity(level, stack, 0, 0, 0, true);
             return firework;

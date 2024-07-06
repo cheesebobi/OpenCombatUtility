@@ -42,7 +42,7 @@ public abstract class ShooterBase implements IFramedDevice {
         var energyUsage = (long)(state.getBaseEnergyUsage() * entry.getEnergyMultiplier());
         if(ctx.energy().useEnergy(energyUsage, ctx.ctx()) == energyUsage) {
             //region Shooting
-            Entity entity = entry.getEntity(shotItem, world);
+            Entity entity = entry.getEntity(shotItem, world, state);
 
             Vector3d forward = AimUtilKt.randomSpread(random, aim.toQuaternion(Direction.EAST, Direction.UP), (state.getSpread() * entry.getSpreadMultiplier() * Constants.degToRad), Vector3dExtensions.INSTANCE.getSOUTH());
 
@@ -54,11 +54,11 @@ public abstract class ShooterBase implements IFramedDevice {
 
             entity.setVelocity(forward.x * velocity, forward.y * velocity, forward.z * velocity);
 
-            entry.getPostShootAction().Execute(entity, forward, velocity);
+            entry.getPostShootAction().Execute(entity, forward, velocity, state);
 
             world.spawnEntity(entity);
 
-            entry.getPostSpawnAction().Execute(entity, forward, velocity);
+            entry.getPostSpawnAction().Execute(entity, forward, velocity, state);
             //endregion
 
             ctx.ctx().commit();

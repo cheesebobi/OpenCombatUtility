@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    " i ",
+    "idi",
+    " i "
+  ],
+  "key":
+  {
+    "i":
+    {
+      "item": "minecraft:diamond"
+    },
+    "d":
+    {
+      "item": "minecraft:dispenser"
+    }
+  },
+  "result":
+  {
+    "item": "opencu:dispenser_diamond",
+    "count": 1
+  }
+}

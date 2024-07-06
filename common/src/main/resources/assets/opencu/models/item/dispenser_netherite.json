@@ -1,0 +1,9 @@
+{
+    "parent":"opencu:block/dispenser",
+    "textures": {
+		"back": "minecraft:block/netherite_block",
+		"front": "opencu:block/dispenser/dispenser_netherite_front",
+		"side": "opencu:block/dispenser/dispenser_netherite_side",
+		"particle": "minecraft:block/netherite_block"
+	}
+}

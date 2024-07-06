@@ -11,13 +11,15 @@ public class ShooterDeviceState implements IDeviceState {
 
     private double force;
     private double spread;
+    private double power;
     private double baseEnergyUsage;
 
-    public ShooterDeviceState(double force, double spread, double baseEnergyUsage) {
+    public ShooterDeviceState(double force, double spread, double baseEnergyUsage, double power) {
         api = new Lazy<>(() -> new ShooterDeviceApi(this));
         this.force = force;
         this.spread = spread;
         this.baseEnergyUsage = baseEnergyUsage;
+        this.power = power;
     }
 
     /**
@@ -39,9 +41,12 @@ public class ShooterDeviceState implements IDeviceState {
         return force;
     }
 
-
     public double getBaseEnergyUsage() {
         return baseEnergyUsage;
+    }
+
+    public double getPower() {
+        return power;
     }
 
     @Override
