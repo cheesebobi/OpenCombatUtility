@@ -37,4 +37,7 @@ public class OpenCUConfigCommonImpl {
         return OpenCUConfigCommon.Defaults.NETHERITE_DISPENSER_DEVICE;
     }
 
+    public static OpenCUConfigCommon.@NotNull TrackerDeviceConfig trackerDevice() {
+    }
+
 }

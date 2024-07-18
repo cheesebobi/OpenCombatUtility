@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.fabric;
 
+import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupPeripheral;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupIFramedDevice;
@@ -21,6 +22,8 @@ public class OpenCUModFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         NetworkUtilImpl.init();
+
+        OpenCUConfigCommonImpl.init();
 
         FieldRegistrationHandler.register(CUBlocksImpl.class, OpenCUModCommon.MODID, false);
         FieldRegistrationHandler.register(CUPulseImpl.class, OpenCUModCommon.MODID, false);

@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.common.device;
 
+import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.block.entity.BlockEntityModularFrame;
 import com.LubieKakao1212.opencu.common.device.event.data.LookAtEvent;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
@@ -20,6 +21,20 @@ import net.minecraft.world.World;
 import java.util.stream.Collectors;
 
 public class TrackerBase implements IFramedDevice {
+
+    private final double defaultTrackingRange;
+    private final double defaultEnergyPerTick;
+    private final double defaultEnergyPerActiveConnectionPerTick;
+
+    public TrackerBase(OpenCUConfigCommon.TrackerDeviceConfig config) {
+        this(config.range(), config.energyPerTick(), config.energyPerActiveConnectionPerTick());
+    }
+
+    public TrackerBase(double defaultTrackingRange, double defaultEnergyPerTick, double defaultEnergyPerActiveConnectionPerTick) {
+        this.defaultTrackingRange = defaultTrackingRange;
+        this.defaultEnergyPerTick = defaultEnergyPerTick;
+        this.defaultEnergyPerActiveConnectionPerTick = defaultEnergyPerActiveConnectionPerTick;
+    }
 
     @Override
     public void activate(BlockEntityModularFrame frame, IDeviceState state, World world, BlockPos pos, Aim aim, BlockEntityModularFrame.ModularFrameContext ctx) {
@@ -121,7 +136,7 @@ public class TrackerBase implements IFramedDevice {
 
     @Override
     public IDeviceState getNewState() {
-        return new TrackerDeviceState(5.0, 0.75, 5.0);
+        return new TrackerDeviceState(defaultTrackingRange, defaultEnergyPerTick, defaultEnergyPerActiveConnectionPerTick);
     }
 
     private boolean drainEnergy(BlockEntityModularFrame.ModularFrameContext ctx, TrackerDeviceState state, double amount) {

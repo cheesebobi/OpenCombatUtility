@@ -62,6 +62,10 @@ allprojects {
             }
         }
         maven { url 'https://maven.wispforest.io' }
+        maven {
+            name = "Terraformers"
+            url = "https://maven.terraformersmc.com/"
+        }
     }
 
     tasks.withType(JavaCompile) {

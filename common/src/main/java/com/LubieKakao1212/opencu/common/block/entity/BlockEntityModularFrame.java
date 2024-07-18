@@ -131,7 +131,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
                     case requiresLockPropertyIndex -> requiresLock ? 1 : 0;
                     case redstoneControlPropertyIndex -> getRedstoneControlTypeRaw().order;
                     case energyPropertyIndex -> getCurrentEnergy();
-                    case maxEnergyPropertyIndex -> OpenCUConfigCommon.capacitor().energyCapacity();
+                    case maxEnergyPropertyIndex -> OpenCUConfigCommon.modularFrame().energy().energyCapacity();
                     default -> -1;
                 };
             }

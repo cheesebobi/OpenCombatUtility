@@ -68,7 +68,7 @@ public class BlockEntityModularFrameImpl extends BlockEntityModularFrame {
         var useEnergy = OpenCUConfigCommon.general().energyEnabled();
 
         if(useEnergy) {
-            var capacity = OpenCUConfigCommon.capacitor().energyCapacity();
+            var capacity = OpenCUConfigCommon.modularFrame().energy().energyCapacity();
             energyStorage = new SimpleEnergyStorage(capacity, capacity, capacity);
             exposedEnegyStorage = new LimitingEnergyStorage(energyStorage, capacity, 0);
         } else {

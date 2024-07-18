@@ -1,3 +1,15 @@
+>> Implemented config
+> #### Common
+> - Added config abstraction for Tracker device
+> #### Fabric
+> - Implemented config using owo-config
+> - Config UI in modmenu is broken
+> #### Forge
+> Nothing, still broken
+> #### Project
+> - Bumped version to: 2.0.0-preview-2-kmf
+>> 
+
 >> 2.0.0-preview-1-kmf
 > #### Common
 > - Fixed energy bar fill direction in ModularFrameScreen
@@ -13,7 +25,7 @@
 > Nothing, still broken
 > #### Art
 > - Added textures for new dispenser items
->> 
+>> 5803288e [06.07.2024 at 23:54]
 
 >> Pre 2.0.0-preview-kmf polishing
 > #### Common

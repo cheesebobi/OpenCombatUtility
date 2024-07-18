@@ -1,0 +1,45 @@
+{
+  "text.config.opencu-common.option.GENERAL" : "General",
+  "text.config.opencu-common.option.GENERAL.energyEnabled" : "Enable Energy",
+
+  "text.config.opencu-common.option.MODULAR_FRAME" : "Modular Frame",
+  "text.config.opencu-common.option.MODULAR_FRAME.energy.energyEnabled" : "Enable Energy",
+  "text.config.opencu-common.option.MODULAR_FRAME.energy.capacity" : "Energy Capacity",
+
+  "text.config.opencu-common.option.REPULSOR_DEVICE" : "Repulsor",
+  "text.config.opencu-common.option.REPULSOR_DEVICE.maxOffset" : "Max Offset",
+  "text.config.opencu-common.option.REPULSOR_DEVICE.maxRadius" : "Max Radius",
+  "text.config.opencu-common.option.REPULSOR_DEVICE.forceScale" : "Force Scale",
+  "text.config.opencu-common.option.REPULSOR_DEVICE.powerCost" : "Power Cost",
+  "text.config.opencu-common.option.REPULSOR_DEVICE.distanceCost" : "Distance Cost",
+  "text.config.opencu-common.option.REPULSOR_DEVICE.energy_energyEnabled" : "Enable Energy",
+  "text.config.opencu-common.option.REPULSOR_DEVICE.energy_capacity" : "Energy Capacity",
+
+  "text.config.opencu-common.option.VANILLA_DISPENSER_DEVICE.rotationSpeed" : "Rotation Speed",
+  "text.config.opencu-common.option.VANILLA_DISPENSER_DEVICE.spread" : "Spread",
+  "text.config.opencu-common.option.VANILLA_DISPENSER_DEVICE.maxSpread" : "Max Spread (Configurable)",
+  "text.config.opencu-common.option.VANILLA_DISPENSER_DEVICE.force" : "Force",
+  "text.config.opencu-common.option.VANILLA_DISPENSER_DEVICE.baseEnergy" : "Base Energy Per Shot",
+  "text.config.opencu-common.option.VANILLA_DISPENSER_DEVICE.power" : "Power",
+
+  "text.config.opencu-common.option.GOLDEN_DISPENSER_DEVICE.rotationSpeed" : "Rotation Speed",
+  "text.config.opencu-common.option.GOLDEN_DISPENSER_DEVICE.spread" : "Spread",
+  "text.config.opencu-common.option.GOLDEN_DISPENSER_DEVICE.maxSpread" : "Max Spread (Configurable)",
+  "text.config.opencu-common.option.GOLDEN_DISPENSER_DEVICE.force" : "Force",
+  "text.config.opencu-common.option.GOLDEN_DISPENSER_DEVICE.baseEnergy" : "Base Energy Per Shot",
+  "text.config.opencu-common.option.GOLDEN_DISPENSER_DEVICE.power" : "Power",
+
+  "text.config.opencu-common.option.DIAMOND_DISPENSER_DEVICE.rotationSpeed" : "Rotation Speed",
+  "text.config.opencu-common.option.DIAMOND_DISPENSER_DEVICE.spread" : "Spread",
+  "text.config.opencu-common.option.DIAMOND_DISPENSER_DEVICE.maxSpread" : "Max Spread (Configurable)",
+  "text.config.opencu-common.option.DIAMOND_DISPENSER_DEVICE.force" : "Force",
+  "text.config.opencu-common.option.DIAMOND_DISPENSER_DEVICE.baseEnergy" : "Base Energy Per Shot",
+  "text.config.opencu-common.option.DIAMOND_DISPENSER_DEVICE.power" : "Power",
+
+  "text.config.opencu-common.option.NETHERITE_DISPENSER_DEVICE.rotationSpeed" : "Rotation Speed",
+  "text.config.opencu-common.option.NETHERITE_DISPENSER_DEVICE.spread" : "Spread",
+  "text.config.opencu-common.option.NETHERITE_DISPENSER_DEVICE.maxSpread" : "Max Spread (Configurable)",
+  "text.config.opencu-common.option.NETHERITE_DISPENSER_DEVICE.force" : "Force",
+  "text.config.opencu-common.option.NETHERITE_DISPENSER_DEVICE.baseEnergy" : "Base Energy Per Shot",
+  "text.config.opencu-common.option.NETHERITE_DISPENSER_DEVICE.power" : "Power"
+}

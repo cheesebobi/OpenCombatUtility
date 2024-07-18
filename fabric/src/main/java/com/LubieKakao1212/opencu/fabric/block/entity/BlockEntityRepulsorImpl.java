@@ -21,10 +21,10 @@ public class BlockEntityRepulsorImpl extends BlockEntityRepulsor {
         super(pos, blockState);
 
         //region energy
-        var useEnergy = OpenCUConfigCommon.general().energyEnabled();
+        var useEnergy = OpenCUConfigCommon.repulsorDevice().energy().isEnergyEnabled();
 
         if(useEnergy) {
-            var capacity = OpenCUConfigCommon.capacitor().energyCapacity();
+            var capacity = OpenCUConfigCommon.repulsorDevice().energy().energyCapacity();
             energyStorage = new SimpleEnergyStorage(capacity, capacity, capacity);
             exposedEnegyStorage = new LimitingEnergyStorage(energyStorage, capacity, 0);
         } else {

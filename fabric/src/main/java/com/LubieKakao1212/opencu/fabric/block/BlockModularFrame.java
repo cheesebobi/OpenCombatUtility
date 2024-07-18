@@ -41,7 +41,7 @@ public class BlockModularFrame extends BlockWithEntity {
             //region debug
             if(player.isSneaking()) {
                 var be = (BlockEntityModularFrameImpl)world.getBlockEntity(pos);
-                player.sendMessage(Text.of(be.exposedEnegyStorage.getAmount() + "/" + OpenCUConfigCommon.capacitor().energyCapacity()));
+                player.sendMessage(Text.of(be.exposedEnegyStorage.getAmount() + "/" + OpenCUConfigCommon.modularFrame().energy().energyCapacity()));
             }
             //endregion
 

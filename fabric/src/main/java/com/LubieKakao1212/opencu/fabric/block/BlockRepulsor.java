@@ -33,7 +33,7 @@ public class BlockRepulsor extends Block implements BlockEntityProvider {
             //region debud
             if (player.isSneaking()) {
                 var be = (BlockEntityRepulsorImpl) world.getBlockEntity(pos);
-                player.sendMessage(Text.of(be.exposedEnegyStorage.getAmount() + "/" + OpenCUConfigCommon.capacitor().energyCapacity()));
+                player.sendMessage(Text.of(be.exposedEnegyStorage.getAmount() + "/" + OpenCUConfigCommon.repulsorDevice().energy().energyCapacity()));
             }
             //endregion
         }

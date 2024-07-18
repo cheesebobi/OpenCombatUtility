@@ -1,5 +1,6 @@
 package com.LubieKakao1212.opencu.common.device;
 
+import com.LubieKakao1212.opencu.OpenCUConfigCommon;
 import com.LubieKakao1212.opencu.common.device.state.IDeviceState;
 import com.LubieKakao1212.opencu.common.device.state.ShooterDeviceState;
 
@@ -9,6 +10,10 @@ public class DispenserConstant extends ShooterBase {
     private final double constantForce;
     private final double baseEnergy;
     private final double basePower;
+
+    public DispenserConstant(ShotMappings mappings, OpenCUConfigCommon.DispenserDeviceConfig config) {
+        this(mappings, (float)config.rotationSpeed() / 20.0f, config.force(), config.spread(), config.baseEnergy());
+    }
 
     public DispenserConstant(ShotMappings mappings, float alignmentSpeed, double constantSpread, double constantForce, double baseEnergy, double power) {
         super(mappings, alignmentSpeed);

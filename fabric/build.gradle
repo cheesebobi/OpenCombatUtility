@@ -37,6 +37,8 @@ dependencies {
     //testing mods
     modRuntimeOnly('TechReborn:TechReborn-1.19:5.7.0') { transitive = false }
     modRuntimeOnly('RebornCore:RebornCore-1.19:5.7.0') { transitive = false }
+    //ModMenu
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
