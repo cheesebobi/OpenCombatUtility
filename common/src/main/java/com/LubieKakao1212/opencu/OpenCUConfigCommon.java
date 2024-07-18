@@ -95,7 +95,7 @@ public class OpenCUConfigCommon {
         public static final OpenCUConfigCommon.DispenserDeviceConfig VANILLA_DISPENSER_DEVICE = new DispenserDeviceConfig(90, 5.0, 5.0, 1.0, 500, 1.0);
         public static final OpenCUConfigCommon.DispenserDeviceConfig GOLDEN_DISPENSER_DEVICE = new DispenserDeviceConfig(180, 10.0, 360.0, 1.0, 300, 1.0);
         public static final OpenCUConfigCommon.DispenserDeviceConfig DIAMOND_DISPENSER_DEVICE = new DispenserDeviceConfig(120, 2.5, 360.0, 1.5, 750, 1.5);
-        public static final OpenCUConfigCommon.DispenserDeviceConfig NETHERITE_DISPENSER_DEVICE = new DispenserDeviceConfig(15, 1.5, 10.0, 2.0, 1500, 3.0);
+        public static final OpenCUConfigCommon.DispenserDeviceConfig NETHERITE_DISPENSER_DEVICE = new DispenserDeviceConfig(50, 0, 0.0, 5.5, 1500, 5.0);
 
 
         public record GeneralConfig(boolean energyEnabled) implements OpenCUConfigCommon.GeneralConfig { }
