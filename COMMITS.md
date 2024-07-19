@@ -1,4 +1,16 @@
->> Implemented config
+>> ### Added Build.yaml github workflow
+> #### Project
+> - added Build.yaml workflow
+> - improved formatting of COMMITS.md
+> #### Common
+> Nothing
+> #### Fabric
+> Nothing
+> #### Forge
+> Nothing, still broken
+>> 
+
+>> ### Implemented config
 > #### Common
 > - Added config abstraction for Tracker device
 > #### Fabric
@@ -8,9 +20,9 @@
 > Nothing, still broken
 > #### Project
 > - Bumped version to: 2.0.0-preview-2-kmf
->> 
+>> 58c4ed92 [18.07.2024 at 17:22]
 
->> 2.0.0-preview-1-kmf
+>> ### 2.0.0-preview-1-kmf
 > #### Common
 > - Fixed energy bar fill direction in ModularFrameScreen
 > - Fixed name in ModularFrameScreen
@@ -27,7 +39,7 @@
 > - Added textures for new dispenser items
 >> 5803288e [06.07.2024 at 23:54]
 
->> Pre 2.0.0-preview-kmf polishing
+>> ### Pre 2.0.0-preview-kmf polishing
 > #### Common
 > - Added missing translations
 > - Fixed shift click logic in modular frame gui
@@ -44,7 +56,7 @@
 > Nothing, still broken
 >> 74167022 [30.06.2024 at 20:11]
 
->> Added Energy Bar to ModularFrame GUI
+>> ### Added Energy Bar to ModularFrame GUI
 > #### Common
 > - Implemented FillableBarWidget
 > - Added Energy bar to ModularFrameScreen
@@ -56,7 +68,7 @@
 > Added TODO.md
 >> cc615231 [24.06.2024 at 15:40]
 
->> Redstone output from Tracker
+>> ### Redstone output from Tracker
 > #### Common
 > - Implemented Redstone output for ModularFrame
 > - Made Tracker device output redstone
@@ -72,7 +84,7 @@
 > Nothing, still broken
 >> 06bddd96 [18.06.2024 at 20:49]
 
->> Implemented linking
+>> ### Implemented linking
 > #### Common
 > - Added EventNode system
 >   - Added IEventNode
@@ -96,7 +108,7 @@
 > - Added "eyetool" sprite [by ThePennitentOne]
 >> 37d7c5c5 [18.06.2024 at 11:48]
 
->> Added redstone control to Modular Frame
+>> ### Added redstone control to Modular Frame
 > #### Common
 > - Added IRedstoneControlled interface
 > - Added PacketServerCycleRedstoneControl which cycles redstone control on BlockEntities with IRedstoneControlled
@@ -110,7 +122,7 @@
 >> fa873dd [04.06.2024 at 13:10]
 
 
->> #### Implemented ActivateOnlyWhenAligned feature to ModularFrame
+>> ### Implemented ActivateOnlyWhenAligned feature to ModularFrame
 > #### Common
 > - Added Responsive toggle GUI widget
 > - Added lock button to ModularFrameGUI and its tooltip translations
@@ -127,7 +139,7 @@
 > - added lock tests to dispenser.lua
 >> 131ce2e8 [26.05.2024 at 16:09]
 
->> #### Reworked Contexts (again) + Implemented TrackerBase + Added AimTool Item
+>> ### Reworked Contexts (again) + Implemented TrackerBase + Added AimTool Item
 > #### Common
 > - Made Contexts more modular
 > - Added TrackerBase for ModularFrame
@@ -139,7 +151,7 @@
 > Nothing, still broken
 >> 799b1c88 [22.05.2024 at 16:15]
 
->> #### Implemented Reborn Energy on fabric
+>> ### Implemented Reborn Energy on fabric
 > #### Common
 > - Removed ArchitecturyAPI from dependencies
 > - Restored Energy logic for both ModularFrame Devices and Repulsor
@@ -152,12 +164,12 @@
 > Nothing, still broken
 >> 6f4e722b [20.05.2024 at 21:31]
 
->> #### Added COMMITS.md
+>> ### Added COMMITS.md
 >
 > Added COMMITS.md for more involved commit descriptions in the future 
 >> 89fc7cc3 [14.05.2024 at 17:16]
 
->> #### ModularFrame rework pt2 - Device/State/API separation
+>> ### ModularFrame rework pt2 - Device/State/API separation
 > #### Common
 > - Renamed IDispenser to IFramedDevice  
 > - Removed state related methods from IFramedDevice and introduced IDeviceState
