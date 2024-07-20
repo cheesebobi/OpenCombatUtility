@@ -12,7 +12,7 @@ public class DispenserConstant extends ShooterBase {
     private final double basePower;
 
     public DispenserConstant(ShotMappings mappings, OpenCUConfigCommon.DispenserDeviceConfig config) {
-        this(mappings, (float)config.rotationSpeed() / 20.0f, config.force(), config.spread(), config.baseEnergy());
+        this(mappings, (float)config.rotationSpeed() / 20.0f, config.spread(), config.force(), config.baseEnergy());
     }
 
     public DispenserConstant(ShotMappings mappings, float alignmentSpeed, double constantSpread, double constantForce, double baseEnergy, double power) {
