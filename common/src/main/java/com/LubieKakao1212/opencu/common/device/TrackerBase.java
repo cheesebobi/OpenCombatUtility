@@ -116,7 +116,7 @@ public class TrackerBase implements IFramedDevice {
 
                     //Rather silly but it works
                     if (blockHitResult.getType() == HitResult.Type.BLOCK) {
-                        if(!hitPos.equals(pos)) {
+                        if(!blockHitResult.getBlockPos().equals(pos)) {
                             continue;
                         }
                     }

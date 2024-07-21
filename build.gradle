@@ -5,11 +5,12 @@ plugins {
 
 //Load Access Properties (ghReadPAT, ghUsr)
 ext.accessProps = new Properties()
-file("access.properties").withInputStream {
-    accessProps.load(it)
+var propsFile = file("access.properties")
+if(propsFile.exists()) {
+    propsFile.withInputStream {
+        accessProps.load(it)
+    }
 }
-
-
 architectury {
     minecraft = rootProject.minecraft_version
 }
