@@ -13,11 +13,17 @@ if (args[1] + 0) == 1 then
 else
     rep.setForce(args[2] + 0)
 end
-rep.setRadius(5)
+rep.setRadius(args[6] + 0 or 5)
 
 while true do
     if redstone.getInput("right") then
-        rep.pulse(0,0,0)
+        local _, message = rep.pulse(0,0,0)
+        if message then
+            print(message)
+        end
+        os.sleep(0.05)
+    else
+        os.sleep(1)
     end
-    os.sleep(2)
+    --
 end

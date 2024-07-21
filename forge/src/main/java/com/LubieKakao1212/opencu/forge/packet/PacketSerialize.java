@@ -1,7 +1,5 @@
 package com.LubieKakao1212.opencu.forge.packet;
 
-import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerAddVelocity;
-import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerScaleVelocity;
 import com.LubieKakao1212.opencu.common.network.packet.PacketClientRepulsorPulse;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenserAim;

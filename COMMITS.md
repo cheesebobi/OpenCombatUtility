@@ -1,3 +1,18 @@
+>> ### Fixed fireball ShotMapping + Improved repulsor logic
+> #### Common
+> - fixed fireball ShotMapping
+> - fixed entity velocity synchronisation
+> - fixed modular frame aim serialization
+> - removed PacketClientPlayerScaleVelocity
+> - removed PacketClientPlayerAddVelocity
+> - repulsor now works on grounded projectiles
+> - added opencu-common.accesswidener
+> #### Fabric
+> - opencu.accesswidener
+> #### Forge
+> Nothing, still broken
+>>
+
 >> ### Added Build.yaml github workflow
 > #### Project
 > - added Build.yaml workflow
@@ -8,7 +23,7 @@
 > Nothing
 > #### Forge
 > Nothing, still broken
->> 
+>> c77dc282 [19.07.2024 at 12:36]
 
 >> ### Implemented config
 > #### Common

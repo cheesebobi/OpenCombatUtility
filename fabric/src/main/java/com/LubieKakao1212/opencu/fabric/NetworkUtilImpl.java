@@ -1,7 +1,5 @@
 package com.LubieKakao1212.opencu.fabric;
 
-import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerAddVelocity;
-import com.LubieKakao1212.opencu.common.network.packet.PacketClientPlayerScaleVelocity;
 import com.LubieKakao1212.opencu.common.network.packet.PacketClientRepulsorPulse;
 import com.LubieKakao1212.opencu.common.network.packet.PacketHandlersServer;
 import com.LubieKakao1212.opencu.common.network.packet.dispenser.PacketClientUpdateDispenser;
@@ -24,9 +22,6 @@ public class NetworkUtilImpl {
     private static final OwoNetChannel CHANNEL = OwoNetChannel.create(CUIds.MAIN);
 
     public static void init() {
-        CHANNEL.registerClientboundDeferred(PacketClientPlayerAddVelocity.class);
-        CHANNEL.registerClientboundDeferred(PacketClientPlayerScaleVelocity.class);
-
         CHANNEL.registerClientboundDeferred(PacketClientUpdateFireball.class);
 
         CHANNEL.registerClientboundDeferred(PacketClientUpdateDispenser.class);
@@ -40,9 +35,6 @@ public class NetworkUtilImpl {
     }
 
     public static void clientInit() {
-        CHANNEL.registerClientbound(PacketClientPlayerAddVelocity.class, (pkt, acc) -> handle(pkt));
-        CHANNEL.registerClientbound(PacketClientPlayerScaleVelocity.class, (pkt, acc) -> handle(pkt));
-
         CHANNEL.registerClientbound(PacketClientUpdateFireball.class, (pkt, acc) -> handle(pkt));
 
         CHANNEL.registerClientbound(PacketClientUpdateDispenser.class, (pkt, acc) -> handle(pkt));

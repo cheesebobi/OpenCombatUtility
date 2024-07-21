@@ -55,6 +55,7 @@ public abstract class ShooterBase implements IFramedDevice {
             entity.setVelocity(forward.x * velocity, forward.y * velocity, forward.z * velocity);
 
             entry.getPostShootAction().Execute(entity, forward, velocity, state);
+            entity.velocityDirty = true;
 
             world.spawnEntity(entity);
 

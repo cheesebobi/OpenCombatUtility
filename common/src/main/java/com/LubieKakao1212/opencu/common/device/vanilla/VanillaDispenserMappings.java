@@ -65,8 +65,7 @@ public class VanillaDispenserMappings extends ShotMappings {
             return tnt;
         }, ItemStack.EMPTY, 3., 0.5, 1.));
 
-        register(Items.FIRE_CHARGE, new ShotEntry(LOCKED, ItemStack.EMPTY, 100., 1., 1.));
-        /*register(Items.FIRE_CHARGE, new ShotEntry((stack, level) -> {
+        register(Items.FIRE_CHARGE, new ShotEntry((stack, level, state) -> {
                 SmallFireballEntity fireball = new SmallFireballEntity(level, 0, 0, 0, 1, 0, 0);
                 fireball.setOwner(null);
                 fireball.powerX = 0;
@@ -74,18 +73,14 @@ public class VanillaDispenserMappings extends ShotMappings {
                 fireball.powerZ = 0;
                 return fireball;
             },
-            ItemStack.EMPTY, 3., 2, 1., (entity, forward, velocity) -> {
+            ItemStack.EMPTY, 3., 2, 1., (entity, forward, velocity, state) -> {
             SmallFireballEntity fireball = (SmallFireballEntity) entity;
-                velocity = Math.min(velocity, 0.1d);
                 fireball.setVelocity(Vec3d.ZERO);
-                fireball.powerX = forward.x * velocity * 0.1D;
-                fireball.powerY = forward.y * velocity * 0.1D;
-                fireball.powerZ = forward.z * velocity * 0.1D;
-            },
-            (entity, forward, velocity) -> {
-                SmallFireballEntity fireball = (SmallFireballEntity) entity;
-                NetworkUtil.enqueueEntityPacket(new PacketClientUpdateFireball(fireball.getId(), (float)fireball.powerX, (float)fireball.powerY, (float)fireball.powerZ), fireball, 1);
-            }));*/
+                fireball.powerX = forward.x * 0.1D;
+                fireball.powerY = forward.y * 0.1D;
+                fireball.powerZ = forward.z * 0.1D;
+            }));
+
 
         ShotEntry potionMapping = new ShotEntry((stack, level, state) -> {
             PotionEntity potion = new PotionEntity(EntityType.POTION, level);

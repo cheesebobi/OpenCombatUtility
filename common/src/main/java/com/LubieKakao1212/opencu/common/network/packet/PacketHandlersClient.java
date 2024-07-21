@@ -16,28 +16,6 @@ import net.minecraft.world.World;
 
 public class PacketHandlersClient {
 
-    public static void handle(PacketClientPlayerAddVelocity packetIn) {
-        PlayerEntity player = MinecraftClient.getInstance().player;
-        assert player != null;
-        var precision = PacketClientPlayerAddVelocity.precision;
-        player.setVelocity(player.getVelocity().add(packetIn.x() / precision, packetIn.y() / precision, packetIn.z() / precision));
-
-        if(player.getVelocity().y > 0){
-            player.fallDistance = 0;
-        }
-    }
-
-    public static void handle(PacketClientPlayerScaleVelocity packetIn) {
-        var scale = packetIn.scale();
-        PlayerEntity player = MinecraftClient.getInstance().player;
-        assert player != null;
-        player.setVelocity(player.getVelocity().multiply(scale, scale, scale));
-
-        if(player.getVelocity().y > 0) {
-            player.fallDistance = 0;
-        }
-    }
-
     public static void handle(PacketClientUpdateFireball packetIn) {
         var player = MinecraftClient.getInstance().player;
         assert player != null;

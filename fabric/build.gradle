@@ -8,6 +8,7 @@ architectury {
 }
 
 loom {
+    accessWidenerPath = file("src/main/resources/opencu.accesswidener")
 }
 
 configurations {
@@ -50,6 +51,7 @@ processResources {
     filesMatching("fabric.mod.json") {
         expand "version": project.version
     }
+    exclude "opencu-common.accesswidener"
 }
 
 shadowJar {

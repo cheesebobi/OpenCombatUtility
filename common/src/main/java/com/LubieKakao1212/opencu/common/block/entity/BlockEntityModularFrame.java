@@ -404,7 +404,7 @@ public abstract class BlockEntityModularFrame extends BlockEntity implements Nam
     public void writeNbt(@NotNull NbtCompound compound) {
         compound.putDouble("pitch", currentAim.getPitch());
         compound.putDouble("yaw", currentAim.getYaw());
-        compound.putDouble("targetPitch", targetAim.getYaw());
+        compound.putDouble("targetPitch", targetAim.getPitch());
         compound.putDouble("targetYaw", targetAim.getYaw());
         compound.putBoolean("requiresLock", requiresLock);
         compound.putInt("redstoneControl", redstoneControlType.order);
