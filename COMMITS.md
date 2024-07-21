@@ -1,3 +1,9 @@
+>> ### Changed Build workflow to Build Fabric
+> #### Project
+> - changed Build workflow to build only fabric project
+> - renamed Build.yaml to BuildFabric.yaml
+>>
+
 >> ### Fixed fireball ShotMapping + Improved repulsor logic
 > #### Common
 > - fixed fireball ShotMapping
@@ -11,7 +17,7 @@
 > - opencu.accesswidener
 > #### Forge
 > Nothing, still broken
->>
+>> 3176cd4e [21.07.2024 at 14:37]
 
 >> ### Added Build.yaml github workflow
 > #### Project

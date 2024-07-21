@@ -1,4 +1,4 @@
-name: Build
+name: Build Fabric
 on:
   pull_request:
     types:
@@ -22,4 +22,4 @@ jobs:
           java-version: 17
       - run: echo "TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
       - run: echo "USERNAME=${{ github.actor }}" >> $GITHUB_ENV
-      - run: gradle build --no-daemon
+      - run: gradle :fabric:build --no-daemon
