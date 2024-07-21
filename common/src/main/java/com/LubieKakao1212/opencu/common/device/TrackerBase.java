@@ -116,9 +116,7 @@ public class TrackerBase implements IFramedDevice {
 
                     //Rather silly but it works
                     if (blockHitResult.getType() == HitResult.Type.BLOCK) {
-                        BlockPos hitPos = blockHitResult.getBlockPos();
-                        var blockState = world.getBlockState(hitPos);
-                        if (!blockState.getBlock().toString().contains("modular_frame")){
+                        if(!hitPos.equals(pos)) {
                             continue;
                         }
                     }
