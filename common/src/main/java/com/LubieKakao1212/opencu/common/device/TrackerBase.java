@@ -11,11 +11,17 @@ import com.lubiekakao1212.qulib.math.Aim;
 import com.lubiekakao1212.qulib.math.mc.Vector3m;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.TypeFilter;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 import java.util.stream.Collectors;
@@ -49,7 +55,7 @@ public class TrackerBase implements IFramedDevice {
 
         var rsct = frame.getRedstoneControlTypeRaw();
 
-        try(var pulse = new EndBoolean(rsPulser::tick)) {
+        try (var pulse = new EndBoolean(rsPulser::tick)) {
             try (var rsout = new EndBoolean((value) ->
                     frame.setEmittingRedstone(
                             (value ^ rsct == RedstoneControlType.LOW) &&
@@ -87,6 +93,33 @@ public class TrackerBase implements IFramedDevice {
                     if (filters.contains(entity.getName().getString())) {
                         continue;
                     }
+                    if (entity.isPlayer()) {
+                        PlayerEntity player = (PlayerEntity) entity;
+                        if (player.isCreative() || player.isSpectator()) {
+                            continue;
+                        }
+                    }
+                    if (entity.isDead()){
+                        continue;
+                    }
+
+                    // Check if there's a block obstructing the view by reversing the raycast direction
+                    Vec3d start = entity.getBoundingBox().getCenter();
+                    Vec3d end = pos.toCenterPos();
+                    BlockHitResult blockHitResult = world.raycast(new RaycastContext(
+                            start,
+                            end,
+                            RaycastContext.ShapeType.COLLIDER,
+                            RaycastContext.FluidHandling.NONE,
+                            entity
+                    ));
+
+                    //Rather silly but it works
+                    if (blockHitResult.getType() == HitResult.Type.BLOCK) {
+                        if(!hitPos.equals(pos)) {
+                            continue;
+                        }
+                    }
 
                     nearestDistSq = distSq;
                     nearestEntity = entity;
@@ -109,15 +142,14 @@ public class TrackerBase implements IFramedDevice {
                     rsout.result = rsct == RedstoneControlType.PULSE ? rsPulser.shouldActivate() : true;
                     pulse.result = true;
 
-                    //var delta = new Vector3m(pos.toCenterPos().subtract(nearestEntity.getBoundingBox().getCenter()));
-                    var target = new Vector3m(nearestEntity.getBoundingBox().getCenter());
+                    var target = new Vector3m(nearestEntity.getBoundingBox().getCenter().add(0, nearestEntity.getStandingEyeHeight()/2, 0));
                     frame.aimAtWorld(target);
 
                     var lookAt = new LookAtEvent(target, true);
 
                     eventDistributor.handleEvent(lookAt);
 
-                    //Commit th outer context
+                    // Commit the outer context
                     ctx.ctx().commit();
                 }
             }
