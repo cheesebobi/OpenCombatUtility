@@ -1,12 +1,12 @@
 package com.LubieKakao1212.opencu.fabric;
 
-import com.LubieKakao1212.opencu.OpenCUConfigCommon;
-import com.LubieKakao1212.opencu.fabric.apilookup.APILookupPeripheral;
 import com.LubieKakao1212.opencu.common.OpenCUModCommon;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupIFramedDevice;
+import com.LubieKakao1212.opencu.fabric.apilookup.APILookupPeripheral;
 import com.LubieKakao1212.opencu.fabric.apilookup.APILookupRebornEnergy;
 import com.LubieKakao1212.opencu.fabric.event.TooltipHandler;
 import com.LubieKakao1212.opencu.fabric.event.UseHandler;
+import com.LubieKakao1212.opencu.fabric.item.ModItemGroups;
 import com.LubieKakao1212.opencu.registry.CUDispensers;
 import com.LubieKakao1212.opencu.registry.fabric.*;
 import io.wispforest.owo.registration.reflect.FieldRegistrationHandler;
@@ -25,11 +25,13 @@ public class OpenCUModFabric implements ModInitializer {
 
         OpenCUConfigCommonImpl.init();
 
+        ModItemGroups.registerItemGroups();
+        CUItems.registerItems();
+
         FieldRegistrationHandler.register(CUBlocksImpl.class, OpenCUModCommon.MODID, false);
         FieldRegistrationHandler.register(CUPulseImpl.class, OpenCUModCommon.MODID, false);
         FieldRegistrationHandler.register(CUBlockEntitiesImpl.class, OpenCUModCommon.MODID, false);
         FieldRegistrationHandler.register(CUMenuImpl.class, OpenCUModCommon.MODID, false);
-        FieldRegistrationHandler.register(CUItems.class, OpenCUModCommon.MODID, false);
 
         if(FabricLoader.getInstance().isModLoaded("computercraft")) {
             APILookupPeripheral.register();
